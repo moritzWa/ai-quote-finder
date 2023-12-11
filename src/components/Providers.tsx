@@ -8,7 +8,7 @@ import { PropsWithChildren, useState } from 'react'
 const Providers = ({ children }: PropsWithChildren) => {
   const [queryClient] = useState(() => new QueryClient())
   const [trpcClient] = useState(() => {
-    trpc.createClient({
+    return trpc.createClient({
       links: [
         httpBatchLink({
           url: 'http://localhost:3000/api/trpc',
@@ -19,8 +19,7 @@ const Providers = ({ children }: PropsWithChildren) => {
 
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
-      <QueryClientProvider client={queryClient} />
-      {children}
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     </trpc.Provider>
   )
 }
