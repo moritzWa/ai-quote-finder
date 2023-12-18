@@ -24,6 +24,7 @@ const Dashboard = ({ subscriptionPlan }: any) => {
 
   const { mutate: deleteFile } = trpc.deleteFile.useMutation({
     onSuccess: () => {
+      // invalidate query to refetch files
       utils.getUserFiles.invalidate()
     },
     onMutate({ id }) {

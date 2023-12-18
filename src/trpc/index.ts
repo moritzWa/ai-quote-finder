@@ -29,11 +29,11 @@ export const appRouter = router({
     }
 
     // check if user was created
-    const dbUserCreated = await db.user.findFirst({
-      where: {
-        id: user.id,
-      },
-    })
+    // const dbUserCreated = await db.user.findFirst({
+    //   where: {
+    //     id: user.id,
+    //   },
+    // })
 
     return { success: true }
   }),
