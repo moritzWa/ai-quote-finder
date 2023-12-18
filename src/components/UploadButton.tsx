@@ -4,13 +4,12 @@ import { useState } from 'react'
 import { Button } from './ui/button'
 import { Dialog, DialogContent, DialogTrigger } from './ui/dialog'
 
-import { Cloud, File, Loader2 } from 'lucide-react'
-import Dropzone from 'react-dropzone'
-import { Progress } from './ui/progress'
-// import { useUploadThing } from '@/lib/uploadthing'
 import { trpc } from '@/app/_trpc/client'
 import { useUploadThing } from '@/lib/uploadthing'
+import { Cloud, File, Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import Dropzone from 'react-dropzone'
+import { Progress } from './ui/progress'
 import { useToast } from './ui/use-toast'
 
 const UploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
