@@ -41,8 +41,6 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
   const [scale, setScale] = useState<number>(1)
   const [rotation, setRotation] = useState<number>(0)
   const [renderedScale, setRenderedScale] = useState<number | null>(null)
-  const [isPdfLoaded, setIsPdfLoaded] = useState(false)
-
   const isLoading = renderedScale !== scale
 
   const CustomPageValidator = z.object({
@@ -179,7 +177,6 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
               }}
               onLoadSuccess={({ numPages }) => {
                 setNumPages(numPages)
-                setIsPdfLoaded(true)
               }}
               file={url}
               className="max-h-full"
