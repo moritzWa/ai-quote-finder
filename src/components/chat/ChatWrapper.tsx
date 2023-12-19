@@ -8,7 +8,7 @@ import Link from 'next/link'
 import { buttonVariants } from '../ui/button'
 import { ChatContextProvider } from './ChatContext'
 import ChatInput from './ChatInput'
-import Messages from './Message'
+import Messages from './Messages'
 
 interface ChatWrapperProps {
   fileId: string
