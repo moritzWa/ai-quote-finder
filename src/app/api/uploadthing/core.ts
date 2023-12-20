@@ -4,19 +4,13 @@ import { FileRouter, createUploadthing } from 'uploadthing/next'
 
 // import PDFLoader from langchain
 // import { getPineconeClient } from '@/lib/pinecone'
-import { Pinecone } from '@pinecone-database/pinecone'
+import { pinecone } from '@/lib/pinecone'
 import { UploadStatus } from '@prisma/client'
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf'
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
 import { PineconeStore } from 'langchain/vectorstores/pinecone'
 
 const f = createUploadthing()
-
-const pinecone = new Pinecone({
-  apiKey: process.env.PINECONE_API_KEY!,
-  // environment: 'us-east1-gcp',
-  environment: 'gcp-starter',
-})
 
 // FileRouter for your app, can contain multiple FileRoutes
 export const ourFileRouter = {
@@ -59,7 +53,6 @@ export const ourFileRouter = {
         // TODO: err if too many pages / free plan
 
         // vectorize text
-        // const pinecone = await getPineconeClient()
         const pineconeIndex = pinecone.Index('ai-quote-finder')
 
         const embeddings = new OpenAIEmbeddings({
@@ -72,7 +65,6 @@ export const ourFileRouter = {
         })
 
         // update file
-
         await db.file.update({
           where: {
             id: createFile.id,
