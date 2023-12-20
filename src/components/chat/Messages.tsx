@@ -46,7 +46,6 @@ const Messages = ({ fileId }: MessagesProps) => {
   ]
 
   const lastMessageRef = useRef<HTMLDivElement>(null)
-
   const { ref, entry } = useIntersection({
     root: lastMessageRef.current,
     threshold: 1,
