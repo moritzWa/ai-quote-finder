@@ -87,6 +87,7 @@ export const appRouter = router({
         },
       })
 
+      // determine next cursor
       let nextCursor: typeof cursor | undefined = undefined
       if (messages.length > limit) {
         const nextItem = messages.pop()

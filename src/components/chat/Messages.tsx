@@ -26,6 +26,7 @@ const Messages = ({ fileId }: MessagesProps) => {
       },
     )
 
+  // flatten array
   const messages = data?.pages.flatMap((page) => page.messages)
 
   const loadingMessage = {
