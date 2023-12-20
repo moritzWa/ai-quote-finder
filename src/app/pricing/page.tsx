@@ -11,7 +11,7 @@ const Page = () => {
         {/* Pricing section */}
         <div className="mx-auto mt-16 max-w-7xl px-6 sm:mt-32 lg:px-8">
           <div className="mx-auto max-w-4xl text-center">
-            <h1 className="text-base font-semibold leading-7 text-indigo-600">
+            <h1 className="text-base font-semibold leading-7 text-purple-600">
               Pricing
             </h1>
             <p className="mt-2 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
@@ -38,7 +38,7 @@ const Page = () => {
                   value={option}
                   className={({ checked }) =>
                     cn(
-                      checked ? 'bg-indigo-600 text-white' : 'text-gray-500',
+                      checked ? 'bg-purple-600 text-white' : 'text-gray-500',
                       'cursor-pointer rounded-full px-2.5 py-1',
                     )
                   }
@@ -54,7 +54,7 @@ const Page = () => {
                 key={tier.slug}
                 className={cn(
                   tier.mostPopular
-                    ? 'ring-2 ring-indigo-600'
+                    ? 'ring-2 ring-purple-600'
                     : 'ring-1 ring-gray-200',
                   'rounded-3xl p-8',
                   'bg-white shadow-sm hover:shadow-md',
@@ -63,7 +63,7 @@ const Page = () => {
                 <h2
                   id={tier.slug}
                   className={cn(
-                    tier.mostPopular ? 'text-indigo-600' : 'text-gray-900',
+                    tier.mostPopular ? 'text-purple-600' : 'text-gray-900',
                     'text-lg font-semibold leading-8',
                   )}
                 >
@@ -85,9 +85,9 @@ const Page = () => {
                   aria-describedby={tier.slug}
                   className={cn(
                     tier.mostPopular
-                      ? 'bg-indigo-600 text-white shadow-sm hover:bg-indigo-500'
-                      : 'text-indigo-600 ring-1 ring-inset ring-indigo-200 hover:ring-indigo-300',
-                    'mt-6 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600',
+                      ? 'bg-purple-600 text-white shadow-sm hover:bg-purple-500'
+                      : 'text-purple-600 ring-1 ring-inset ring-purple-200 hover:ring-purple-300',
+                    'mt-6 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600',
                   )}
                 >
                   Buy plan
@@ -99,7 +99,7 @@ const Page = () => {
                   {tier.features.map((feature) => (
                     <li key={feature} className="flex gap-x-3">
                       <CheckIcon
-                        className="h-6 w-5 flex-none text-indigo-600"
+                        className="h-6 w-5 flex-none text-purple-600"
                         aria-hidden="true"
                       />
                       {feature}
