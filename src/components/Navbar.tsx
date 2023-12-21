@@ -6,8 +6,8 @@ import {
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import MaxWidthWrapper from './MaxWidthWrapper'
-// import MobileNav from './MobileNav'
-// import UserAccountNav from './UserAccountNav'
+import MobileNav from './MobileNav'
+import UserAccountNav from './UserAccountNav'
 import { buttonVariants } from './ui/button'
 
 const Navbar = () => {
@@ -19,8 +19,10 @@ const Navbar = () => {
       <MaxWidthWrapper>
         <div className="flex h-14 items-center justify-between border-b border-zinc-200">
           <Link href="/" className="flex z-40 font-semibold">
-            <span>AI Quote Finder</span>
+            <span>quill.</span>
           </Link>
+
+          <MobileNav isAuth={!!user} />
 
           <div className="hidden items-center space-x-4 sm:flex">
             {!user ? (
@@ -62,7 +64,7 @@ const Navbar = () => {
                   Dashboard
                 </Link>
 
-                {/* <UserAccountNav
+                <UserAccountNav
                   name={
                     !user.given_name || !user.family_name
                       ? 'Your Account'
@@ -70,7 +72,7 @@ const Navbar = () => {
                   }
                   email={user.email ?? ''}
                   imageUrl={user.picture ?? ''}
-                /> */}
+                />
               </>
             )}
           </div>
