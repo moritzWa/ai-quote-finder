@@ -76,7 +76,7 @@ const onUploadComplete = async ({
     if ((isSubscribed && isProExceeded) || (!isSubscribed && isFreeExceeded)) {
       await db.file.update({
         data: {
-          uploadStatus: 'FAILED',
+          uploadStatus: UploadStatus.FAILED,
         },
         where: {
           id: createdFile.id,
