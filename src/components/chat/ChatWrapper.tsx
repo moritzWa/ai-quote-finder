@@ -2,6 +2,7 @@
 
 import { trpc } from '@/app/_trpc/client'
 // import { PLANS } from '@/config/stripe'
+import { freePlan, proPlan } from '@/config/stripe'
 import { UploadStatus } from '@prisma/client'
 import { ChevronLeft, Loader2, XCircle } from 'lucide-react'
 import Link from 'next/link'
@@ -74,12 +75,8 @@ const ChatWrapper = ({ fileId, isSubscribed }: ChatWrapperProps) => {
                 {isSubscribed ? 'Pro' : 'Free'}
               </span>{' '}
               plan supports up to{' '}
-              {/*  TODO:
-              
-              {isSubscribed
-                ? PLANS.find((p) => p.name === 'Pro')?.pagesPerPdf
-                : PLANS.find((p) => p.name === 'Free')?.pagesPerPdf}{' '} */}
-              pages per PDF.
+              {isSubscribed ? proPlan.pagesPerPdf : freePlan.pagesPerPdf} pages
+              per PDF.
             </p>
             <Link
               href="/dashboard"
