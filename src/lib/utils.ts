@@ -13,8 +13,8 @@ export function absoluteUrl(path: string) {
 }
 
 export function constructMetadata({
-  title = 'AI Quote Finder',
-  description = 'Semantic search for all your books',
+  title = 'AI Quote Finder - Semantic search for all your books',
+  description = 'Search any text part across many of the best books in the world.',
   image = '/thumbnail.png',
   icons = '/favicon.ico',
   noIndex = false,
