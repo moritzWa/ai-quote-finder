@@ -22,12 +22,15 @@ export const PLANS = [
     quota: 10,
     pagesPerPdf: 500,
     mostPopular: true,
-    descripiton: 'Unlimited power of retrieving info from your books and files',
+    description: 'Unlimited power of retrieving info from your books and files',
     href: 'tbd',
     price: {
       amount: 19,
       priceIds: {
-        test: 'price_1OPInQBhihWWQNODiTNAiZW3',
+        test:
+          process.env.NODE_ENV === 'production'
+            ? 'price_1OPInQBhihWWQNODiTNAiZW3'
+            : 'price_1OPYlOBhihWWQNODCIQyefvR',
         production: '',
       },
     },
