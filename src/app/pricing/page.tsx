@@ -1,10 +1,17 @@
 import MaxWidthWrapper from '@/components/MaxWidthWrapper'
+import UpgradeButton from '@/components/UpgradeButton'
+import { buttonVariants } from '@/components/ui/button'
 import { PLANS } from '@/config/stripe'
 import { cn } from '@/lib/utils'
-import { CheckIcon } from 'lucide-react'
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
+import { ArrowRight, CheckIcon } from 'lucide-react'
+import Link from 'next/link'
 // import { CheckIcon } from '@heroicons/react/20/solid'
 
 const Page = () => {
+  const { getUser } = getKindeServerSession()
+  const user = getUser()
+
   return (
     <>
       <MaxWidthWrapper>
@@ -15,13 +22,12 @@ const Page = () => {
               Pricing
             </h1>
             <p className="mt-2 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
-              Pricing plans for teams of&nbsp;all&nbsp;sizes
+              Buy unlimited semantic retreival for your books and files.
             </p>
           </div>
           <p className="mx-auto mt-6 max-w-2xl text-center text-lg leading-8 text-gray-600">
-            Choose an affordable plan that’s packed with the best features for
-            engaging your audience, creating customer loyalty, and driving
-            sales.
+            Try our product for free in a limited capacity. Upgrade to Pro for
+            unlimited access.
           </p>
           {/* <div className="mt-16 flex justify-center">
             <RadioGroup
@@ -80,7 +86,7 @@ const Page = () => {
                     /month
                   </span>
                 </p>
-                <a
+                {/* <a
                   href={tier.href}
                   aria-describedby={tier.slug}
                   className={cn(
@@ -91,7 +97,36 @@ const Page = () => {
                   )}
                 >
                   Buy plan
-                </a>
+                </a> */}
+
+                <div className="pt-5">
+                  {tier.slug === 'free' ? (
+                    <Link
+                      href={user ? '/dashboard' : '/sign-in'}
+                      className={buttonVariants({
+                        className: 'w-full',
+                        variant: 'secondary',
+                      })}
+                    >
+                      {user ? 'Your current Plan' : 'Sign up'}
+                      {/* <ArrowRight className="h-5 w-5 ml-1.5" /> */}
+                    </Link>
+                  ) : user ? (
+                    <UpgradeButton />
+                  ) : (
+                    <Link
+                      href="/sign-in"
+                      className={buttonVariants({
+                        className: 'w-full',
+                        // variant: 'secondary',
+                      })}
+                    >
+                      {user ? 'Your current plan' : 'Sign up'}
+                      <ArrowRight className="h-5 w-5 ml-1.5" />
+                    </Link>
+                  )}
+                </div>
+
                 <ul
                   role="list"
                   className="mt-8 space-y-3 text-sm leading-6 text-gray-600"
