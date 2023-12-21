@@ -70,7 +70,7 @@ const Page = () => {
                   id={tier.slug}
                   className={cn(
                     tier.mostPopular ? 'text-purple-600' : 'text-gray-900',
-                    'text-lg font-semibold leading-8',
+                    'text-2xl font-semibold',
                   )}
                 >
                   {tier.name}
@@ -86,18 +86,6 @@ const Page = () => {
                     /month
                   </span>
                 </p>
-                {/* <a
-                  href={tier.href}
-                  aria-describedby={tier.slug}
-                  className={cn(
-                    tier.mostPopular
-                      ? 'bg-purple-600 text-white shadow-sm hover:bg-purple-500'
-                      : 'text-purple-600 ring-1 ring-inset ring-purple-200 hover:ring-purple-300',
-                    'mt-6 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600',
-                  )}
-                >
-                  Buy plan
-                </a> */}
 
                 <div className="pt-5">
                   {tier.slug === 'free' ? (

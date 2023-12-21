@@ -4,6 +4,8 @@ import { headers } from 'next/headers'
 import type Stripe from 'stripe'
 
 export async function POST(request: Request) {
+  console.log('webhook called with', request)
+
   const body = await request.text()
   const signature = headers().get('Stripe-Signature') ?? ''
 
@@ -23,6 +25,9 @@ export async function POST(request: Request) {
   }
 
   const session = event.data.object as Stripe.Checkout.Session
+
+  console.log('event.type', event.type)
+  console.log('session', session)
 
   if (!session?.metadata?.userId) {
     return new Response(null, {

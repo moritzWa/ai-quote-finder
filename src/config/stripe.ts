@@ -1,14 +1,13 @@
-type PlanMaxFileSizes = '4MB' | '8GB'
+type PlanMaxFileSizes = '4MB' | '16MB'
 
 export const freePlan = {
   name: 'Free',
   slug: 'free',
-  quota: 10,
+  quota: 0,
   pagesPerPdf: 5,
   mostPopular: false,
   description: 'Try it out!',
   maxFileSize: '4MB' as PlanMaxFileSizes,
-  href: 'tbd',
   price: {
     amount: 0,
     priceIds: {
@@ -16,18 +15,17 @@ export const freePlan = {
       production: '',
     },
   },
-  features: ['limited to 2 files', 'limited to 5 pages per file'],
+  features: ['4MB upload limit', 'limited to 5 pages per file'],
 }
 
 export const proPlan = {
   name: 'Pro',
   slug: 'pro',
   quota: 10,
-  pagesPerPdf: 500,
-  maxFileSize: '8GB' as PlanMaxFileSizes,
+  pagesPerPdf: 600,
+  maxFileSize: '16MB' as PlanMaxFileSizes,
   mostPopular: true,
-  description: 'Unlimited power of retrieving info from your books and files',
-  href: 'tbd',
+  description: 'Unlimited knowledge retriaval from books and files',
   price: {
     amount: 19,
     priceIds: {
@@ -38,7 +36,7 @@ export const proPlan = {
       production: '',
     },
   },
-  features: ['up to 40 files', 'up to 500 pages per file'],
+  features: ['up to 16MB file size', 'up to 600 pages per file'],
 }
 
 export const PLANS = [freePlan, proPlan]

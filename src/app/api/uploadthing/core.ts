@@ -1,4 +1,4 @@
-import { freePlan, PLANS, proPlan } from '@/config/stripe'
+import { freePlan, proPlan } from '@/config/stripe'
 import { db } from '@/db'
 import { pinecone } from '@/lib/pinecone'
 import { getUserSubscriptionPlan } from '@/lib/stripe'
@@ -68,10 +68,8 @@ const onUploadComplete = async ({
     const { subscriptionPlan } = metadata
     const { isSubscribed } = subscriptionPlan
 
-    const isProExceeded =
-      pagesAmt > PLANS.find((plan) => plan.name === 'Pro')!.pagesPerPdf
-    const isFreeExceeded =
-      pagesAmt > PLANS.find((plan) => plan.name === 'Free')!.pagesPerPdf
+    const isProExceeded = pagesAmt > proPlan!.pagesPerPdf
+    const isFreeExceeded = pagesAmt > freePlan!.pagesPerPdf
 
     if ((isSubscribed && isProExceeded) || (!isSubscribed && isFreeExceeded)) {
       await db.file.update({
