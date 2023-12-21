@@ -1,4 +1,4 @@
-import { PLANS } from '@/config/stripe'
+import { freePlan, PLANS, proPlan } from '@/config/stripe'
 import { db } from '@/db'
 import { pinecone } from '@/lib/pinecone'
 import { getUserSubscriptionPlan } from '@/lib/stripe'
@@ -119,14 +119,14 @@ const onUploadComplete = async ({
 export const ourFileRouter = {
   freePlanUploader: f({
     pdf: {
-      maxFileSize: PLANS.find((plan) => plan.slug === 'free')!.maxFileSize,
+      maxFileSize: freePlan.maxFileSize,
     },
   })
     .middleware(middleware)
     .onUploadComplete(onUploadComplete),
   proPlanUploader: f({
     pdf: {
-      maxFileSize: PLANS.find((plan) => plan.slug === 'pro')!.maxFileSize,
+      maxFileSize: proPlan!.maxFileSize,
     },
   })
     .middleware(middleware)
