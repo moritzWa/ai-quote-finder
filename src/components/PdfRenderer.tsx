@@ -72,9 +72,8 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
     setValue('page', String(page))
   }
 
-  return (
-    <div className="w-full bg-white rounded-md shadow flex flex-col items-center">
-      {/* TODO: move this into it's own toolbar component */}
+  const PDFToolbar = () => {
+    return (
       <div className="h-14 w-full border-b border-zinc-200 flex items-center justify-between px-2">
         <div className="flex items-center gap-1.5">
           <Button
@@ -159,6 +158,12 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
           <PdfFullscreen fileUrl={url} />
         </div>
       </div>
+    )
+  }
+
+  return (
+    <div className="w-full bg-white rounded-md shadow flex flex-col items-center">
+      <PDFToolbar />
 
       <div className="flex-1 w-full max-h-screen">
         <SimpleBar autoHide={false} className="max-h-[calc(100vh-10rem)]">
