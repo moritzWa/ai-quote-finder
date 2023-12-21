@@ -1,90 +1,136 @@
+import { PLANS } from '@/config/stripe'
 import { db } from '@/db'
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
-import { FileRouter, createUploadthing } from 'uploadthing/next'
-
-// import PDFLoader from langchain
-// import { getPineconeClient } from '@/lib/pinecone'
 import { pinecone } from '@/lib/pinecone'
+import { getUserSubscriptionPlan } from '@/lib/stripe'
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import { UploadStatus } from '@prisma/client'
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf'
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
 import { PineconeStore } from 'langchain/vectorstores/pinecone'
+import { createUploadthing, type FileRouter } from 'uploadthing/next'
 
 const f = createUploadthing()
 
-// FileRouter for your app, can contain multiple FileRoutes
-export const ourFileRouter = {
-  // Define as many FileRoutes as you like, each with a unique routeSlug
-  pdfUploader: f({ pdf: { maxFileSize: '4MB' } })
-    // Set permissions and file types for this FileRoute
-    .middleware(async ({ req }) => {
-      // This code runs on your server before upload
-      const { getUser } = getKindeServerSession()
-      const user = getUser()
+const middleware = async () => {
+  const { getUser } = getKindeServerSession()
+  const user = getUser()
 
-      // If you throw, the user will not be able to upload
-      if (!user || !user.id) throw new Error('Unauthorized')
+  if (!user || !user.id) throw new Error('Unauthorized')
 
-      // Whatever is returned here is accessible in onUploadComplete as `metadata`
-      return { userId: user.id }
-    })
-    .onUploadComplete(async ({ metadata, file }) => {
-      const createFile = await db.file.create({
+  const subscriptionPlan = await getUserSubscriptionPlan()
+
+  // Whatever is returned here is accessible in onUploadComplete as `metadata`
+  return { subscriptionPlan, userId: user.id }
+}
+
+const onUploadComplete = async ({
+  metadata,
+  file,
+}: {
+  metadata: Awaited<ReturnType<typeof middleware>>
+  file: {
+    key: string
+    name: string
+    url: string
+  }
+}) => {
+  const isFileExist = await db.file.findFirst({
+    where: {
+      key: file.key,
+    },
+  })
+
+  if (isFileExist) return
+
+  const createdFile = await db.file.create({
+    data: {
+      key: file.key,
+      name: file.name,
+      userId: metadata.userId,
+      url: `https://uploadthing-prod.s3.us-west-2.amazonaws.com/${file.key}`,
+      uploadStatus: 'PROCESSING',
+    },
+  })
+
+  try {
+    const response = await fetch(
+      `https://uploadthing-prod.s3.us-west-2.amazonaws.com/${file.key}`,
+    )
+
+    const blob = await response.blob()
+
+    const loader = new PDFLoader(blob)
+
+    const pageLevelDocs = await loader.load()
+
+    const pagesAmt = pageLevelDocs.length
+
+    const { subscriptionPlan } = metadata
+    const { isSubscribed } = subscriptionPlan
+
+    const isProExceeded =
+      pagesAmt > PLANS.find((plan) => plan.name === 'Pro')!.pagesPerPdf
+    const isFreeExceeded =
+      pagesAmt > PLANS.find((plan) => plan.name === 'Free')!.pagesPerPdf
+
+    if ((isSubscribed && isProExceeded) || (!isSubscribed && isFreeExceeded)) {
+      await db.file.update({
         data: {
-          key: file.key,
-          name: file.name,
-          userId: metadata.userId,
-          url: `https://uploadthing-prod.s3.us-west-2.amazonaws.com/${file.key}`,
-          uploadStatus: 'PROCESSING',
+          uploadStatus: 'FAILED',
+        },
+        where: {
+          id: createdFile.id,
         },
       })
+    }
 
-      try {
-        // load pdf into memory
-        const pdfRes = await fetch(
-          `https://uploadthing-prod.s3.us-west-2.amazonaws.com/${file.key}`,
-        )
-        const blob = await pdfRes.blob()
-        const loader = new PDFLoader(blob)
+    // vectorize & index text
+    const pineconeIndex = pinecone.Index('ai-quote-finder')
 
-        // extract text
-        const pageLevelDocs = await loader.load()
-        const amountOfPages = pageLevelDocs.length
-        // TODO: err if too many pages / free plan
+    const embeddings = new OpenAIEmbeddings({
+      openAIApiKey: process.env.OPENAI_API_KEY,
+    })
 
-        // vectorize text
-        const pineconeIndex = pinecone.Index('ai-quote-finder')
+    await PineconeStore.fromDocuments(pageLevelDocs, embeddings, {
+      pineconeIndex,
+      namespace: createdFile.id,
+    })
 
-        const embeddings = new OpenAIEmbeddings({
-          openAIApiKey: process.env.OPENAI_API_KEY,
-        })
+    await db.file.update({
+      data: {
+        uploadStatus: UploadStatus.SUCCESS,
+      },
+      where: {
+        id: createdFile.id,
+      },
+    })
+  } catch (err) {
+    await db.file.update({
+      data: {
+        uploadStatus: UploadStatus.FAILED,
+      },
+      where: {
+        id: createdFile.id,
+      },
+    })
+  }
+}
 
-        await PineconeStore.fromDocuments(pageLevelDocs, embeddings, {
-          pineconeIndex,
-          namespace: createFile.id,
-        })
-
-        // update file
-        await db.file.update({
-          where: {
-            id: createFile.id,
-          },
-          data: {
-            uploadStatus: UploadStatus.SUCCESS,
-          },
-        })
-      } catch (err) {
-        console.error('err in onUploadComplete', err)
-        await db.file.update({
-          where: {
-            id: createFile.id,
-          },
-          data: {
-            uploadStatus: UploadStatus.FAILED,
-          },
-        })
-      }
-    }),
+export const ourFileRouter = {
+  freePlanUploader: f({
+    pdf: {
+      maxFileSize: PLANS.find((plan) => plan.slug === 'free')!.maxFileSize,
+    },
+  })
+    .middleware(middleware)
+    .onUploadComplete(onUploadComplete),
+  proPlanUploader: f({
+    pdf: {
+      maxFileSize: PLANS.find((plan) => plan.slug === 'pro')!.maxFileSize,
+    },
+  })
+    .middleware(middleware)
+    .onUploadComplete(onUploadComplete),
 } satisfies FileRouter
 
 export type OurFileRouter = typeof ourFileRouter
