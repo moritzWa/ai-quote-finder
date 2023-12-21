@@ -5,6 +5,7 @@ import { Button } from './ui/button'
 import { Dialog, DialogContent, DialogTrigger } from './ui/dialog'
 
 import { trpc } from '@/app/_trpc/client'
+import { freePlan, proPlan } from '@/config/stripe'
 import { useUploadThing } from '@/lib/uploadthing'
 import { Cloud, File, Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
@@ -19,11 +20,9 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
   const [uploadProgress, setUploadProgress] = useState<number>(0)
   const { toast } = useToast()
 
-  // const { startUpload } = useUploadThing(
-  //   isSubscribed ? 'proPlanUploader' : 'freePlanUploader',
-  // )
-
-  const { startUpload } = useUploadThing('pdfUploader')
+  const { startUpload } = useUploadThing(
+    isSubscribed ? 'proPlanUploader' : 'freePlanUploader',
+  )
 
   const { mutate: startPolling } = trpc.getFile.useMutation({
     onSuccess: (file) => {
@@ -104,7 +103,8 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
                   and drop
                 </p>
                 <p className="text-xs text-zinc-500">
-                  PDF (up to {isSubscribed ? '16' : '4'}MB)
+                  PDF (up to{' '}
+                  {isSubscribed ? freePlan.maxFileSize : proPlan.maxFileSize})
                 </p>
               </div>
 
