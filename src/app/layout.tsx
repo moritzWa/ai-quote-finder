@@ -1,6 +1,6 @@
 import Navbar from '@/components/Navbar'
 import Providers from '@/components/Providers'
-import { cn } from '@/lib/utils'
+import { cn, constructMetadata } from '@/lib/utils'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import 'react-loading-skeleton/dist/skeleton.css'
@@ -9,10 +9,7 @@ import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
 
-export const metadata: Metadata = {
-  title: 'AI Quote Finder',
-  description: 'Semantic search for your books',
-}
+export const metadata = constructMetadata()
 
 export default function RootLayout({
   children,
