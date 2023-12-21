@@ -46,7 +46,7 @@ export function constructMetadata({
     },
     icons,
     metadataBase: new URL('https://ai-quote-finder.vercel.app/'),
-    themeColor: '#9333ea',
+    // themeColor: '#FFF',
     ...(noIndex && {
       robots: {
         index: false,
