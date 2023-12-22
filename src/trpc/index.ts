@@ -1,5 +1,5 @@
 import { INFINITE_QUERY_LIMIT } from '@/config/infinite-query'
-import { PLANS } from '@/config/stripe'
+import { proPlan } from '@/config/stripe'
 import { db } from '@/db'
 import { getUserSubscriptionPlan, stripe } from '@/lib/stripe'
 import { absoluteUrl } from '@/lib/utils'
@@ -42,6 +42,7 @@ export const appRouter = router({
 
     return { success: true }
   }),
+
   createStripeSession: privateProcedure.mutation(async ({ ctx }) => {
     const { userId } = ctx
 
@@ -78,7 +79,10 @@ export const appRouter = router({
       billing_address_collection: 'auto',
       line_items: [
         {
-          price: PLANS.find((plan) => plan.name === 'Pro')?.price.priceIds.test,
+          price:
+            process.env.NODE_ENV === 'production'
+              ? proPlan.price.priceIds.production
+              : proPlan.price.priceIds.test,
           quantity: 1,
         },
       ],

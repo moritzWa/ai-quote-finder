@@ -29,11 +29,8 @@ export const proPlan = {
   price: {
     amount: 19,
     priceIds: {
-      test:
-        process.env.NODE_ENV === 'production'
-          ? 'price_1OPInQBhihWWQNODiTNAiZW3'
-          : 'price_1OPYlOBhihWWQNODCIQyefvR',
-      production: '',
+      test: 'price_1OPYlOBhihWWQNODCIQyefvR',
+      production: 'price_1OPInQBhihWWQNODiTNAiZW3',
     },
   },
   features: ['up to 16MB file size', 'up to 600 pages per file'],
