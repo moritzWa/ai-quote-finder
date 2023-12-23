@@ -19,8 +19,25 @@ const middleware = async () => {
 
   const subscriptionPlan = await getUserSubscriptionPlan()
 
+  // search user in db
+
+  const dbUserSelection = await db.user.findFirst({
+    where: {
+      id: user.id,
+    },
+    select: {
+      prefersPrivateUpload: true,
+    },
+  })
+
+  if (!dbUserSelection) throw new Error('Unauthorized')
+
   // Whatever is returned here is accessible in onUploadComplete as `metadata`
-  return { subscriptionPlan, userId: user.id }
+  return {
+    subscriptionPlan,
+    userId: user.id,
+    userPrefersPrivateUpload: dbUserSelection.prefersPrivateUpload,
+  }
 }
 
 const onUploadComplete = async ({
@@ -48,7 +65,8 @@ const onUploadComplete = async ({
       name: file.name,
       userId: metadata.userId,
       url: `https://uploadthing-prod.s3.us-west-2.amazonaws.com/${file.key}`,
-      uploadStatus: 'PROCESSING',
+      uploadStatus: UploadStatus.PROCESSING,
+      private: metadata.userPrefersPrivateUpload,
     },
   })
 
