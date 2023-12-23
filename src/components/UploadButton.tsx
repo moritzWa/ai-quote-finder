@@ -10,13 +10,18 @@ import { useUploadThing } from '@/lib/uploadthing'
 import { Cloud, File, Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import Dropzone from 'react-dropzone'
+import InfoTooltipButton from './ui/infoTooltipButton'
+import { Label } from './ui/label'
 import { Progress } from './ui/progress'
+import { Switch } from './ui/switch'
 import { useToast } from './ui/use-toast'
 
 const UploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
   const router = useRouter()
 
   const [isUploading, setIsUploading] = useState<boolean>(false)
+  const [shareWithCommunity, isShareWithCommunity] = useState<boolean>(true)
+
   const [uploadProgress, setUploadProgress] = useState<number>(0)
   const { toast } = useToast()
 
@@ -49,104 +54,116 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
   }
 
   return (
-    <Dropzone
-      multiple={false}
-      onDrop={async (acceptedFile) => {
-        setIsUploading(true)
+    <>
+      <div className="flex items-center space-x-2">
+        <Switch
+          onCheckedChange={(v) => isShareWithCommunity(v)}
+          id="shared-with-communit"
+          checked={shareWithCommunity}
+        />
+        <Label htmlFor="shared-with-communit">Share with Communit</Label>
+        <InfoTooltipButton content="Others will not be able to read your PDF just query the embedding. We will remove your book if re reicieve a DMCA takedown request from it's alleged copy writht owner." />
+      </div>
 
-        const progressInterval = startSimulatedProgress()
+      <Dropzone
+        multiple={false}
+        onDrop={async (acceptedFile) => {
+          setIsUploading(true)
 
-        // handle file uploading
-        const res = await startUpload(acceptedFile)
+          const progressInterval = startSimulatedProgress()
 
-        if (!res) {
-          return toast({
-            title: 'Something went wrong',
-            description: 'Please try again later',
-            variant: 'destructive',
-          })
-        }
+          // handle file uploading
+          const res = await startUpload(acceptedFile)
 
-        const [fileResponse] = res
+          if (!res) {
+            return toast({
+              title: 'Something went wrong',
+              description: 'Please try again later',
+              variant: 'destructive',
+            })
+          }
 
-        const key = fileResponse?.key
+          const [fileResponse] = res
 
-        if (!key) {
-          return toast({
-            title: 'Something went wrong',
-            description: 'Please try again later',
-            variant: 'destructive',
-          })
-        }
+          const key = fileResponse?.key
 
-        clearInterval(progressInterval)
-        setUploadProgress(100)
+          if (!key) {
+            return toast({
+              title: 'Something went wrong',
+              description: 'Please try again later',
+              variant: 'destructive',
+            })
+          }
 
-        // once upload is finished start polling for file
-        startPolling({ key })
-      }}
-    >
-      {({ getRootProps, getInputProps, acceptedFiles }) => (
-        <div
-          {...getRootProps()}
-          className="border h-64 m-4 border-dashed border-gray-300 rounded-lg"
-        >
-          <div className="flex items-center justify-center h-full w-full">
-            <label
-              htmlFor="dropzone-file"
-              className="flex flex-col items-center justify-center w-full h-full rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
-            >
-              <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                <Cloud className="h-6 w-6 text-zinc-500 mb-2" />
-                <p className="mb-2 text-sm text-zinc-700">
-                  <span className="font-semibold">Click to upload</span> or drag
-                  and drop
-                </p>
-                <p className="text-xs text-zinc-500">
-                  PDF (up to{' '}
-                  {isSubscribed ? freePlan.maxFileSize : proPlan.maxFileSize})
-                </p>
-              </div>
+          clearInterval(progressInterval)
+          setUploadProgress(100)
 
-              {acceptedFiles && acceptedFiles[0] ? (
-                <div className="max-w-xs bg-white flex items-center rounded-md overflow-hidden outline outline-[1px] outline-zinc-200 divide-x divide-zinc-200">
-                  <div className="px-3 py-2 h-full grid place-items-center">
-                    <File className="h-4 w-4 text-blue-500" />
-                  </div>
-                  <div className="px-3 py-2 h-full text-sm truncate">
-                    {acceptedFiles[0].name}
-                  </div>
+          // once upload is finished start polling for file
+          startPolling({ key })
+        }}
+      >
+        {({ getRootProps, getInputProps, acceptedFiles }) => (
+          <div
+            {...getRootProps()}
+            className="border h-64 border-dashed border-gray-300 rounded-lg"
+          >
+            <div className="flex items-center justify-center h-full w-full">
+              <label
+                htmlFor="dropzone-file"
+                className="flex flex-col items-center justify-center w-full h-full rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
+              >
+                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                  <Cloud className="h-6 w-6 text-zinc-500 mb-2" />
+                  <p className="mb-2 text-sm text-zinc-700">
+                    <span className="font-semibold">Click to upload</span> or
+                    drag and drop
+                  </p>
+                  <p className="text-xs text-zinc-500">
+                    PDF (up to{' '}
+                    {isSubscribed ? freePlan.maxFileSize : proPlan.maxFileSize})
+                  </p>
                 </div>
-              ) : null}
 
-              {isUploading ? (
-                <div className="w-full mt-4 max-w-xs mx-auto">
-                  <Progress
-                    color={uploadProgress === 100 ? 'bg-green-500' : ''}
-                    value={uploadProgress}
-                    className="h-1 w-full bg-zinc-200"
-                  />
-                  {uploadProgress === 100 ? (
-                    <div className="flex gap-1 items-center justify-center text-sm text-zinc-700 text-center pt-2">
-                      <Loader2 className="h-3 w-3 animate-spin" />
-                      Redirecting...
+                {acceptedFiles && acceptedFiles[0] ? (
+                  <div className="max-w-xs bg-white flex items-center rounded-md overflow-hidden outline outline-[1px] outline-zinc-200 divide-x divide-zinc-200">
+                    <div className="px-3 py-2 h-full grid place-items-center">
+                      <File className="h-4 w-4 text-blue-500" />
                     </div>
-                  ) : null}
-                </div>
-              ) : null}
+                    <div className="px-3 py-2 h-full text-sm truncate">
+                      {acceptedFiles[0].name}
+                    </div>
+                  </div>
+                ) : null}
 
-              <input
-                {...getInputProps()}
-                type="file"
-                id="dropzone-file"
-                className="hidden"
-                accept="application/pdf,.pdf,.epub"
-              />
-            </label>
+                {isUploading ? (
+                  <div className="w-full mt-4 max-w-xs mx-auto">
+                    <Progress
+                      color={uploadProgress === 100 ? 'bg-green-500' : ''}
+                      value={uploadProgress}
+                      className="h-1 w-full bg-zinc-200"
+                    />
+                    {uploadProgress === 100 ? (
+                      <div className="flex gap-1 items-center justify-center text-sm text-zinc-700 text-center pt-2">
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                        Redirecting...
+                      </div>
+                    ) : null}
+                  </div>
+                ) : null}
+
+                <input
+                  {...getInputProps()}
+                  type="file"
+                  id="dropzone-file"
+                  className="hidden"
+                  accept="application/pdf,.pdf,.epub"
+                />
+              </label>
+            </div>
           </div>
-        </div>
-      )}
-    </Dropzone>
+        )}
+      </Dropzone>
+    </>
   )
 }
 
