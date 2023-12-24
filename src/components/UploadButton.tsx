@@ -1,15 +1,14 @@
 'use client'
 
-import { useState } from 'react'
-import { Button } from './ui/button'
-import { Dialog, DialogContent, DialogTrigger } from './ui/dialog'
-
 import { trpc } from '@/app/_trpc/client'
 import { freePlan, proPlan } from '@/config/stripe'
 import { useUploadThing } from '@/lib/uploadthing'
 import { Cloud, File, Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import Dropzone from 'react-dropzone'
+import { Button } from './ui/button'
+import { Dialog, DialogContent, DialogTrigger } from './ui/dialog'
 import InfoTooltipButton from './ui/infoTooltipButton'
 import { Label } from './ui/label'
 import { Progress } from './ui/progress'
@@ -20,7 +19,6 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
   const router = useRouter()
 
   const [isUploading, setIsUploading] = useState<boolean>(false)
-  const [shareWithCommunity, isShareWithCommunity] = useState<boolean>(true)
 
   const [uploadProgress, setUploadProgress] = useState<number>(0)
   const { toast } = useToast()
@@ -28,6 +26,35 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
   const { startUpload } = useUploadThing(
     isSubscribed ? 'proPlanUploader' : 'freePlanUploader',
   )
+
+  // const [shareWithCommunity, isShareWithCommunity] = useState<boolean>(true)
+  // use trpc (updateUserPrivateUploadPreference) via useMutation to update privacty user setting
+  // const { mutate: updateUserPrivateUploadPreference } =
+  //   trpc.updateUserPrivateUploadPreference.useMutation({
+  //     onSuccess: (data) => {
+  //       console.log(data)
+  //     },
+  //   })
+
+  const {
+    data: userPreference,
+    isLoading,
+    refetch,
+  } = trpc.getUserPrivateUploadPreference.useQuery(undefined, {
+    enabled: true,
+  })
+
+  const mutation = trpc.updateUserPrivateUploadPreference.useMutation()
+
+  // Initialize the state of the toggle with the fetched preference
+  const [shareWithCommunity, setShareWithCommunity] = useState(userPreference)
+
+  const handleToggleChange = (value: any) => {
+    console.log('handleToggleChange:', value)
+    setShareWithCommunity(value)
+    mutation.mutate({ prefersPrivateUpload: value })
+    refetch()
+  }
 
   const { mutate: startPolling } = trpc.getFile.useMutation({
     onSuccess: (file) => {
@@ -56,13 +83,19 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
   return (
     <>
       <div className="flex items-center space-x-2">
-        <Switch
-          onCheckedChange={(v) => isShareWithCommunity(v)}
-          id="shared-with-communit"
-          checked={shareWithCommunity}
-        />
-        <Label htmlFor="shared-with-communit">Share with Communit</Label>
-        <InfoTooltipButton content="Others will not be able to read your PDF just query the embedding. We will remove your book if re reicieve a DMCA takedown request from it's alleged copy writht owner." />
+        {isLoading ? (
+          '...loading'
+        ) : (
+          <>
+            <Switch
+              checked={shareWithCommunity}
+              onCheckedChange={(v) => handleToggleChange(v)}
+              id="shared-with-communit"
+            />
+            <Label htmlFor="shared-with-communit">Share with Communit</Label>
+            <InfoTooltipButton content="Others will not be able to read your PDF just query the embedding. We will remove your book if re reicieve a DMCA takedown request from it's alleged copy writht owner." />
+          </>
+        )}
       </div>
 
       <Dropzone

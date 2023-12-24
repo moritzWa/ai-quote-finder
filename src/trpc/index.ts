@@ -33,13 +33,6 @@ export const appRouter = router({
       })
     }
 
-    // check if user was created
-    // const dbUserCreated = await db.user.findFirst({
-    //   where: {
-    //     id: user.id,
-    //   },
-    // })
-
     return { success: true }
   }),
 
@@ -94,6 +87,43 @@ export const appRouter = router({
     return { url: stripeSession.url }
   }),
 
+  // user settings
+  getUserPrivateUploadPreference: privateProcedure.query(async ({ ctx }) => {
+    const { userId } = ctx
+    const user = await db.user.findFirst({
+      where: {
+        id: userId,
+      },
+    })
+
+    if (!user) throw new TRPCError({ code: 'UNAUTHORIZED' })
+
+    return user.prefersPrivateUpload
+  }),
+  updateUserPrivateUploadPreference: privateProcedure
+    .input(
+      z.object({
+        prefersPrivateUpload: z.boolean(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { userId } = ctx
+
+      if (!userId) throw new TRPCError({ code: 'UNAUTHORIZED' })
+
+      const updatedUser = await db.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          prefersPrivateUpload: input.prefersPrivateUpload,
+        },
+      })
+
+      return { success: true }
+    }),
+
+  // file management
   getUserFiles: privateProcedure.query(async ({ ctx }) => {
     const { userId } = ctx
 
