@@ -6,16 +6,22 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function absoluteUrl(path: string) {
-  let url
-  path = path.startsWith('/') ? path.slice(1) : path
-  if (typeof window !== 'undefined') url = path
-  else if (process.env.VERCEL_URL)
-    url = `https://${process.env.VERCEL_URL}/${path}`
-  else url = `http://localhost:${process.env.PORT ?? 3000}/${path}`
+// export function absoluteUrl(path: string) {
+//   let url
+//   path = path.startsWith('/') ? path.slice(1) : path
+//   if (typeof window !== 'undefined') url = path
+//   else if (process.env.VERCEL_URL)
+//     url = `https://${process.env.VERCEL_URL}/${path}`
+//   else url = `http://localhost:${process.env.PORT ?? 3000}/${path}`
 
-  console.log('absoluteUrl url', url)
-  return url
+//   console.log('absoluteUrl url', url)
+//   return url
+// }
+
+export function absoluteUrl(path: string) {
+  if (typeof window !== 'undefined') return path
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}${path}`
+  return `http://localhost:${process.env.PORT ?? 3000}${path}`
 }
 
 export function constructMetadata({
