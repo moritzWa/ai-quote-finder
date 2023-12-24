@@ -3,7 +3,7 @@
 import { trpc } from '@/app/_trpc/client'
 import { freePlan, proPlan } from '@/config/stripe'
 import { useUploadThing } from '@/lib/uploadthing'
-import { Cloud, File, Loader2 } from 'lucide-react'
+import { Cloud, File, Loader2, UploadIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import Dropzone from 'react-dropzone'
@@ -26,15 +26,6 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
   const { startUpload } = useUploadThing(
     isSubscribed ? 'proPlanUploader' : 'freePlanUploader',
   )
-
-  // const [shareWithCommunity, isShareWithCommunity] = useState<boolean>(true)
-  // use trpc (updateUserPrivateUploadPreference) via useMutation to update privacty user setting
-  // const { mutate: updateUserPrivateUploadPreference } =
-  //   trpc.updateUserPrivateUploadPreference.useMutation({
-  //     onSuccess: (data) => {
-  //       console.log(data)
-  //     },
-  //   })
 
   const {
     data: userPreference,
@@ -213,7 +204,10 @@ const UploadButton = ({ isSubscribed }: { isSubscribed: boolean }) => {
       }}
     >
       <DialogTrigger onClick={() => setIsOpen(true)} asChild>
-        <Button>Upload PDF</Button>
+        <Button>
+          <UploadIcon className="mr-2 h-4 w-4" />
+          Upload PDF
+        </Button>
       </DialogTrigger>
 
       <DialogContent>
