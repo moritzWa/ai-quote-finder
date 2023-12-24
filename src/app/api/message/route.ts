@@ -24,7 +24,10 @@ export const POST = async (req: NextRequest) => {
   const file = await db.file.findFirst({
     where: {
       id: fileId,
-      userId,
+      OR: [
+        { userId }, // User is the owner of the file
+        { private: false }, // File is not private
+      ],
     },
   })
 
@@ -51,7 +54,7 @@ export const POST = async (req: NextRequest) => {
   })
 
   // search for similar messages
-  const results = await vectorStore.similaritySearch(message, 4) // TODO: could add pricing limitation here
+  const results = await vectorStore.similaritySearch(message, 4)
   const previousMessage = await db.message.findMany({
     where: {
       fileId,

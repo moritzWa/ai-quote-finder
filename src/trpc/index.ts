@@ -158,7 +158,14 @@ export const appRouter = router({
       const file = await db.file.findFirst({
         where: {
           id: fileId,
-          userId,
+          AND: [
+            {
+              OR: [
+                { userId }, // User is the owner of the file
+                { private: false }, // File is not private
+              ],
+            },
+          ],
         },
       })
 
@@ -168,6 +175,7 @@ export const appRouter = router({
         take: limit + 1,
         where: {
           fileId,
+          userId,
         },
         orderBy: {
           createdAt: 'desc',
