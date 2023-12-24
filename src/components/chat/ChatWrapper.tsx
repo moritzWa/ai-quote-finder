@@ -4,6 +4,8 @@ import { trpc } from '@/app/_trpc/client'
 // import { PLANS } from '@/config/stripe'
 import { freePlan, proPlan } from '@/config/stripe'
 import { UploadStatus } from '@prisma/client'
+import { TRPCError } from '@trpc/server'
+import { getHTTPStatusCodeFromError } from '@trpc/server/http'
 import { ChevronLeft, Loader2, XCircle } from 'lucide-react'
 import Link from 'next/link'
 import { buttonVariants } from '../ui/button'
@@ -14,10 +16,13 @@ import Messages from './Messages'
 interface ChatWrapperProps {
   fileId: string
   isSubscribed: boolean
+  error?: Error
 }
 
 const ChatWrapper = ({ fileId, isSubscribed }: ChatWrapperProps) => {
-  const { data, isLoading } = trpc.getFileUploadStatus.useQuery(
+  console.log('ChatWrapper.tsx: fileId:', fileId)
+
+  const { data, isLoading, error } = trpc.getFileUploadStatus.useQuery(
     {
       fileId,
     },
@@ -29,6 +34,12 @@ const ChatWrapper = ({ fileId, isSubscribed }: ChatWrapperProps) => {
           : 500,
     },
   )
+
+  if (error instanceof TRPCError) {
+    console.error('Error fetching file upload status:', error)
+    const httpCode = getHTTPStatusCodeFromError(error)
+    console.log(httpCode) // 400
+  }
 
   if (isLoading)
     return (
