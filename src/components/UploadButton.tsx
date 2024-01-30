@@ -41,9 +41,14 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
   const [shareWithCommunity, setShareWithCommunity] = useState(userPreference)
 
   const handleToggleChange = (value: any) => {
-    console.log('handleToggleChange:', value)
+    console.log(
+      'handleToggleChange:',
+      value,
+      'meaning they prefer',
+      !value ? 'private' : 'public',
+    )
     setShareWithCommunity(value)
-    mutation.mutate({ prefersPrivateUpload: value })
+    mutation.mutate({ prefersPrivateUpload: !value })
     refetch()
   }
 
