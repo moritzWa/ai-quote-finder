@@ -1,5 +1,10 @@
 Note: I stopped working on this project after learning about Google's [NotebookLM](https://blog.google/technology/ai/notebooklm-google-ai/).
 
+## Features
+
+- Upload PDFs as private or shared
+- Semantic search over book content
+
 ## Next task
 
 - upload a bunch of files
@@ -19,7 +24,7 @@ First, run the development server:
 npm run dev
 ```
 
-Run the Prisma Client
+Run the Prisma Client:
 
 ```bash
 npx prisma studio
