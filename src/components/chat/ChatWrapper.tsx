@@ -20,8 +20,6 @@ interface ChatWrapperProps {
 }
 
 const ChatWrapper = ({ fileId, isSubscribed }: ChatWrapperProps) => {
-  console.log('ChatWrapper.tsx: fileId:', fileId)
-
   const { data, isLoading, error } = trpc.getFileUploadStatus.useQuery(
     {
       fileId,
@@ -38,7 +36,7 @@ const ChatWrapper = ({ fileId, isSubscribed }: ChatWrapperProps) => {
   if (error instanceof TRPCError) {
     console.error('Error fetching file upload status:', error)
     const httpCode = getHTTPStatusCodeFromError(error)
-    console.log(httpCode) // 400
+    console.log(httpCode)
   }
 
   if (isLoading)

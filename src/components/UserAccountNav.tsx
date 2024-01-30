@@ -69,8 +69,6 @@ const UserAccountNav = async ({
           <Link href="/dashboard">Dashboard</Link>
         </DropdownMenuItem>
 
-        {/* {console.log('subscriptionPlan', subscriptionPlan)} */}
-
         <DropdownMenuItem className="cursor-pointer" asChild>
           {subscriptionPlan?.isSubscribed ? (
             <Link href="/dashboard/billing">Manage Subscription</Link>

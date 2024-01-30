@@ -151,8 +151,6 @@ export const appRouter = router({
       }),
     )
     .query(async ({ ctx, input }) => {
-      console.log('hitting getFileMessages')
-
       const { userId } = ctx
       const { fileId, cursor } = input
       const limit = input.limit ?? INFINITE_QUERY_LIMIT
@@ -212,8 +210,6 @@ export const appRouter = router({
           userId: ctx.userId,
         },
       })
-
-      console.log('file in getFileUploadStatus', file)
 
       if (!file) return { status: UploadStatus.PENDING }
 

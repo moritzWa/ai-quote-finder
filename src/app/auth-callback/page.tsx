@@ -11,19 +11,13 @@ const Page = () => {
 
   const origin = searchParams.get('origin')
 
-  console.log('auth callback page')
-
   trpc.authCallback.useQuery(undefined, {
     onSuccess: ({ success }) => {
-      console.log(success, 'success in auth callback page')
-
       if (success) {
         route.push(origin ? `/${origin}` : '/dashboard')
       }
     },
     onError: (err) => {
-      console.log(err, 'error in auth callback page')
-
       if (err.data?.code == 'UNAUTHORIZED') {
         route.push('/sign-in')
       }
