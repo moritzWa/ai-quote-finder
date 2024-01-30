@@ -45,6 +45,7 @@ const Dashboard = ({ subscriptionPlan, userId }: PageProps) => {
       id: string
       name: string
       createdAt: string
+      userId: string
     }
   }) => {
     return (
@@ -66,18 +67,22 @@ const Dashboard = ({ subscriptionPlan, userId }: PageProps) => {
         </Link>
 
         <div className="px-6 mt-4 grid grid-cols-3 place-items-center py-2 gap-6 text-xs text-zinc-500">
-          <Button
-            onClick={() => deleteFile({ id: file.id })}
-            size="sm"
-            className="w-full"
-            variant="destructive"
-          >
-            {currentlyDeletingFile === file.id ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Trash className="h-4 w-4" />
-            )}
-          </Button>
+          {file.userId === userId ? (
+            <Button
+              onClick={() => deleteFile({ id: file.id })}
+              size="sm"
+              className="w-full"
+              variant="destructive"
+            >
+              {currentlyDeletingFile === file.id ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Trash className="h-4 w-4" />
+              )}
+            </Button>
+          ) : (
+            <div className="h-9"></div>
+          )}
 
           <div className="flex items-center gap-2">
             <Plus className="h-4 w-4" />
