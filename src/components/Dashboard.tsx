@@ -13,9 +13,10 @@ import { Button } from './ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs'
 interface PageProps {
   subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>
+  userId: string
 }
 
-const Dashboard = ({ subscriptionPlan }: PageProps) => {
+const Dashboard = ({ subscriptionPlan, userId }: PageProps) => {
   const [currentlyDeletingFile, setCurrentlyDeletingFile] = useState<
     string | null
   >(null)
@@ -99,10 +100,10 @@ const Dashboard = ({ subscriptionPlan }: PageProps) => {
           <TabsList>
             <TabsTrigger value="all-books">All Books</TabsTrigger>
             <TabsTrigger value="my-books">My Books</TabsTrigger>
+            <TabsTrigger value="my-private-books">My Private Books</TabsTrigger>
           </TabsList>
           <UploadButton isSubscribed={subscriptionPlan.isSubscribed} />
         </div>
-
         {files && files?.length !== 0 ? (
           <>
             <TabsContent value="all-books">
@@ -123,7 +124,23 @@ const Dashboard = ({ subscriptionPlan }: PageProps) => {
             <TabsContent value="my-books">
               <ul className="mt-8 grid grid-cols-1 gap-6 divide-y divide-zinc-200 md:grid-cols-2 lg:grid-cols-3">
                 {files
-                  .filter((file) => file.private)
+                  .filter((file) => file.userId === userId)
+                  .sort(
+                    (a, b) =>
+                      new Date(b.createdAt).getTime() -
+                      new Date(a.createdAt).getTime(),
+                  )
+                  .map((file) => (
+                    <>
+                      <File file={file} />
+                    </>
+                  ))}
+              </ul>
+            </TabsContent>
+            <TabsContent value="my-private-books">
+              <ul className="mt-8 grid grid-cols-1 gap-6 divide-y divide-zinc-200 md:grid-cols-2 lg:grid-cols-3">
+                {files
+                  .filter((file) => file.private && file.userId === userId)
                   .sort(
                     (a, b) =>
                       new Date(b.createdAt).getTime() -
