@@ -2,6 +2,7 @@
 
 import { trpc } from '@/app/_trpc/client'
 // import { getUserSubscriptionPlan } from '@/lib/stripe'
+import { File } from '.prisma/client'
 import { getUserSubscriptionPlan } from '@/lib/stripe'
 import { format } from 'date-fns'
 import { BookDashed, Loader2, MessageSquare, Plus, Trash } from 'lucide-react'
@@ -15,6 +16,8 @@ interface PageProps {
   subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>
   userId: string
 }
+
+export type FileWithMessages = File & { messages: { id: string }[] }
 
 const Dashboard = ({ subscriptionPlan, userId }: PageProps) => {
   const [currentlyDeletingFile, setCurrentlyDeletingFile] = useState<
@@ -38,16 +41,7 @@ const Dashboard = ({ subscriptionPlan, userId }: PageProps) => {
     },
   })
 
-  const File = ({
-    file,
-  }: {
-    file: {
-      id: string
-      name: string
-      createdAt: string
-      userId: string
-    }
-  }) => {
+  const File = ({ file }: { file: FileWithMessages }) => {
     return (
       <li
         key={file.id}
@@ -91,7 +85,7 @@ const Dashboard = ({ subscriptionPlan, userId }: PageProps) => {
 
           <div className="flex items-center gap-2">
             <MessageSquare className="h-4 w-4" />
-            mocked
+            {file.messages.length}
           </div>
         </div>
       </li>
@@ -121,6 +115,7 @@ const Dashboard = ({ subscriptionPlan, userId }: PageProps) => {
                   )
                   .map((file) => (
                     <>
+                      {/* @ts-ignore */}
                       <File file={file} />
                     </>
                   ))}
@@ -137,6 +132,7 @@ const Dashboard = ({ subscriptionPlan, userId }: PageProps) => {
                   )
                   .map((file) => (
                     <>
+                      {/* @ts-ignore */}
                       <File file={file} />
                     </>
                   ))}
@@ -153,6 +149,7 @@ const Dashboard = ({ subscriptionPlan, userId }: PageProps) => {
                   )
                   .map((file) => (
                     <>
+                      {/* @ts-ignore */}
                       <File file={file} />
                     </>
                   ))}

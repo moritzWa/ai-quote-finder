@@ -147,6 +147,13 @@ export const appRouter = router({
           },
         ],
       },
+      include: {
+        messages: {
+          select: {
+            id: true,
+          },
+        },
+      },
     })
   }),
   getFileMessages: privateProcedure
