@@ -129,14 +129,21 @@ export const appRouter = router({
 
     return await db.file.findMany({
       where: {
-        NOT: [
+        OR: [
           {
-            userId: {
-              not: userId,
-            },
+            userId: userId,
           },
           {
-            private: true,
+            AND: [
+              {
+                userId: {
+                  not: userId,
+                },
+              },
+              {
+                private: false,
+              },
+            ],
           },
         ],
       },
