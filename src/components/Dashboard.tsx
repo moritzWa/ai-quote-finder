@@ -12,6 +12,7 @@ import Skeleton from 'react-loading-skeleton'
 import UploadButton from './UploadButton'
 import { Button } from './ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs'
+import PdfPreview from './PdfPreview'
 interface PageProps {
   subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>
   userId: string
@@ -49,7 +50,8 @@ const Dashboard = ({ subscriptionPlan, userId }: PageProps) => {
       >
         <Link href={`/dashboard/${file.id}`} className="flex flex-col gap-2">
           <div className="pt-6 px-6 flex w-full items-center justify-between space-x-6">
-            <div className="h-10 w-10 flex-shrink-0 rounded-full bg-gradient-to-r from-cyan-300 to-purple-600" />
+            {/* <div className="h-10 w-10 flex-shrink-0 rounded-full bg-gradient-to-r from-cyan-300 to-purple-600" /> */}
+            <PdfPreview file={file} />
             <div className="flex-1 truncate">
               <div className="flex items-center space-x-3">
                 <h3 className="truncate text-lg font-medium text-zinc-900">
