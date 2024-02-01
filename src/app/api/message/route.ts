@@ -95,14 +95,23 @@ export const POST = async (req: NextRequest) => {
       },
       {
         role: 'user',
-        content: `Return the most relevant quotes from the source material below given the users prompt. Format the returned quotes using markdown: 1. adding paragraph/space between each quote (add "\n\n"), and 2. format the most important words/parts in each quote **bold** (not the entire quote).
+        content: `Return the most relevant quotes from the source material below given the users prompt. 
+        Format the returned quotes using markdown: 
+        1. adding paragraph/space between each quote (add "\n\n"),
+        2. list the page number 
+        3. format the most important words/parts in each quote **bold** (not the entire quote).
         
         USER QUERY: ${message}
 
         \n----------------\n       
         
         RAW UNFORMATTED SOURCE MATERIAL TEXT SNIPPETS:
-        ${results.map((r) => r.pageContent).join('\n\n\n')}
+        ${results
+          .map(
+            (r) => `${r.pageContent} (Page: ${r.metadata['loc.pageNumber']})`,
+          )
+          .join('\n\n\n')}
+
         `,
       },
     ],
