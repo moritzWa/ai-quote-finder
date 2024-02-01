@@ -76,6 +76,14 @@ export const POST = async (req: NextRequest) => {
   console.log('ai route formattedPreviousMassege', formattedPreviousMassege)
   console.log('ai route results', results)
 
+  //  PREVIOUS CONVERSATION:
+  // ${formattedPreviousMassege.map((message) => {
+  //   if (message.role === 'user') return `User: ${message.content}\n`
+  //   return `Assistant: ${message.content}\n`
+  // })}
+
+  // \n----------------\n
+
   const response = await openai.chat.completions.create({
     model: 'gpt-3.5-turbo',
     temperature: 0,
@@ -84,26 +92,19 @@ export const POST = async (req: NextRequest) => {
       {
         role: 'system',
         content:
-          'Use the following text snippets (and, if relevant, the previous conversaton) to return relevant a quotes or multiple quotes (if all match) from the text snippets. If the user asks a question, answer their question and reference the text snippets/source material.',
+          'Help the user find the relevant quotes from the source material. Write markdown-formatted replies.',
       },
       {
         role: 'user',
-        content: `Use the following text snippets (or previous conversaton if needed) to return a relevant quote given the text snippets. If the user asks a question answer their question and referenc the text snippets/source material. \nIf you don't know the answer or didn't find anything relevant, just say "No relevant content found", don't try to make up an answer.
+        content: `Return the most relevant quotes from the source material below given the users prompt. Format your reply using markdown: 1 leaving paragraph/space between each quote, 2. bold-format the most words in each quote (not the entire quote).
         
-        \n----------------\n
-        
-        PREVIOUS CONVERSATION:
-        ${formattedPreviousMassege.map((message) => {
-          if (message.role === 'user') return `User: ${message.content}\n`
-          return `Assistant: ${message.content}\n`
-        })}
-        
-        \n----------------\n
+        USER QUERY: ${message}
+
+        \n----------------\n       
         
         SOURCE MATERIAL TEXT SNIPPETS:
         ${results.map((r) => r.pageContent).join('\n\n')}
-        
-        USER QUERY: ${message}`,
+        `,
       },
     ],
   })
