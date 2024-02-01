@@ -55,6 +55,9 @@ export const POST = async (req: NextRequest) => {
 
   // search for similar messages
   const results = await vectorStore.similaritySearch(message, 4)
+
+  console.log('vector search result', results)
+
   const previousMessage = await db.message.findMany({
     where: {
       fileId,
@@ -81,7 +84,7 @@ export const POST = async (req: NextRequest) => {
       {
         role: 'system',
         content:
-          'Use the following text snippets (and, if relevant, the previous conversaton) to return relevant quotes from the text snippets. If the user asks a question, answer their question and reference the text snippets/source material.',
+          'Use the following text snippets (and, if relevant, the previous conversaton) to return relevant a quotes or multiple quotes (if all match) from the text snippets. If the user asks a question, answer their question and reference the text snippets/source material.',
       },
       {
         role: 'user',
