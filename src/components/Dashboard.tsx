@@ -5,7 +5,14 @@ import { trpc } from '@/app/_trpc/client'
 import { File } from '.prisma/client'
 import { getUserSubscriptionPlan } from '@/lib/stripe'
 import { format } from 'date-fns'
-import { BookDashed, Loader2, MessageSquare, Plus, Trash } from 'lucide-react'
+import {
+  BookDashed,
+  Edit,
+  Loader2,
+  MessageSquare,
+  Plus,
+  Trash,
+} from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
@@ -42,6 +49,29 @@ const Dashboard = ({ subscriptionPlan, userId }: PageProps) => {
     },
   })
 
+  const [currentlyRenamingFile, setCurrentlyRenamingFile] = useState<
+    string | null
+  >(null)
+
+  const renameMutation = trpc.updateFileName.useMutation({
+    onSuccess: () => {
+      // invalidate query to refetch files
+      utils.getUserFiles.invalidate()
+    },
+    onSettled: () => {
+      setCurrentlyRenamingFile(null)
+    },
+  })
+
+  // renameFle function opens prompt() and calls updateFile mutation
+  const renameFile = async ({ id, name }: { id: string; name: string }) => {
+    const newName = prompt('Enter new name', name)
+    if (!newName) return
+    setCurrentlyRenamingFile(id)
+
+    await renameMutation.mutate({ id, name: newName })
+  }
+
   const File = ({ file }: { file: FileWithMessages }) => {
     return (
       <li
@@ -54,14 +84,18 @@ const Dashboard = ({ subscriptionPlan, userId }: PageProps) => {
             <div className="flex-1">
               <div className="flex items-center space-x-3 max-w-[180px]">
                 <h3 className="text-lg line-clamp-2 font-medium text-zinc-900">
-                  {file.name}
+                  {currentlyRenamingFile === file.id ? (
+                    <Skeleton width={100} />
+                  ) : (
+                    file.name
+                  )}
                 </h3>
               </div>
             </div>
           </div>
         </Link>
 
-        <div className="px-6 mt-4 grid grid-cols-3 place-items-center py-2 gap-6 text-xs text-zinc-500">
+        <div className="px-6 mt-4 grid grid-cols-4 place-items-center py-2 gap-6 text-xs text-zinc-500">
           {file.userId === userId ? (
             <Button
               onClick={() => deleteFile({ id: file.id })}
@@ -73,6 +107,22 @@ const Dashboard = ({ subscriptionPlan, userId }: PageProps) => {
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
                 <Trash className="h-4 w-4" />
+              )}
+            </Button>
+          ) : (
+            <div className="h-9"></div>
+          )}
+          {file.userId === userId ? (
+            <Button
+              onClick={() => renameFile({ id: file.id, name: file.name })}
+              size="sm"
+              className="w-full"
+              variant="outline"
+            >
+              {currentlyRenamingFile === file.id ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Edit className="h-4 w-4" />
               )}
             </Button>
           ) : (
