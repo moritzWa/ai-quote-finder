@@ -97,7 +97,7 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
             <Input
               {...register('page')}
               className={cn(
-                'w-12 h-8',
+                'w-14 h-8',
                 errors.page && 'focus-visible:ring-red-500',
               )}
               onKeyDown={(e) => {

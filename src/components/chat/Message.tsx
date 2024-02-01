@@ -19,7 +19,7 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
       string | null
     >(null)
 
-    console.log('rendered message in message.tsx', message)
+    // console.log('rendered message in message.tsx', message)
     const utils = trpc.useContext()
 
     const { mutate: deleteFile, isLoading } = trpc.deleteMessage.useMutation({
@@ -36,25 +36,6 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
 
     const handleDelete = () => {
       deleteFile({ id: message.id })
-    }
-
-    const renderers = {
-      text: ({ children }: { children: any }) => {
-        const regex = /\(Page: (\d+)\)/g
-        const parts = children.split(regex)
-
-        return parts.map((part, index) => {
-          if (index % 2 === 0) {
-            return part
-          } else {
-            return (
-              <a key={index} href={`/${part}`}>
-                (Page: {part})
-              </a>
-            )
-          }
-        })
-      },
     }
 
     if (isLoading || currentlyDeletingMessage === message.id) {
@@ -116,9 +97,27 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
                     li: ({ node, ...props }) => (
                       <li className="py-2" {...props} />
                     ),
-                    // TODO: fix this
+                    // a: ({ node, ...props }) => (
+                    //   <>
+                    //     {console.log(props)}
+                    //     <a
+                    //       className="text-blue-500"
+                    //       target="_blank"
+                    //       rel="noreferrer"
+                    //       onClick={
+                    //         props.children
+                    //           ? props.value[0].split('/(Page: (d+))/g')
+                    //           : ''
+                    //         // (props) => console.log('props', props)
+                    //       }
+                    //       {...props}
+                    //     />
+                    //   </>
+                    // ),
+                    // TODO: fix this - currently just replaces the number with N/A
                     // text: ({ node, ...props }) => {
                     //   const regex = /\(Page: (\d+)\)/g
+                    //   console.log('props', props)
                     //   const parts = props.children[0].split(regex)
 
                     //   return parts.map((part, index) => {
@@ -126,7 +125,7 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
                     //       return part
                     //     } else {
                     //       return (
-                    //         <a key={index} href={`/${part}`}>
+                    //         <a key={index} href={`#page=${part}`}>
                     //           (Page: {part})
                     //         </a>
                     //       )

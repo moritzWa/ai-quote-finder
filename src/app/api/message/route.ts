@@ -56,7 +56,7 @@ export const POST = async (req: NextRequest) => {
   // search for similar messages
   const results = await vectorStore.similaritySearch(message, 4)
 
-  console.log('vector search result', results)
+  // console.log('vector search result', results)
 
   const previousMessage = await db.message.findMany({
     where: {
@@ -98,7 +98,7 @@ export const POST = async (req: NextRequest) => {
         content: `Return the most relevant quotes from the source material below given the users prompt. 
         Format the returned quotes using markdown: 
         1. adding paragraph/space between each quote (add "\n\n"),
-        2. list the page number 
+        2. list the pageNumber as <a>(Page: {pageNumber})</a> after each quote,
         3. format the most important words/parts in each quote **bold** (not the entire quote).
         
         USER QUERY: ${message}
@@ -116,6 +116,8 @@ export const POST = async (req: NextRequest) => {
       },
     ],
   })
+
+  console.log('response', response)
 
   const stream = OpenAIStream(response, {
     async onCompletion(completion) {
