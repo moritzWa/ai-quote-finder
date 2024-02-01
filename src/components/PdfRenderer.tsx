@@ -1,6 +1,13 @@
 'use client'
 
-import { ChevronDown, ChevronUp, Loader2, RotateCw, Search } from 'lucide-react'
+import {
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Loader2,
+  RotateCw,
+  Search,
+} from 'lucide-react'
 import { Document, Page, pdfjs } from 'react-pdf'
 
 import 'react-pdf/dist/Page/AnnotationLayer.css'
@@ -75,17 +82,15 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
       <div className="h-14 w-full border-b border-zinc-200 flex items-center justify-between px-2">
         <div className="flex items-center gap-1.5">
           <Button
-            disabled={numPages === undefined || currPage === numPages}
+            disabled={currPage <= 1}
             onClick={() => {
-              setCurrPage((prev) =>
-                prev + 1 > numPages! ? numPages! : prev + 1,
-              )
-              setValue('page', String(currPage + 1))
+              setCurrPage((prev) => (prev - 1 > 1 ? prev - 1 : 1))
+              setValue('page', String(currPage - 1))
             }}
             variant="ghost"
-            aria-label="next page"
+            aria-label="previous page"
           >
-            <ChevronUp className="h-4 w-4" />
+            <ChevronLeft className="h-4 w-4" />
           </Button>
 
           <div className="flex items-center gap-1.5">
@@ -108,15 +113,17 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
           </div>
 
           <Button
-            disabled={currPage <= 1}
+            disabled={numPages === undefined || currPage === numPages}
             onClick={() => {
-              setCurrPage((prev) => (prev - 1 > 1 ? prev - 1 : 1))
-              setValue('page', String(currPage - 1))
+              setCurrPage((prev) =>
+                prev + 1 > numPages! ? numPages! : prev + 1,
+              )
+              setValue('page', String(currPage + 1))
             }}
             variant="ghost"
-            aria-label="previous page"
+            aria-label="next page"
           >
-            <ChevronDown className="h-4 w-4" />
+            <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
 
