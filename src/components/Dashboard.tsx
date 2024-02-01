@@ -51,9 +51,9 @@ const Dashboard = ({ subscriptionPlan, userId }: PageProps) => {
         <Link href={`/dashboard/${file.id}`} className="flex flex-col gap-2">
           <div className="pt-6 px-6 flex w-full items-center justify-between space-x-6">
             <PdfPreview file={file} />
-            <div className="flex-1 truncate">
-              <div className="flex items-center space-x-3">
-                <h3 className="truncate text-lg font-medium text-zinc-900">
+            <div className="flex-1">
+              <div className="flex items-center space-x-3 max-w-[180px]">
+                <h3 className="text-lg line-clamp-2 font-medium text-zinc-900">
                   {file.name}
                 </h3>
               </div>
