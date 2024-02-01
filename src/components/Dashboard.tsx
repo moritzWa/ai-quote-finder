@@ -9,10 +9,10 @@ import { BookDashed, Loader2, MessageSquare, Plus, Trash } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
+import PdfPreview from './PdfPreview'
 import UploadButton from './UploadButton'
 import { Button } from './ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs'
-import PdfPreview from './PdfPreview'
 interface PageProps {
   subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>
   userId: string
@@ -50,7 +50,6 @@ const Dashboard = ({ subscriptionPlan, userId }: PageProps) => {
       >
         <Link href={`/dashboard/${file.id}`} className="flex flex-col gap-2">
           <div className="pt-6 px-6 flex w-full items-center justify-between space-x-6">
-            {/* <div className="h-10 w-10 flex-shrink-0 rounded-full bg-gradient-to-r from-cyan-300 to-purple-600" /> */}
             <PdfPreview file={file} />
             <div className="flex-1 truncate">
               <div className="flex items-center space-x-3">
