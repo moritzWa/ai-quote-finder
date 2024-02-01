@@ -167,7 +167,7 @@ const Dashboard = ({ subscriptionPlan, userId }: PageProps) => {
                   .map((file) => (
                     <>
                       {/* @ts-ignore */}
-                      <File file={file} />
+                      <File file={file} key={file.id} />
                     </>
                   ))}
               </ul>
@@ -184,7 +184,7 @@ const Dashboard = ({ subscriptionPlan, userId }: PageProps) => {
                   .map((file) => (
                     <>
                       {/* @ts-ignore */}
-                      <File file={file} />
+                      <File file={file} key={file.id} />
                     </>
                   ))}
               </ul>
@@ -201,7 +201,7 @@ const Dashboard = ({ subscriptionPlan, userId }: PageProps) => {
                   .map((file) => (
                     <>
                       {/* @ts-ignore */}
-                      <File file={file} />
+                      <File file={file} key={file.id} />
                     </>
                   ))}
               </ul>
