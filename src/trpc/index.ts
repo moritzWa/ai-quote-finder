@@ -215,6 +215,28 @@ export const appRouter = router({
         nextCursor,
       }
     }),
+  deleteMessage: privateProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { userId } = ctx
+
+      const message = await db.message.findFirst({
+        where: {
+          id: input.id,
+          userId,
+        },
+      })
+
+      if (!message) throw new TRPCError({ code: 'NOT_FOUND' })
+
+      await db.message.delete({
+        where: {
+          id: input.id,
+        },
+      })
+
+      return message
+    }),
   getFileUploadStatus: privateProcedure
     .input(z.object({ fileId: z.string() }))
     .query(async ({ input, ctx }) => {
