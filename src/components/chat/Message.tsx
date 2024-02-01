@@ -38,6 +38,25 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
       deleteFile({ id: message.id })
     }
 
+    const renderers = {
+      text: ({ children }: { children: any }) => {
+        const regex = /\(Page: (\d+)\)/g
+        const parts = children.split(regex)
+
+        return parts.map((part, index) => {
+          if (index % 2 === 0) {
+            return part
+          } else {
+            return (
+              <a key={index} href={`/${part}`}>
+                (Page: {part})
+              </a>
+            )
+          }
+        })
+      },
+    }
+
     if (isLoading || currentlyDeletingMessage === message.id) {
       return <Skeleton className="h-16" />
     } else
@@ -72,7 +91,7 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
             })}
           >
             <div
-              className={cn('px-4 pl-8 py-2 rounded-lg inline-block', {
+              className={cn('pr-4 pl-8 py-2 rounded-lg inline-block', {
                 'bg-blue-600 text-white': message.isUserMessage,
                 'bg-gray-200 text-gray-900': !message.isUserMessage,
                 'rounded-br-none':
@@ -97,6 +116,23 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
                     li: ({ node, ...props }) => (
                       <li className="py-2" {...props} />
                     ),
+                    // TODO: fix this
+                    // text: ({ node, ...props }) => {
+                    //   const regex = /\(Page: (\d+)\)/g
+                    //   const parts = props.children[0].split(regex)
+
+                    //   return parts.map((part, index) => {
+                    //     if (index % 2 === 0) {
+                    //       return part
+                    //     } else {
+                    //       return (
+                    //         <a key={index} href={`/${part}`}>
+                    //           (Page: {part})
+                    //         </a>
+                    //       )
+                    //     }
+                    //   })
+                    // },
                   }}
                 >
                   {message.text}
