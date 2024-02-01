@@ -73,8 +73,7 @@ export const POST = async (req: NextRequest) => {
     content: message.text,
   }))
 
-  console.log('ai route formattedPreviousMassege', formattedPreviousMassege)
-  console.log('ai route results', results)
+  // console.log('ai route formattedPreviousMassege', formattedPreviousMassege)
 
   //  PREVIOUS CONVERSATION:
   // ${formattedPreviousMassege.map((message) => {
@@ -96,14 +95,14 @@ export const POST = async (req: NextRequest) => {
       },
       {
         role: 'user',
-        content: `Return the most relevant quotes from the source material below given the users prompt. Format your reply using markdown: 1 leaving paragraph/space between each quote, 2. bold-format the most words in each quote (not the entire quote).
+        content: `Return the most relevant quotes from the source material below given the users prompt. Format the returned quotes using markdown: 1. adding paragraph/space between each quote (add "\n\n"), and 2. format the most important words/parts in each quote **bold** (not the entire quote).
         
         USER QUERY: ${message}
 
         \n----------------\n       
         
-        SOURCE MATERIAL TEXT SNIPPETS:
-        ${results.map((r) => r.pageContent).join('\n\n')}
+        RAW UNFORMATTED SOURCE MATERIAL TEXT SNIPPETS:
+        ${results.map((r) => r.pageContent).join('\n\n\n')}
         `,
       },
     ],

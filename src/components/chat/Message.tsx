@@ -19,6 +19,7 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
       string | null
     >(null)
 
+    console.log('rendered message in message.tsx', message)
     const utils = trpc.useContext()
 
     const { mutate: deleteFile, isLoading } = trpc.deleteMessage.useMutation({
@@ -71,7 +72,7 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
             })}
           >
             <div
-              className={cn('px-4 py-2 rounded-lg inline-block', {
+              className={cn('px-4 pl-3 py-2 rounded-lg inline-block', {
                 'bg-blue-600 text-white': message.isUserMessage,
                 'bg-gray-200 text-gray-900': !message.isUserMessage,
                 'rounded-br-none':
@@ -80,11 +81,23 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
                   !isNextMessageSamePerson && !message.isUserMessage,
               })}
             >
+              {/* {console.log('message.text', message.text)} */}
               {typeof message.text === 'string' ? (
                 <ReactMarkdown
                   className={cn('prose', {
                     'text-zinc-50': message.isUserMessage,
                   })}
+                  components={{
+                    ul: ({ node, ...props }) => (
+                      <ul style={{ listStyleType: 'disc' }} {...props} />
+                    ),
+                    ol: ({ node, ...props }) => (
+                      <ul style={{ listStyleType: 'decimal' }} {...props} />
+                    ),
+                    li: ({ node, ...props }) => (
+                      <li className="py-2" {...props} />
+                    ),
+                  }}
                 >
                   {message.text}
                 </ReactMarkdown>
