@@ -4,7 +4,6 @@ import { ExtendedMessage } from '@/types/message'
 import { format } from 'date-fns'
 import { forwardRef, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
-import ReactMarkdown from 'react-markdown'
 import { Icons } from '../Icons'
 
 interface MessageProps {
@@ -37,6 +36,42 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
     const handleDelete = () => {
       deleteFile({ id: message.id })
     }
+
+    // Split the message into list items
+    const listItems = message.text
+      .split(/^\d+\./m)
+      .filter((item) => item.trim() !== '')
+
+    const listItemElements = listItems.map((item, index) => {
+      // Extract the quote and page number using regex
+      const match = item.match(/"(.+)" \(Page: (\d+)\)/)
+
+      // If this is the first item, return it as a paragraph
+      if (index === 0) {
+        return <p key={index}>{item}</p>
+      }
+
+      if (match) {
+        const quote = match[1]
+        const pageNumber = match[2]
+
+        // Return a JSX element with the quote and a link to the page
+        return (
+          <li className="py-2 ml-8" key={index}>
+            {quote}{' '}
+            <a
+              className="text-gray-500 hover:text-blue-600"
+              href={`#page=${pageNumber}`}
+            >
+              (Page: {pageNumber})
+            </a>
+          </li>
+        )
+      } else {
+        // If the regex didn't match, just return the item as is
+        return <li key={index}>{item}</li>
+      }
+    })
 
     if (isLoading || currentlyDeletingMessage === message.id) {
       return <Skeleton className="h-16" />
@@ -72,72 +107,22 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
             })}
           >
             <div
-              className={cn('pr-4 pl-8 py-2 rounded-lg inline-block', {
+              className={cn('px-2 py-2 rounded-lg inline-block', {
                 'bg-blue-600 text-white': message.isUserMessage,
                 'bg-gray-200 text-gray-900': !message.isUserMessage,
                 'rounded-br-none':
                   !isNextMessageSamePerson && message.isUserMessage,
                 'rounded-bl-none':
                   !isNextMessageSamePerson && !message.isUserMessage,
+                // 'pl-8': !message.isUserMessage,
               })}
             >
-              {/* {console.log('message.text', message.text)} */}
-              {typeof message.text === 'string' ? (
-                <ReactMarkdown
-                  className={cn('prose', {
-                    'text-zinc-50': message.isUserMessage,
-                  })}
-                  components={{
-                    ul: ({ node, ...props }) => (
-                      <ul style={{ listStyleType: 'disc' }} {...props} />
-                    ),
-                    ol: ({ node, ...props }) => (
-                      <ul style={{ listStyleType: 'decimal' }} {...props} />
-                    ),
-                    li: ({ node, ...props }) => (
-                      <li className="py-2" {...props} />
-                    ),
-                    // a: ({ node, ...props }) => (
-                    //   <>
-                    //     {console.log(props)}
-                    //     <a
-                    //       className="text-blue-500"
-                    //       target="_blank"
-                    //       rel="noreferrer"
-                    //       onClick={
-                    //         props.children
-                    //           ? props.value[0].split('/(Page: (d+))/g')
-                    //           : ''
-                    //         // (props) => console.log('props', props)
-                    //       }
-                    //       {...props}
-                    //     />
-                    //   </>
-                    // ),
-                    // TODO: fix this - currently just replaces the number with N/A
-                    // text: ({ node, ...props }) => {
-                    //   const regex = /\(Page: (\d+)\)/g
-                    //   console.log('props', props)
-                    //   const parts = props.children[0].split(regex)
+              {console.log('message.text', message.text)}
 
-                    //   return parts.map((part, index) => {
-                    //     if (index % 2 === 0) {
-                    //       return part
-                    //     } else {
-                    //       return (
-                    //         <a key={index} href={`#page=${part}`}>
-                    //           (Page: {part})
-                    //         </a>
-                    //       )
-                    //     }
-                    //   })
-                    // },
-                  }}
-                >
-                  {message.text}
-                </ReactMarkdown>
+              {message.isUserMessage ? (
+                <p>{message.text}</p>
               ) : (
-                message.text
+                <ul style={{ listStyleType: 'disc' }}>{listItemElements}</ul>
               )}
               <div
                 className={cn(
