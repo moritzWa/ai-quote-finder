@@ -7,7 +7,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/b
 // TODO: prevent this from re-rerendering
 const PdfPreview = ({ file }: { file: { url: string } }) => {
   return (
-    <div>
+    <div className="h-[150px]">
       <Document file={file.url}>
         <Thumbnail
           pageNumber={1}
