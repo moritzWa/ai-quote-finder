@@ -41,9 +41,9 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
     }
 
     // Split the message into list items
-    const listItems = message.text
-      .split(/^\d+\./m)
-      .filter((item) => item.trim() !== '')
+    const listItems =
+      message.text &&
+      message.text.split(/^\d+\./m).filter((item) => item.trim() !== '')
 
     const listItemElements = listItems.map((item, index) => {
       // Extract the quote and page number using regex
