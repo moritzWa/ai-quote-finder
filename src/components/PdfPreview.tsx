@@ -4,6 +4,7 @@ import { Document, Thumbnail, pdfjs } from 'react-pdf'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`
 
+// TODO: prevent this from re-rerendering
 const PdfPreview = ({ file }: { file: { url: string } }) => {
   return (
     <div>
@@ -13,7 +14,7 @@ const PdfPreview = ({ file }: { file: { url: string } }) => {
           height={200}
           width={100}
           // figure out why this is just saying loading instead of showing the skeleton
-          // oading={<Skeleton className="h-16" />}
+          // loading={<Skeleton className="h-16" />}
         />
       </Document>
     </div>
