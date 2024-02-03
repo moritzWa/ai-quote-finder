@@ -175,7 +175,7 @@ const Dashboard = ({ subscriptionPlan, userId }: PageProps) => {
         {files && files?.length !== 0 ? (
           <>
             <TabsContent value="all-books">
-              <ul className="mt-8 grid grid-cols-1 gap-6 divide-y divide-zinc-200 md:grid-cols-2 lg:grid-cols-3">
+              <ul className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {files
                   .sort(
                     (a, b) =>
@@ -191,7 +191,7 @@ const Dashboard = ({ subscriptionPlan, userId }: PageProps) => {
               </ul>
             </TabsContent>
             <TabsContent value="my-books">
-              <ul className="mt-8 grid grid-cols-1 gap-6 divide-y divide-zinc-200 md:grid-cols-2 lg:grid-cols-3">
+              <ul className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {files
                   .filter((file) => file.userId === userId)
                   .sort(
@@ -208,7 +208,7 @@ const Dashboard = ({ subscriptionPlan, userId }: PageProps) => {
               </ul>
             </TabsContent>
             <TabsContent value="my-private-books">
-              <ul className="mt-8 grid grid-cols-1 gap-6 divide-y divide-zinc-200 md:grid-cols-2 lg:grid-cols-3">
+              <ul className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {files
                   .filter((file) => file.private && file.userId === userId)
                   .sort(
