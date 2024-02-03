@@ -179,11 +179,11 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
   }
 
   return (
-    <div className="w-full bg-white rounded-md shadow flex flex-col items-center">
+    <div className="w-full bg-white shadow flex flex-col items-center">
       <PDFToolbar />
 
       <div className="flex-1 w-full max-h-screen">
-        <SimpleBar autoHide={false} className="max-h-[calc(100vh-10rem)]">
+        <SimpleBar autoHide={false}>
           <div ref={ref}>
             <Document
               loading={
