@@ -14,7 +14,7 @@ import 'react-pdf/dist/Page/AnnotationLayer.css'
 import 'react-pdf/dist/Page/TextLayer.css'
 import { useToast } from './ui/use-toast'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useResizeDetector } from 'react-resize-detector'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
@@ -31,6 +31,7 @@ import {
   DropdownMenuTrigger,
 } from './ui/dropdown-menu'
 
+import { useSearchParams } from 'next/navigation'
 import SimpleBar from 'simplebar-react'
 import PdfFullscreen from './PdfFullscreen'
 
@@ -76,6 +77,17 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
     setCurrPage(Number(page))
     setValue('page', String(page))
   }
+
+  const params = useSearchParams()
+  console.log('page in root component', params.get('page'))
+
+  useEffect(() => {
+    if (params.get('page')) {
+      console.log('page in useeffect', params.get('page'))
+      setCurrPage(Number(params.get('page')))
+      setValue('page', String(params.get('page')))
+    }
+  }, [params])
 
   const PDFToolbar = () => {
     return (

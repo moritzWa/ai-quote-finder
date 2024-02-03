@@ -61,7 +61,17 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
             {quote}{' '}
             <a
               className="text-gray-500 hover:text-blue-600"
-              href={`#page=${pageNumber}`}
+              href={`?page=${pageNumber}`}
+              // instead of the link replace the url and add the param via onlick
+              onClick={(e) => {
+                e.preventDefault()
+                window.history.pushState(
+                  {},
+                  '',
+                  `${window.location.pathname}?page=${pageNumber}`,
+                )
+                window.dispatchEvent(new Event('popstate'))
+              }}
             >
               (Page: {pageNumber})
             </a>
@@ -117,7 +127,7 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
                 // 'pl-8': !message.isUserMessage,
               })}
             >
-              {console.log('message.text', message.text)}
+              {/* {console.log('message.text', message.text)} */}
 
               {message.isUserMessage ? (
                 <p>{message.text}</p>

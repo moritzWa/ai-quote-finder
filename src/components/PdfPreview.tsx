@@ -1,13 +1,10 @@
 'use client'
 
-import { useState } from 'react'
 import { Document, Thumbnail, pdfjs } from 'react-pdf'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`
 
 const PdfPreview = ({ file }: { file: { url: string } }) => {
-  const [loading, setLoading] = useState(true)
-
   return (
     <div>
       <Document file={file.url}>
