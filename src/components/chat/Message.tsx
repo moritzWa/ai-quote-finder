@@ -2,6 +2,7 @@ import { trpc } from '@/app/_trpc/client'
 import { cn } from '@/lib/utils'
 import { ExtendedMessage } from '@/types/message'
 import { format } from 'date-fns'
+import { useRouter } from 'next/navigation'
 import { forwardRef, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { Icons } from '../Icons'
@@ -14,6 +15,8 @@ interface MessageProps {
 // need to wrap this in forwardRef to pass down ref
 const Message = forwardRef<HTMLDivElement, MessageProps>(
   ({ message, isNextMessageSamePerson }, ref) => {
+    const router = useRouter()
+
     const [currentlyDeletingMessage, setCurrentlyDeletingMessage] = useState<
       string | null
     >(null)
@@ -62,15 +65,9 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
             <a
               className="text-gray-500 hover:text-blue-600"
               href={`?page=${pageNumber}`}
-              // instead of the link replace the url and add the param via onlick
               onClick={(e) => {
                 e.preventDefault()
-                window.history.pushState(
-                  {},
-                  '',
-                  `${window.location.pathname}?page=${pageNumber}`,
-                )
-                window.dispatchEvent(new Event('popstate'))
+                router.replace(`${window.location.pathname}?page=${pageNumber}`)
               }}
             >
               (Page: {pageNumber})
