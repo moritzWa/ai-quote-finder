@@ -3,7 +3,7 @@ import {
   RegisterLink,
   getKindeServerSession,
 } from '@kinde-oss/kinde-auth-nextjs/server'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, SearchIcon } from 'lucide-react'
 import Link from 'next/link'
 import MaxWidthWrapper from './MaxWidthWrapper'
 import MobileNav from './MobileNav'
@@ -16,9 +16,10 @@ const Navbar = () => {
 
   return (
     <nav className="sticky h-14 inset-x-0 top-0 z-30 w-full border-b border-gray-200 bg-white/75 backdrop-blur-lg transition-all">
-      <MaxWidthWrapper>
+      <MaxWidthWrapper className={user ? 'md:px-10' : ''}>
         <div className="flex h-14 items-center justify-between border-b border-zinc-200">
           <Link href="/" className="flex z-40 font-semibold">
+            <SearchIcon className="h-6 w-6 mr-2" />
             <span>AI Quote Finder</span>
           </Link>
 
