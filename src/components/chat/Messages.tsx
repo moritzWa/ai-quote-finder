@@ -1,5 +1,6 @@
 import { trpc } from '@/app/_trpc/client'
 import { INFINITE_QUERY_LIMIT } from '@/config/infinite-query'
+import { ExtendedMessage } from '@/types/message'
 import { useIntersection } from '@mantine/hooks'
 import { Loader2, MessageSquare } from 'lucide-react'
 import { useContext, useEffect, useRef } from 'react'
@@ -29,7 +30,14 @@ const Messages = ({ fileId }: MessagesProps) => {
   // flatten array
   const messages = data?.pages.flatMap((page) => page.messages)
 
-  const loadingMessage = {
+  interface LoadingMessage {
+    createdAt: string
+    id: string
+    isUserMessage: boolean
+    text: JSX.Element
+  }
+
+  const loadingMessage: LoadingMessage = {
     createdAt: new Date().toISOString(),
     id: 'loading-message',
     isUserMessage: false,
@@ -40,7 +48,7 @@ const Messages = ({ fileId }: MessagesProps) => {
     ),
   }
 
-  const combinedMessages = [
+  const combinedMessages: (ExtendedMessage | LoadingMessage)[] = [
     ...(isAiThinking ? [loadingMessage] : []),
     ...(messages ?? []),
   ]
