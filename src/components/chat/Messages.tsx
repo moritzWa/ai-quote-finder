@@ -12,6 +12,13 @@ interface MessagesProps {
   fileId: string
 }
 
+export interface LoadingMessage {
+  createdAt: string
+  id: string
+  isUserMessage: boolean
+  text: JSX.Element
+}
+
 const Messages = ({ fileId }: MessagesProps) => {
   const { isLoading: isAiThinking } = useContext(ChatContext)
 
@@ -29,13 +36,6 @@ const Messages = ({ fileId }: MessagesProps) => {
 
   // flatten array
   const messages = data?.pages.flatMap((page) => page.messages)
-
-  interface LoadingMessage {
-    createdAt: string
-    id: string
-    isUserMessage: boolean
-    text: JSX.Element
-  }
 
   const loadingMessage: LoadingMessage = {
     createdAt: new Date().toISOString(),

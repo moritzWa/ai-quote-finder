@@ -7,9 +7,10 @@ import { forwardRef, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { Icons } from '../Icons'
 import { useToast } from '../ui/use-toast'
+import { LoadingMessage } from './Messages'
 
 interface MessageProps {
-  message: ExtendedMessage
+  message: ExtendedMessage | LoadingMessage
   isNextMessageSamePerson: boolean
 }
 
