@@ -46,7 +46,7 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
 
   const [numPages, setNumPages] = useState<number>()
   const [currPage, setCurrPage] = useState<number>(1)
-  const [scale, setScale] = useState<number>(2.5)
+  const [scale, setScale] = useState<number>(1.5)
   const [rotation, setRotation] = useState<number>(0)
   const [renderedScale, setRenderedScale] = useState<number | null>(null)
   const isLoading = renderedScale !== scale

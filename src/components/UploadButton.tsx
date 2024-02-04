@@ -38,7 +38,9 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
   const mutation = trpc.updateUserPrivateUploadPreference.useMutation()
 
   // Initialize the state of the toggle with the fetched preference
-  const [shareWithCommunity, setShareWithCommunity] = useState(userPreference)
+  const [shareWithCommunity, setShareWithCommunity] = useState(
+    userPreference || true,
+  )
 
   const handleToggleChange = (value: any) => {
     console.log(
@@ -89,7 +91,7 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
               id="shared-with-communit"
             />
             <Label htmlFor="shared-with-communit">Share with Communit</Label>
-            <InfoTooltipButton content="Others will not be able to read your PDF just query the embedding. We will remove your book if re reicieve a DMCA takedown request from it's alleged copy writht owner." />
+            <InfoTooltipButton content="We will remove your book if we receive a DMCA takedown request from its alleged copy right owner." />
           </>
         )}
       </div>

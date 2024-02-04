@@ -94,7 +94,7 @@ const Dashboard = ({ subscriptionPlan, userId }: PageProps) => {
                 <div className="pt-6 px-6 flex w-full items-center justify-between space-x-6">
                   <PdfPreview file={file} />
                   <div className="flex-1">
-                    <div className="flex items-center space-x-3 max-w-[180px]">
+                    <div className="flex text-left space-x-3">
                       <h3 className="text-lg line-clamp-3 font-medium text-zinc-900">
                         {currentlyRenamingFile === file.id ? (
                           <Skeleton width={100} />
