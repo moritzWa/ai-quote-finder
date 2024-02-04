@@ -42,57 +42,65 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
       deleteFile({ id: message.id })
     }
 
+    type listItemType = string[] | ''
+
     // Split the message into list items
-    const listItems =
+    const listItems: listItemType =
       message.text &&
       message.text.split(/^\d+\./m).filter((item) => item.trim() !== '')
 
-    const listItemElements = listItems.map((item, index) => {
-      // Extract the quote and page number using regex
-      const match = item.match(/"(.+)" \(Page: (\d+)\)/)
+    const listItemElements =
+      listItems &&
+      listItems.map((item, index) => {
+        // Extract the quote and page number using regex
+        const match = item.match(/"(.+)" \(Page: (\d+)\)/)
 
-      // If this is the first item, return it as a paragraph
-      if (index === 0) {
-        return <p key={index}>{item}</p>
-      }
+        // If this is the first item, return it as a paragraph
+        if (index === 0) {
+          return <p key={index}>{item}</p>
+        }
 
-      if (match) {
-        const quote = match[1]
-        const pageNumber = match[2]
+        if (match) {
+          const quote = match[1]
+          const pageNumber = match[2]
 
-        // Return a JSX element with the quote and a link to the page
-        return (
-          <li className="py-2 ml-8" key={index}>
-            {quote}{' '}
-            <a
-              className="text-gray-500 hover:text-blue-600"
-              href={`?page=${pageNumber}`}
-              onClick={(e) => {
-                e.preventDefault()
-                router.replace(`${window.location.pathname}?page=${pageNumber}`)
-              }}
-            >
-              (Page: {pageNumber})
-            </a>
-            <span
-              className="pl-2 text-gray-500 hover:text-green-500 cursor-pointer"
-              onClick={() => {
-                navigator.clipboard.writeText(`${quote} (Page: ${pageNumber})`)
-                return toast({
-                  title: 'Copied Quote to Clipboard',
-                  variant: 'default',
-                })
-              }}
-            >
-              Copy
-            </span>
-          </li>
-        )
-      } else {
-        // If the regex didn't match, just return the item as is
-        return <li key={index}>{item}</li>
-      }
-    })
+          // Return a JSX element with the quote and a link to the page
+          return (
+            <li className="py-2 ml-8" key={index}>
+              {quote}{' '}
+              <a
+                className="text-gray-500 hover:text-blue-600"
+                href={`?page=${pageNumber}`}
+                onClick={(e) => {
+                  e.preventDefault()
+                  router.replace(
+                    `${window.location.pathname}?page=${pageNumber}`,
+                  )
+                }}
+              >
+                (Page: {pageNumber})
+              </a>
+              <span
+                className="pl-2 text-gray-500 hover:text-green-500 cursor-pointer"
+                onClick={() => {
+                  navigator.clipboard.writeText(
+                    `${quote} (Page: ${pageNumber})`,
+                  )
+                  return toast({
+                    title: 'Copied Quote to Clipboard',
+                    variant: 'default',
+                  })
+                }}
+              >
+                Copy
+              </span>
+            </li>
+          )
+        } else {
+          // If the regex didn't match, just return the item as is
+          return <li key={index}>{item}</li>
+        }
+      })
 
     if (isLoading || currentlyDeletingMessage === message.id) {
       return <Skeleton className="h-16" />
