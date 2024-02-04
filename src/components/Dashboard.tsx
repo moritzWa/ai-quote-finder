@@ -4,6 +4,7 @@ import { trpc } from '@/app/_trpc/client'
 // import { getUserSubscriptionPlan } from '@/lib/stripe'
 import { File } from '.prisma/client'
 import { getUserSubscriptionPlan } from '@/lib/stripe'
+import clsx from 'clsx'
 import { format } from 'date-fns'
 import {
   BookDashed,
@@ -11,6 +12,7 @@ import {
   Loader2,
   MessageSquare,
   Plus,
+  ShareIcon,
   Trash,
 } from 'lucide-react'
 import Link from 'next/link'
@@ -78,7 +80,13 @@ const Dashboard = ({ subscriptionPlan, userId }: PageProps) => {
     await renameMutation.mutate({ id, name: newName })
   }
 
-  const File = ({ file }: { file: FileWithMessages }) => {
+  const File = ({
+    file,
+    showMakePublicButton,
+  }: {
+    file: FileWithMessages
+    showMakePublicButton: boolean
+  }) => {
     return (
       <TooltipProvider>
         <Tooltip>
@@ -107,7 +115,14 @@ const Dashboard = ({ subscriptionPlan, userId }: PageProps) => {
                 </div>
               </Link>
 
-              <div className="px-3 py-3 mt-4 grid grid-cols-4 place-items-center gap-6 text-xs text-zinc-500">
+              <div
+                className={clsx(
+                  'px-3 py-3 mt-4 grid place-items-center text-xs text-zinc-500',
+                  showMakePublicButton
+                    ? 'grid-cols-5 gap-4'
+                    : 'gap-6 grid-cols-4',
+                )}
+              >
                 {file.userId === userId ? (
                   <Button
                     onClick={() => deleteFile({ id: file.id })}
@@ -141,8 +156,29 @@ const Dashboard = ({ subscriptionPlan, userId }: PageProps) => {
                   <div className="h-9"></div>
                 )}
 
-                <div className="flex items-center gap-2 w-20">
-                  <Plus className="h-4 w-4" />
+                {showMakePublicButton && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Button
+                          onClick={() => {
+                            // todo
+                          }}
+                          size="sm"
+                          className="w-full"
+                          variant="outline"
+                        >
+                          <ShareIcon className="h-4 w-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Make book public</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
+                <div className="flex justify-center items-center w-20">
+                  <Plus className="h-4" />
                   {format(new Date(file.createdAt), 'MMM yyyy')}
                 </div>
 
@@ -219,7 +255,7 @@ const Dashboard = ({ subscriptionPlan, userId }: PageProps) => {
                   .map((file) => (
                     <>
                       {/* @ts-ignore */}
-                      <File file={file} key={file.id} />
+                      <File file={file} key={file.id} showMakePublicButton />
                     </>
                   ))}
               </ul>
