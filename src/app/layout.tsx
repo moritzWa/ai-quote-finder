@@ -5,6 +5,7 @@ import { Inter } from 'next/font/google'
 import 'react-loading-skeleton/dist/skeleton.css'
 import 'simplebar-react/dist/simplebar.min.css'
 import './globals.css'
+import { Toaster } from '@/components/ui/toaster'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -22,6 +23,7 @@ export default function RootLayout({
           className={cn('min-h-screen font-sans antialiased', inter.className)}
         >
           <Navbar />
+          <Toaster />
           {children}
         </body>
       </Providers>

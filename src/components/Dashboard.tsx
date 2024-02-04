@@ -28,7 +28,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from './ui/tooltip'
-import { toast } from './ui/use-toast'
+import { useToast } from './ui/use-toast'
+
 interface PageProps {
   subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>
   userId: string
@@ -41,6 +42,7 @@ const Dashboard = ({ subscriptionPlan, userId }: PageProps) => {
     string | null
   >(null)
 
+  const { toast } = useToast()
   const utils = trpc.useContext()
 
   const { data: files, isLoading } = trpc.getUserFiles.useQuery()

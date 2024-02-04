@@ -2,7 +2,7 @@ import { trpc } from '@/app/_trpc/client'
 import { INFINITE_QUERY_LIMIT } from '@/config/infinite-query'
 import { useMutation } from '@tanstack/react-query'
 import { ReactNode, createContext, useRef, useState } from 'react'
-import { toast } from '../ui/use-toast'
+import { useToast } from '../ui/use-toast'
 
 type StreamResponse = {
   addMessage: () => void
@@ -29,7 +29,7 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
 
   const utils = trpc.useContext()
 
-  // const { toast } = useToast()
+  const { toast } = useToast()
 
   const backupMessage = useRef('')
 

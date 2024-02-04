@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { forwardRef, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { Icons } from '../Icons'
+import { useToast } from '../ui/use-toast'
 
 interface MessageProps {
   message: ExtendedMessage
@@ -15,6 +16,7 @@ interface MessageProps {
 // need to wrap this in forwardRef to pass down ref
 const Message = forwardRef<HTMLDivElement, MessageProps>(
   ({ message, isNextMessageSamePerson }, ref) => {
+    const { toast } = useToast()
     const router = useRouter()
 
     const [currentlyDeletingMessage, setCurrentlyDeletingMessage] = useState<
@@ -72,6 +74,18 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
             >
               (Page: {pageNumber})
             </a>
+            <span
+              className="pl-2 text-gray-500 hover:text-green-500 cursor-pointer"
+              onClick={() => {
+                navigator.clipboard.writeText(`${quote} (Page: ${pageNumber})`)
+                return toast({
+                  title: 'Copied Quote to Clipboard',
+                  variant: 'default',
+                })
+              }}
+            >
+              Copy
+            </span>
           </li>
         )
       } else {
