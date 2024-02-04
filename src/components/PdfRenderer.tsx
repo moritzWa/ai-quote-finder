@@ -79,11 +79,9 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
   }
 
   const params = useSearchParams()
-  console.log('page in root component', params.get('page'))
 
   useEffect(() => {
     if (params.get('page')) {
-      console.log('page in useeffect', params.get('page'))
       setCurrPage(Number(params.get('page')))
       setValue('page', String(params.get('page')))
     }
