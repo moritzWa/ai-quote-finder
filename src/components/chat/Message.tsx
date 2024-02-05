@@ -46,10 +46,16 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
     type listItemType = string[] | ''
 
     // Split the message into list items
+    console.log(message.text)
+
     const listItems: listItemType =
       typeof message.text === 'string'
-        ? message.text.split(/^\d+\./m).filter((item) => item.trim() !== '')
+        ? message.text
+            .split(/(?:^\d+\.|^-)/m)
+            .filter((item) => item.trim() !== '')
         : ''
+
+    console.log('listItems', listItems)
 
     const listItemElements =
       listItems &&
@@ -57,8 +63,8 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
         // Extract the quote and page number using regex
         const match = item.match(/"(.+)" \(Page: (\d+)\)/)
 
-        // If this is the first item, return it as a paragraph
-        if (index === 0) {
+        // general chatbot text to prefece the lits of quote
+        if (index === 0 && !/\(Page: \d+\)$/.test(item.trim())) {
           return <p key={index}>{item}</p>
         }
 
@@ -103,6 +109,8 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
           return <li key={index}>{item}</li>
         }
       })
+
+    // console.log(listItemElements.map((item) => item.stringify())
 
     if (isLoading || currentlyDeletingMessage === message.id) {
       return <Skeleton className="h-16" />
