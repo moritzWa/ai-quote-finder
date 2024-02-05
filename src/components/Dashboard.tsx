@@ -172,20 +172,29 @@ const Dashboard = ({ subscriptionPlan, userId }: PageProps) => {
                     <div className="h-9"></div>
                   )}
                   {file.userId === userId ? (
-                    <Button
-                      onClick={() =>
-                        renameFile({ id: file.id, name: file.name })
-                      }
-                      size="sm"
-                      className="w-full"
-                      variant="outline"
-                    >
-                      {currentlyRenamingFile === file.id ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <Edit className="h-4 w-4" />
-                      )}
-                    </Button>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger className="w-full">
+                          <Button
+                            onClick={() =>
+                              renameFile({ id: file.id, name: file.name })
+                            }
+                            size="sm"
+                            className="w-full"
+                            variant="outline"
+                          >
+                            {currentlyRenamingFile === file.id ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <Edit className="h-4 w-4" />
+                            )}
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Rename book</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   ) : (
                     <div className="h-9"></div>
                   )}
