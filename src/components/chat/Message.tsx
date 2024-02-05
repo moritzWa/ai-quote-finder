@@ -165,6 +165,22 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
                   },
                 )}
               >
+                {!message.isUserMessage && message.id !== 'loading-message' && (
+                  <div
+                    className="hover:text-green-400 cursor-pointer"
+                    onClick={() => {
+                      if (typeof message.text === 'string') {
+                        navigator.clipboard.writeText(message.text)
+                        return toast({
+                          title: 'Copied to Clipboard',
+                          variant: 'default',
+                        })
+                      }
+                    }}
+                  >
+                    Copy All
+                  </div>
+                )}
                 {message.id !== 'loading-message' && (
                   <div
                     className="hover:text-rose-400 cursor-pointer"
