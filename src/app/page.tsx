@@ -7,7 +7,7 @@ import MaxWidthWrapper from '../components/MaxWidthWrapper'
 export default function Home() {
   return (
     <>
-      <MaxWidthWrapper className="mb-12 mt-12 sm:mt-40 flex flex-col items-center justify-center text-center">
+      <MaxWidthWrapper className="mb-12 mt-8 sm:mt-20 flex flex-col items-center justify-center text-center">
         <div className="mx-auto mb-4 flex max-w-fit items-center justify-center space-x-2 overflow-hidden rounded-full border border-gray-200 bg-white px-7 py-2 shadow-md backdrop-blur transition-all hover:border-gray-300 hover:bg-white/50">
           <p className="text-sm font-semibold text-gray-700">
             Quote Finder is now public!
@@ -40,7 +40,7 @@ export default function Home() {
         <div className="relative isolate">
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
+            className="pointer-events-none absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-bottom-10"
           >
             <div
               style={{
@@ -59,14 +59,14 @@ export default function Home() {
           </div>
 
           <div>
-            <div className="mx-auto max-w-6xl px-6 lg:px-8">
+            <div className="mx-auto w-fit px-6 lg:px-8">
               <div className="mt-16 flow-root sm:mt-24">
                 <div className="-m-2 rounded-xl bg-gray-900/5 p-2 ring-1 ring-inset ring-gray-900/10 lg:-m-4 lg:rounded-2xl lg:p-4">
                   <Image
                     src="/product-preview.png"
                     alt="product preview"
-                    width={1364}
-                    height={866}
+                    width={864}
+                    height={766}
                     quality={100}
                     className="rounded-md bg-white p-2 shadow-2xl ring-1 ring-gray-900/10"
                   />
