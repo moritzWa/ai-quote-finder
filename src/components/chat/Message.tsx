@@ -24,7 +24,6 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
       string | null
     >(null)
 
-    // console.log('rendered message in message.tsx', message)
     const utils = trpc.useContext()
 
     const { mutate: deleteFile, isLoading } = trpc.deleteMessage.useMutation({
@@ -46,16 +45,12 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
     type listItemType = string[] | ''
 
     // Split the message into list items
-    console.log(message.text)
-
     const listItems: listItemType =
       typeof message.text === 'string'
         ? message.text
             .split(/(?:^\d+\.|^-)/m)
             .filter((item) => item.trim() !== '')
         : ''
-
-    console.log('listItems', listItems)
 
     const listItemElements =
       listItems &&
@@ -109,8 +104,6 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
           return <li key={index}>{item}</li>
         }
       })
-
-    // console.log(listItemElements.map((item) => item.stringify())
 
     if (isLoading || currentlyDeletingMessage === message.id) {
       return <Skeleton className="h-16" />
