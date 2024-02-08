@@ -1,20 +1,31 @@
-Note: I stopped working on this project after learning about Google's [NotebookLM](https://blog.google/technology/ai/notebooklm-google-ai/).
+Note: I mostly stopped working on this project after learning about Google's [NotebookLM](https://blog.google/technology/ai/notebooklm-google-ai/).
 
-## Features
+## Main Features
 
 - Upload PDFs as private or shared
 - Semantic search over book content
 
+## Other Features
+
+- Free & Pro Plan Using Stripe
+- Streaming API Responses in Real-Time
+- Authentication Using Kinde
+- UI Using 'shadcn-ui'
+- Optimistic UI Updates
+- Infinite Message Loading for Performance
+- Drag n' Drop Uploads
+
+## Technologies
+- Pinecone as our Vector Storage
+- LangChain
+- 100% written in TypeScript
+- Prisma as our ORM
+- Data Fetching Using tRPC & Zod
+
 ## Next task
 
-- upload a bunch of files
-- change PDF view to show all pages
-- add more auth options
-- improve retriaval prompting
-- output page number in prompt reply
-- hide book PDF from public if not owner?
-- add a way to search n-all books at once
-- promp suggestions to give ideas of what to search (good for onboarding)
+- enable search across all selected PDFs
+- switch between normal chat msg and quote retraival
 
 ## Scripts
 
