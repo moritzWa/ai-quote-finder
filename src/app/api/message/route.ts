@@ -117,7 +117,7 @@ export const POST = async (req: NextRequest) => {
     ],
   })
 
-  console.log('response', response)
+  // console.log('response', response)
 
   const stream = OpenAIStream(response, {
     async onCompletion(completion) {
