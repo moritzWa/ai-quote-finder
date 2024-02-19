@@ -44,6 +44,8 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
 
     type listItemType = string[] | ''
 
+    // console.log('message', message)
+
     // Split the message into list items
     const listItems: listItemType =
       typeof message.text === 'string'
@@ -56,9 +58,9 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
       listItems &&
       listItems.map((item, index) => {
         // Extract the quote and page number using regex
-        const match = item.match(/"(.+)" \(Page: (\d+)\)/)
+        const match = item.match(/^(.+) \(Page: (\d+)\)/)
 
-        // general chatbot text to prefece the lits of quote
+        // general chatbot text to prefece the list of quote
         if (index === 0 && !/\(Page: \d+\)$/.test(item.trim())) {
           return <p key={index}>{item}</p>
         }
@@ -66,6 +68,8 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
         if (match) {
           const quote = match[1]
           const pageNumber = match[2]
+
+          // console.log('quote', quote, 'pageNumber', pageNumber)
 
           // Return a JSX element with the quote and a link to the page
           return (

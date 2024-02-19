@@ -97,8 +97,9 @@ export const POST = async (req: NextRequest) => {
         role: 'user',
         content: `Return the most relevant quotes from the source material below given the users prompt. 
         Format the returned quotes using markdown: 
-        1. adding paragraph/space between each quote (add "\n\n"),
-        2. list the pageNumber as (Page: {pageNumber}) after each quote,
+        1. return the quotes as bullet points (add "- "),
+        2. adding paragraph/space between each quote (add "\n\n"),
+        3. list the pageNumber as (Page: {pageNumber}) after each quote,
         
         USER QUERY: ${message}
 
