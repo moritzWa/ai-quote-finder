@@ -1,5 +1,7 @@
 Note: I stopped working on this project after learning about Google's [NotebookLM](https://blog.google/technology/ai/notebooklm-google-ai/).
 
+![showcase](https://github.com/moritzWa/ai-quote-finder/blob/main/public/Google%20Chrome.gif)
+
 ## Features
 
 - Upload PDFs as private or shared
