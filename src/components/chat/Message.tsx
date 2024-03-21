@@ -2,6 +2,7 @@ import { trpc } from '@/app/_trpc/client'
 import { cn } from '@/lib/utils'
 import { ExtendedMessage } from '@/types/message'
 import { format } from 'date-fns'
+import { Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { forwardRef, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
@@ -155,7 +156,11 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
             >
               {/* {console.log('message.text', message.text)} */}
 
-              {message.isUserMessage ? (
+              {message.id === 'loading-message' ? (
+                <div className="flex p-1 justify-center items-center">
+                  <Loader2 className="h-6 w-6 animate-spin" />
+                </div>
+              ) : message.isUserMessage ? (
                 <p>{message.text}</p>
               ) : (
                 <div className="ml-8">
@@ -164,7 +169,10 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
               )}
               <div
                 className={cn(
-                  'text-xs select-none mt-2 w-full flex justify-end gap-3',
+                  'text-xs select-none w-full flex justify-end gap-3',
+                  {
+                    'mt-2': message.id !== 'loading-message',
+                  },
                   {
                     'text-zinc-500': !message.isUserMessage,
                     'text-blue-300': message.isUserMessage,
