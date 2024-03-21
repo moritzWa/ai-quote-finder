@@ -4,12 +4,25 @@ import { pinecone } from '@/lib/pinecone'
 import { getUserSubscriptionPlan } from '@/lib/stripe'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import { UploadStatus } from '@prisma/client'
+import { TRPCError } from '@trpc/server'
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf'
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
 import { PineconeStore } from 'langchain/vectorstores/pinecone'
 import { createUploadthing, type FileRouter } from 'uploadthing/next'
+import { UploadThingError } from 'uploadthing/server'
 
-const f = createUploadthing()
+const f = createUploadthing({
+  /**
+   * Log out more information about the error, but don't return it to the client
+   * @see https://docs.uploadthing.com/errors#error-formatting
+   */
+  errorFormatter: (err) => {
+    console.log('Error uploading file', err.message)
+    console.log('  - Above error caused by:', err.cause)
+
+    return { message: err.message }
+  },
+})
 
 const middleware = async () => {
   const { getUser } = getKindeServerSession()
@@ -49,6 +62,7 @@ const onUploadComplete = async ({
     key: string
     name: string
     url: string
+    size: number
   }
 }) => {
   const isFileExist = await db.file.findFirst({
@@ -91,14 +105,26 @@ const onUploadComplete = async ({
     const isProExceeded = pagesAmt > proPlan!.pagesPerPdf
     const isFreeExceeded = pagesAmt > freePlan!.pagesPerPdf
 
-    console.log('isProExceeded', isProExceeded, pagesAmt, proPlan!.pagesPerPdf)
-    console.log(
-      'isFreeExceeded',
-      isFreeExceeded,
-      pagesAmt,
-      freePlan!.pagesPerPdf,
-    )
-    console.log('isSubscribed', isSubscribed)
+    const { maxFileSize: freePlanMaxFileSize } = freePlan
+    const { maxFileSize: proPlanMaxFileSize } = proPlan!
+    const allowedFileSize = isSubscribed
+      ? proPlanMaxFileSize
+      : freePlanMaxFileSize
+
+    console.log('allowedFileSize', allowedFileSize, 'file.size', file.size)
+
+    if (file.size > parseFileSize(allowedFileSize)) {
+      throw new TRPCError({
+        code: 'PAYLOAD_TOO_LARGE',
+        message: `File size exceeds the allowed limit of ${allowedFileSize}`,
+      })
+    }
+
+    if (file.size > parseFileSize(allowedFileSize)) {
+      throw new UploadThingError(
+        `File size exceeds the allowed limit of ${allowedFileSize}`,
+      )
+    }
 
     if ((isSubscribed && isProExceeded) || (!isSubscribed && isFreeExceeded)) {
       await db.file.update({
@@ -133,6 +159,8 @@ const onUploadComplete = async ({
       },
     })
   } catch (err) {
+    console.log('err in ', err)
+
     await db.file.update({
       data: {
         uploadStatus: UploadStatus.FAILED,
@@ -162,3 +190,20 @@ export const ourFileRouter = {
 } satisfies FileRouter
 
 export type OurFileRouter = typeof ourFileRouter
+
+function parseFileSize(fileSizeString: string): number {
+  const [value, unit] = fileSizeString.match(/^(\d+)(\w+)$/)!.slice(1, 3)
+  const valueNum = parseInt(value, 10)
+  switch (unit.toUpperCase()) {
+    case 'B':
+      return valueNum
+    case 'KB':
+      return valueNum * 1024
+    case 'MB':
+      return valueNum * 1024 * 1024
+    case 'GB':
+      return valueNum * 1024 * 1024 * 1024
+    default:
+      throw new Error(`Invalid file size unit: ${unit}`)
+  }
+}
