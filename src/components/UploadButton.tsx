@@ -1,10 +1,9 @@
 'use client'
 
 import { trpc } from '@/app/_trpc/client'
-import { OurFileRouter } from '@/app/api/uploadthing/core'
+// import { OurFileRouter } from '@/app/api/uploadthing/core'
 import { freePlan, proPlan } from '@/config/stripe'
 import { useUploadThing } from '@/lib/uploadthing'
-import { UploadDropzone } from '@uploadthing/react'
 import { Cloud, File, Loader2, UploadIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -87,6 +86,10 @@ const CustomUploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
     return interval
   }
 
+  const possiblePlanFileSize = !isSubscribed
+    ? freePlan.maxFileSize
+    : proPlan.maxFileSize
+
   return (
     <>
       <div className="flex items-center space-x-2">
@@ -123,9 +126,9 @@ const CustomUploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
             console.log('res vaule from startUpload', res)
 
             return toast({
-              title: 'Something went wrong',
-              description: 'Please try again later',
-              variant: 'destructive',
+              title: 'Something went wrong (check file size)',
+              description: `Please try again later. Note that you can only upload files up to ${possiblePlanFileSize}`,
+              variant: 'default',
             })
           }
 
@@ -135,9 +138,9 @@ const CustomUploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
 
           if (!key) {
             return toast({
-              title: 'Something went wrong',
-              description: 'Please try again later',
-              variant: 'destructive',
+              title: 'Something went wrong (check file size)',
+              description: `Please try again later. Note that you can only upload files up to ${possiblePlanFileSize}`,
+              variant: 'default',
             })
           }
 
@@ -165,9 +168,7 @@ const CustomUploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
                     drag and drop
                   </p>
                   <p className="text-xs text-zinc-500">
-                    PDF (up to{' '}
-                    {!isSubscribed ? freePlan.maxFileSize : proPlan.maxFileSize}
-                    )
+                    PDF (up to {possiblePlanFileSize})
                   </p>
                 </div>
 
@@ -210,7 +211,7 @@ const CustomUploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
           </div>
         )}
       </Dropzone>
-      new dropzone
+      {/* new dropzone
       <UploadDropzone<OurFileRouter, 'freePlanUploader' | 'proPlanUploader'>
         endpoint={isSubscribed ? 'proPlanUploader' : 'freePlanUploader'}
         onClientUploadComplete={(res: any) => {
@@ -220,7 +221,7 @@ const CustomUploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
           router.push(`/dashboard/${res[0].id}`)
         }}
         onUploadError={(error: Error) => {
-          alert(`ERROR! ${error.message}`)
+          console.log(error)
         }}
         onUploadBegin={(name: any) => {
           // Do something once upload begins
@@ -228,7 +229,7 @@ const CustomUploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
           setIsUploading(true)
           startSimulatedProgress()
         }}
-      />
+      /> */}
     </>
   )
 }
