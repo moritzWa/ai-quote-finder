@@ -73,7 +73,7 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
 
           // Return a JSX element with the quote and a link to the page
           return (
-            <li className="py-2 ml-8" key={index}>
+            <li className="py-2" key={index}>
               {quote}{' '}
               <a
                 className="text-gray-500 hover:text-blue-600"
@@ -158,7 +158,9 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
               {message.isUserMessage ? (
                 <p>{message.text}</p>
               ) : (
-                <ul style={{ listStyleType: 'disc' }}>{listItemElements}</ul>
+                <div className="ml-8">
+                  <ul style={{ listStyleType: 'disc' }}>{listItemElements}</ul>
+                </div>
               )}
               <div
                 className={cn(
