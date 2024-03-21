@@ -1,18 +1,20 @@
+import { getUserSubscriptionPlan } from '@/lib/stripe'
 import {
   LoginLink,
   RegisterLink,
   getKindeServerSession,
 } from '@kinde-oss/kinde-auth-nextjs/server'
-import { ArrowRight, SearchIcon } from 'lucide-react'
+import { ArrowRight, Gem, SearchIcon } from 'lucide-react'
 import Link from 'next/link'
 import MaxWidthWrapper from './MaxWidthWrapper'
 import MobileNav from './MobileNav'
 import UserAccountNav from './UserAccountNav'
 import { buttonVariants } from './ui/button'
 
-const Navbar = () => {
+const Navbar = async () => {
   const { getUser } = getKindeServerSession()
   const user = getUser()
+  const subscriptionPlan = await getUserSubscriptionPlan()
 
   return (
     <nav className="sticky h-14 inset-x-0 top-0 z-30 w-full border-b border-gray-200 bg-white/75 backdrop-blur-lg transition-all">
@@ -55,6 +57,18 @@ const Navbar = () => {
               </>
             ) : (
               <>
+                {user && !subscriptionPlan?.isSubscribed && (
+                  <Link
+                    href="/pricing"
+                    className={buttonVariants({
+                      variant: 'ghost',
+                      size: 'sm',
+                    })}
+                  >
+                    <Gem className="text-primary h-4 w-4 mr-1.5" /> Upgrade
+                  </Link>
+                )}
+
                 <Link
                   href="/dashboard"
                   className={buttonVariants({
