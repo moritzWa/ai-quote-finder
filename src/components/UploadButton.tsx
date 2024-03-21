@@ -104,7 +104,7 @@ const CustomUploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
           </>
         )}
       </div>
-      old dropzone
+      old vanilla react-dropzone dropzone
       <Dropzone
         // @ts-ignore
         onUploadError={(error: Error) => {
