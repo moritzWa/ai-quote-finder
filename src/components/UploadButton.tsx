@@ -1,8 +1,10 @@
 'use client'
 
 import { trpc } from '@/app/_trpc/client'
+import { OurFileRouter } from '@/app/api/uploadthing/core'
 import { freePlan, proPlan } from '@/config/stripe'
 import { useUploadThing } from '@/lib/uploadthing'
+import { UploadDropzone } from '@uploadthing/react'
 import { Cloud, File, Loader2, UploadIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -15,7 +17,7 @@ import { Progress } from './ui/progress'
 import { Switch } from './ui/switch'
 import { useToast } from './ui/use-toast'
 
-const UploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
+const CustomUploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
   const router = useRouter()
 
   const [isUploading, setIsUploading] = useState<boolean>(false)
@@ -26,6 +28,13 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
   const { startUpload } = useUploadThing(
     isSubscribed ? 'proPlanUploader' : 'freePlanUploader',
   )
+
+  // const {
+  //   startUpload,
+  //   onUploadError: (error) => {
+  //     console.error('Error during upload:', error);
+  //   },
+  // } = useUploadThing(isSubscribed ? 'proPlanUploader' : 'freePlanUploader');
 
   const {
     data: userPreference,
@@ -95,8 +104,12 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
           </>
         )}
       </div>
-
+      old dropzone
       <Dropzone
+        // @ts-ignore
+        onUploadError={(error: Error) => {
+          alert(`ERROR! ${error.message}`)
+        }}
         multiple={false}
         onDrop={async (acceptedFile) => {
           setIsUploading(true)
@@ -107,6 +120,8 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
           const res = await startUpload(acceptedFile)
 
           if (!res) {
+            console.log('res vaule from startUpload', res)
+
             return toast({
               title: 'Something went wrong',
               description: 'Please try again later',
@@ -195,6 +210,25 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
           </div>
         )}
       </Dropzone>
+      new dropzone
+      <UploadDropzone<OurFileRouter, 'freePlanUploader' | 'proPlanUploader'>
+        endpoint={isSubscribed ? 'proPlanUploader' : 'freePlanUploader'}
+        onClientUploadComplete={(res: any) => {
+          // Do something with the response
+          console.log('Files: ', res)
+          alert('Upload Completed')
+          router.push(`/dashboard/${res[0].id}`)
+        }}
+        onUploadError={(error: Error) => {
+          alert(`ERROR! ${error.message}`)
+        }}
+        onUploadBegin={(name: any) => {
+          // Do something once upload begins
+          console.log('Uploading: ', name)
+          setIsUploading(true)
+          startSimulatedProgress()
+        }}
+      />
     </>
   )
 }
@@ -219,7 +253,7 @@ const UploadButton = ({ isSubscribed }: { isSubscribed: boolean }) => {
       </DialogTrigger>
 
       <DialogContent>
-        <UploadDropzone isSubscribed={isSubscribed} />
+        <CustomUploadDropzone isSubscribed={isSubscribed} />
       </DialogContent>
     </Dialog>
   )
