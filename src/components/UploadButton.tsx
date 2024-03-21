@@ -151,7 +151,8 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
                   </p>
                   <p className="text-xs text-zinc-500">
                     PDF (up to{' '}
-                    {isSubscribed ? freePlan.maxFileSize : proPlan.maxFileSize})
+                    {!isSubscribed ? freePlan.maxFileSize : proPlan.maxFileSize}
+                    )
                   </p>
                 </div>
 
