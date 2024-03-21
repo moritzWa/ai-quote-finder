@@ -6,7 +6,7 @@ import { freePlan, proPlan } from '@/config/stripe'
 import { UploadStatus } from '@prisma/client'
 import { TRPCError } from '@trpc/server'
 import { getHTTPStatusCodeFromError } from '@trpc/server/http'
-import { ChevronLeft, Loader2, XCircle } from 'lucide-react'
+import { ChevronLeft, Gem, Loader2, XCircle } from 'lucide-react'
 import Link from 'next/link'
 import { buttonVariants } from '../ui/button'
 import { ChatContextProvider } from './ChatContext'
@@ -87,16 +87,27 @@ const ChatWrapper = ({ fileId, isSubscribed }: ChatWrapperProps) => {
               {isSubscribed ? proPlan.pagesPerPdf : freePlan.pagesPerPdf} pages
               per PDF.
             </p>
-            <Link
-              href="/dashboard"
-              className={buttonVariants({
-                variant: 'secondary',
-                className: 'mt-4',
-              })}
-            >
-              <ChevronLeft className="h-3 w-3 mr-1.5" />
-              Back
-            </Link>
+            <div className="flex gap-2 mt-4">
+              <Link
+                href="/dashboard"
+                className={buttonVariants({
+                  variant: 'secondary',
+                  className: '',
+                })}
+              >
+                <ChevronLeft className="h-3 w-3" />
+                Back
+              </Link>
+              <Link
+                href="/pricing"
+                className={buttonVariants({
+                  variant: 'default',
+                  size: 'sm',
+                })}
+              >
+                <Gem className="text-white h-4 w-4 mr-1.5" /> Upgrade
+              </Link>
+            </div>
           </div>
         </div>
 

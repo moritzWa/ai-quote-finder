@@ -57,6 +57,8 @@ const onUploadComplete = async ({
     },
   })
 
+  console.log('now in onUploadComplet. isFileExist', isFileExist)
+
   if (isFileExist) return
 
   const createdFile = await db.file.create({
@@ -89,6 +91,15 @@ const onUploadComplete = async ({
     const isProExceeded = pagesAmt > proPlan!.pagesPerPdf
     const isFreeExceeded = pagesAmt > freePlan!.pagesPerPdf
 
+    console.log('isProExceeded', isProExceeded, pagesAmt, proPlan!.pagesPerPdf)
+    console.log(
+      'isFreeExceeded',
+      isFreeExceeded,
+      pagesAmt,
+      freePlan!.pagesPerPdf,
+    )
+    console.log('isSubscribed', isSubscribed)
+
     if ((isSubscribed && isProExceeded) || (!isSubscribed && isFreeExceeded)) {
       await db.file.update({
         data: {
@@ -98,6 +109,7 @@ const onUploadComplete = async ({
           id: createdFile.id,
         },
       })
+      return
     }
 
     // vectorize & index text
