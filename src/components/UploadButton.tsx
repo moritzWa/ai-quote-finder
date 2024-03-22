@@ -16,7 +16,13 @@ import { Progress } from './ui/progress'
 import { Switch } from './ui/switch'
 import { useToast } from './ui/use-toast'
 
-const CustomUploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
+const CustomUploadDropzone = ({
+  isSubscribed,
+  closeDialog,
+}: {
+  isSubscribed: boolean
+  closeDialog: () => void
+}) => {
   const router = useRouter()
 
   const [isUploading, setIsUploading] = useState<boolean>(false)
@@ -26,14 +32,29 @@ const CustomUploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
 
   const { startUpload } = useUploadThing(
     isSubscribed ? 'proPlanUploader' : 'freePlanUploader',
-  )
+    {
+      onUploadError: (error) => {
+        console.log('onUploadError - Upload error:', JSON.stringify(error))
+        toast({
+          title: 'Something went wrong (check file size)',
+          description: (
+            <>
+              Please try again later. Note that you can only upload files up to{' '}
+              {possiblePlanFileSize}. Upgrade{' '}
+              <a className="underline" href="/pricing">
+                here
+              </a>
+              .
+            </>
+          ),
+          variant: 'default',
+        })
 
-  // const {
-  //   startUpload,
-  //   onUploadError: (error) => {
-  //     console.error('Error during upload:', error);
-  //   },
-  // } = useUploadThing(isSubscribed ? 'proPlanUploader' : 'freePlanUploader');
+        setIsUploading(false)
+        closeDialog()
+      },
+    },
+  )
 
   const {
     data: userPreference,
@@ -109,10 +130,6 @@ const CustomUploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
       </div>
       old vanilla react-dropzone dropzone
       <Dropzone
-        // @ts-ignore
-        onUploadError={(error: Error) => {
-          alert(`ERROR! ${error.message}`)
-        }}
         multiple={false}
         onDrop={async (acceptedFile) => {
           setIsUploading(true)
@@ -127,7 +144,16 @@ const CustomUploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
 
             return toast({
               title: 'Something went wrong (check file size)',
-              description: `Please try again later. Note that you can only upload files up to ${possiblePlanFileSize}`,
+              description: (
+                <>
+                  Please try again later. Note that you can only upload files up
+                  to {possiblePlanFileSize}. Upgrade{' '}
+                  <a className="underline" href="/pricing">
+                    here
+                  </a>
+                  .
+                </>
+              ),
               variant: 'default',
             })
           }
@@ -254,7 +280,10 @@ const UploadButton = ({ isSubscribed }: { isSubscribed: boolean }) => {
       </DialogTrigger>
 
       <DialogContent>
-        <CustomUploadDropzone isSubscribed={isSubscribed} />
+        <CustomUploadDropzone
+          isSubscribed={isSubscribed}
+          closeDialog={() => setIsOpen(false)}
+        />
       </DialogContent>
     </Dialog>
   )
