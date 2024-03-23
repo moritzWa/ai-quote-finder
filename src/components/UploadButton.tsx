@@ -26,8 +26,11 @@ const CustomUploadDropzone = ({
   const router = useRouter()
 
   const [isUploading, setIsUploading] = useState<boolean>(false)
-
   const [uploadProgress, setUploadProgress] = useState<number>(0)
+  const [uploadError, setUploadError] = useState<React.ReactElement | null>(
+    null,
+  )
+
   const { toast } = useToast()
 
   const { startUpload } = useUploadThing(
@@ -35,23 +38,39 @@ const CustomUploadDropzone = ({
     {
       onUploadError: (error) => {
         console.log('onUploadError - Upload error:', JSON.stringify(error))
-        toast({
-          title: 'Something went wrong (check file size)',
-          description: (
+        if (
+          // @ts-ignore
+          error.data?.cause?.error ===
+          'One or more files are bigger than allowed for their type'
+        ) {
+          setUploadError(
             <>
-              Please try again later. Note that you can only upload files up to{' '}
-              {possiblePlanFileSize}. Upgrade{' '}
+              One or more files are bigger than allowed for their type. Upgrade{' '}
               <a className="underline" href="/pricing">
                 here
               </a>
               .
-            </>
-          ),
-          variant: 'default',
-        })
+            </>,
+          )
+        } else {
+          toast({
+            title: 'Something went wrong (check file size)',
+            description: (
+              <>
+                Please try again later. Note that you can only upload files up
+                to {possiblePlanFileSize}. Upgrade{' '}
+                <a className="underline" href="/pricing">
+                  here
+                </a>
+                .
+              </>
+            ),
+            variant: 'default',
+          })
 
-        setIsUploading(false)
-        closeDialog()
+          setIsUploading(false)
+          closeDialog()
+        }
       },
     },
   )
@@ -128,7 +147,15 @@ const CustomUploadDropzone = ({
           </>
         )}
       </div>
-      old vanilla react-dropzone dropzone
+      {uploadError && (
+        <div
+          className="bg-red-100 border border-red-400 text-red-800 px-4 py-3 rounded-lg relative"
+          role="alert"
+        >
+          <strong className="font-bold">Upload failed!</strong>
+          <span className="block sm:inline"> {uploadError} </span>
+        </div>
+      )}
       <Dropzone
         multiple={false}
         onDrop={async (acceptedFile) => {
@@ -237,25 +264,6 @@ const CustomUploadDropzone = ({
           </div>
         )}
       </Dropzone>
-      {/* new dropzone
-      <UploadDropzone<OurFileRouter, 'freePlanUploader' | 'proPlanUploader'>
-        endpoint={isSubscribed ? 'proPlanUploader' : 'freePlanUploader'}
-        onClientUploadComplete={(res: any) => {
-          // Do something with the response
-          console.log('Files: ', res)
-          alert('Upload Completed')
-          router.push(`/dashboard/${res[0].id}`)
-        }}
-        onUploadError={(error: Error) => {
-          console.log(error)
-        }}
-        onUploadBegin={(name: any) => {
-          // Do something once upload begins
-          console.log('Uploading: ', name)
-          setIsUploading(true)
-          startSimulatedProgress()
-        }}
-      /> */}
     </>
   )
 }
