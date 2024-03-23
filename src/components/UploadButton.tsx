@@ -169,7 +169,6 @@ const CustomUploadDropzone = ({
           if (!res) {
             console.log('res vaule from startUpload', res)
 
-            // Clear the progress interval and set upload progress back to 0
             clearInterval(progressInterval)
             setUploadProgress(0)
             setIsUploading(false)
@@ -221,7 +220,8 @@ const CustomUploadDropzone = ({
                       <File className="h-4 w-4 text-blue-500" />
                     </div>
                     <div className="px-3 py-2 h-full text-sm truncate">
-                      {acceptedFiles[0].name}
+                      {acceptedFiles[0].name} (
+                      {(acceptedFiles[0].size / 1048576).toFixed(2)} MB)
                     </div>
                   </div>
                 ) : null}
