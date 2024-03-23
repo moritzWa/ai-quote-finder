@@ -169,22 +169,12 @@ const CustomUploadDropzone = ({
           if (!res) {
             console.log('res vaule from startUpload', res)
 
-            return toast({
-              title: 'Something went wrong (check file size)',
-              description: (
-                <>
-                  Please try again later. Note that you can only upload files up
-                  to {possiblePlanFileSize}. Upgrade{' '}
-                  <a className="underline" href="/pricing">
-                    here
-                  </a>
-                  .
-                </>
-              ),
-              variant: 'default',
-            })
+            // Clear the progress interval and set upload progress back to 0
+            clearInterval(progressInterval)
+            setUploadProgress(0)
+            setIsUploading(false)
+            return
           }
-
           const [fileResponse] = res
 
           const key = fileResponse?.key
