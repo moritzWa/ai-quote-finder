@@ -4,6 +4,7 @@ import { trpc } from '@/app/_trpc/client'
 // import { OurFileRouter } from '@/app/api/uploadthing/core'
 import { freePlan, proPlan } from '@/config/stripe'
 import { useUploadThing } from '@/lib/uploadthing'
+import clsx from 'clsx'
 import { Cloud, File, Loader2, UploadIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -213,11 +214,15 @@ const CustomUploadDropzone = ({
                     PDF (up to {possiblePlanFileSize})
                   </p>
                 </div>
-
                 {acceptedFiles && acceptedFiles[0] ? (
                   <div className="max-w-xs bg-white flex items-center rounded-md overflow-hidden outline outline-[1px] outline-zinc-200 divide-x divide-zinc-200">
                     <div className="px-3 py-2 h-full grid place-items-center">
-                      <File className="h-4 w-4 text-blue-500" />
+                      <File
+                        className={clsx(
+                          'h-4 w-4',
+                          uploadError ? 'text-red-500' : 'text-blue-500',
+                        )}
+                      />
                     </div>
                     <div className="px-3 py-2 h-full text-sm truncate">
                       {acceptedFiles[0].name} (
