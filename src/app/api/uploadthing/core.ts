@@ -16,11 +16,16 @@ const f = createUploadthing({
    * Log out more information about the error, but don't return it to the client
    * @see https://docs.uploadthing.com/errors#error-formatting
    */
+
+  // @ts-ignore
   errorFormatter: (err) => {
     console.log('Error uploading file', err.message)
     console.log('  - Above error caused by:', err.cause)
 
-    return { message: err.message }
+    return {
+      message: err.message,
+      cause: err.cause,
+    }
   },
 })
 
