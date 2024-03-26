@@ -6,14 +6,14 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/b
 
 // TODO: prevent this from re-rerendering
 const PdfPreview = ({ file }: { file: { url: string } }) => {
-  const fileUrl = file.url.replace(
-    'https://uploadthing-prod.s3.us-west-2.amazonaws.com/',
-    'https://utfs.io/f/',
-  )
+  // const fileUrl = file.url.replace(
+  //   'https://uploadthing-prod.s3.us-west-2.amazonaws.com/',
+  //   'https://utfs.io/f/',
+  // )
 
   return (
     <div className="h-[150px]">
-      <Document file={fileUrl}>
+      <Document file={file.url}>
         <Thumbnail
           pageNumber={1}
           height={200}

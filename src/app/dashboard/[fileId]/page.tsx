@@ -30,10 +30,10 @@ const Page = async ({ params }: PageProps) => {
   const plan = await getUserSubscriptionPlan()
 
   // TODO figure out why this is necessary
-  const fileUrl = file.url.replace(
-    'https://uploadthing-prod.s3.us-west-2.amazonaws.com/',
-    'https://utfs.io/f/',
-  )
+  // const fileUrl = file.url.replace(
+  //   'https://uploadthing-prod.s3.us-west-2.amazonaws.com/',
+  //   'https://utfs.io/f/',
+  // )
 
   return (
     <>
@@ -43,7 +43,7 @@ const Page = async ({ params }: PageProps) => {
           <div className="flex-1 xl:flex">
             <div className="h-full xl:flex-1">
               {/* Main area */}
-              <PdfRenderer url={fileUrl} />
+              <PdfRenderer url={file.url} />
             </div>
           </div>
 
