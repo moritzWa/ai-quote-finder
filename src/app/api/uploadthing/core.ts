@@ -76,26 +76,31 @@ const onUploadComplete = async ({
     },
   })
 
-  console.log('now in onUploadComplet. isFileExist', isFileExist)
+  // console.log(
+  //   'now in onUploadComplet. isFileExist:',
+  //   isFileExist,
+  //   'file.url',
+  //   file.url,
+  // )
 
   if (isFileExist) return
+
+  // https://uploadthing-prod.s3.us-west-2.amazonaws.com/
+  // https://utfs.io/f/
 
   const createdFile = await db.file.create({
     data: {
       key: file.key,
       name: file.name,
       userId: metadata.userId,
-      url: `https://uploadthing-prod.s3.us-west-2.amazonaws.com/${file.key}`,
+      url: file.url,
       uploadStatus: UploadStatus.PROCESSING,
       private: metadata.userPrefersPrivateUpload,
     },
   })
 
   try {
-    const response = await fetch(
-      `https://uploadthing-prod.s3.us-west-2.amazonaws.com/${file.key}`,
-    )
-
+    const response = await fetch(file.url)
     const blob = await response.blob()
 
     const loader = new PDFLoader(blob)
