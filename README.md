@@ -47,3 +47,15 @@ Run the Prisma Client:
 ```bash
 npx prisma studio
 ```
+
+Update prisma schema:
+
+```bash
+npx prisma db push
+```
+
+Generate prisma schema types:
+
+```bash
+npx prisma generate
+```
