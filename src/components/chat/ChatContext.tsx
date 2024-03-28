@@ -10,7 +10,7 @@ type StreamResponse = {
   message: string
   handleInputChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void
   isLoading: boolean
-  isLimitReached: boolean
+  isLimitReachedError: null | string
 }
 
 export const ChatContext = createContext<StreamResponse>({
@@ -18,7 +18,7 @@ export const ChatContext = createContext<StreamResponse>({
   message: '',
   handleInputChange: () => {},
   isLoading: false,
-  isLimitReached: false,
+  isLimitReachedError: null,
 })
 
 interface Props {
@@ -29,7 +29,7 @@ interface Props {
 export const ChatContextProvider = ({ fileId, children }: Props) => {
   const [message, setMessage] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [isLimitReached, setIsLimitReached] = useState<boolean>(false)
+  const [isLimitReachedError, setIsLimitReached] = useState<null | string>(null)
 
   const utils = trpc.useContext()
 
@@ -49,7 +49,7 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
 
       if (!response.ok) {
         if (response.status === 403) {
-          setIsLimitReached(true)
+          setIsLimitReached(await response.text())
           throw new Error(await response.text())
         }
         throw new Error('Failed to send message')
@@ -238,7 +238,7 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
         message,
         handleInputChange,
         isLoading,
-        isLimitReached,
+        isLimitReachedError
       }}
     >
       {children}

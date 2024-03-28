@@ -1,3 +1,4 @@
+import { freePlan } from '@/config/stripe'
 import { Send } from 'lucide-react'
 import { useContext, useRef } from 'react'
 import { Button } from '../ui/button'
@@ -9,8 +10,13 @@ interface ChatInputProps {
 }
 
 const ChatInput = ({ isDisabled }: ChatInputProps) => {
-  const { addMessage, handleInputChange, isLoading, isLimitReached, message } =
-    useContext(ChatContext)
+  const {
+    addMessage,
+    handleInputChange,
+    isLoading,
+    isLimitReachedError,
+    message,
+  } = useContext(ChatContext)
 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
@@ -19,6 +25,24 @@ const ChatInput = ({ isDisabled }: ChatInputProps) => {
       <div className="mx-2 flex flex-row gap-3 md:mx-4 md:last:mb-6 lg:mx-auto lg:max-w-2xl xl:max-w-3xl">
         <div className="relative flex h-full flex-1 items-stretch md:flex-col">
           <div className="relative flex flex-col w-full flex-grow p-4">
+            {isLimitReachedError && (
+              <div
+                className="bg-purple-100 mb-6 flex flex-col border border-purple-400 text-purple-800 px-4 py-3 rounded-lg relative"
+                role="alert"
+              >
+                <strong className="font-bold">Message Limit Reached</strong>
+                <span className="block sm:inline">
+                  {isLimitReachedError} You can only process up to{' '}
+                  {freePlan.maxMesages} in total and{' '}
+                  {freePlan.maxMessagesPerDay} messages per day. Upgrade{' '}
+                  <a className="underline" href="/pricing">
+                    here
+                  </a>
+                  .
+                </span>
+              </div>
+            )}
+
             <div className="relative">
               <Textarea
                 rows={1}
@@ -41,7 +65,9 @@ const ChatInput = ({ isDisabled }: ChatInputProps) => {
               />
 
               <Button
-                disabled={isLoading || isDisabled || isLimitReached}
+                disabled={
+                  isLoading || isDisabled || isLimitReachedError !== null
+                }
                 className="absolute bottom-[5px] right-[5px]"
                 aria-label="send message"
                 onClick={() => {

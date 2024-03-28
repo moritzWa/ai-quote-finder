@@ -2,6 +2,7 @@ import { trpc } from '@/app/_trpc/client'
 import { INFINITE_QUERY_LIMIT } from '@/config/infinite-query'
 import { ExtendedMessage } from '@/types/message'
 import { useIntersection } from '@mantine/hooks'
+import clsx from 'clsx'
 import { Loader2, MessageSquare } from 'lucide-react'
 import { useContext, useEffect, useRef } from 'react'
 import Skeleton from 'react-loading-skeleton'
@@ -20,7 +21,8 @@ export interface LoadingMessage {
 }
 
 const Messages = ({ fileId }: MessagesProps) => {
-  const { isLoading: isAiThinking } = useContext(ChatContext)
+  const { isLoading: isAiThinking, isLimitReachedError } =
+    useContext(ChatContext)
 
   const { data, isLoading, fetchNextPage } =
     trpc.getFileMessages.useInfiniteQuery(
@@ -66,7 +68,14 @@ const Messages = ({ fileId }: MessagesProps) => {
   }, [entry, fetchNextPage])
 
   return (
-    <div className="flex max-h-[calc(100vh-3.5rem-7rem)] border-zinc-200 flex-1 flex-col-reverse gap-4 p-4 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">
+    <div
+      className={clsx(
+        'flex max-h-[calc(100vh-3.5rem-7rem)] border-zinc-200 flex-1 flex-col-reverse gap-4 p-4 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch',
+        isLimitReachedError
+          ? 'max-h-[calc(100vh-3.5rem-7rem-9rem)]'
+          : 'max-h-[calc(100vh-3.5rem-7rem)]',
+      )}
+    >
       {combinedMessages && combinedMessages.length > 0 ? (
         combinedMessages.map((message, i) => {
           const isNextMessageSamePerson =
