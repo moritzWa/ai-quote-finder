@@ -16,6 +16,7 @@ export const freePlan = {
   quota: 0,
   pagesPerPdf: 300,
   maxFileSize: '4MB' as PlanMaxFileSizes,
+  maxMesagesPerMonth: 25,
   features: ['4MB upload limit', 'limited to 300 pages per file'],
 }
 

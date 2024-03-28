@@ -7,6 +7,8 @@ import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
 import { PineconeStore } from 'langchain/vectorstores/pinecone'
 import { NextRequest } from 'next/server'
 
+import { freePlan } from '@/config/stripe'
+import { getUserSubscriptionPlan } from '@/lib/stripe'
 import { OpenAIStream, StreamingTextResponse } from 'ai'
 
 export const POST = async (req: NextRequest) => {
@@ -18,6 +20,31 @@ export const POST = async (req: NextRequest) => {
   const { id: userId } = user
 
   if (!userId) return new Response('Unauthorized', { status: 401 })
+
+  // get user from db
+  const dbUser = await db.user.findFirst({
+    where: {
+      id: userId,
+    },
+  })
+
+  if (!dbUser) return new Response('Unauthorized', { status: 401 })
+
+  const subscriptionPlan = await getUserSubscriptionPlan()
+
+  // Check if user has reached the message limit
+  if (
+    !subscriptionPlan.isSubscribed &&
+    dbUser.totalMessagesUsedThisMonth >= freePlan.maxMesagesPerMonth
+  ) {
+    return new Response('Free plan message limit reached', { status: 403 })
+  }
+
+  // Increment the message count
+  await db.user.update({
+    where: { id: userId },
+    data: { totalMessagesUsedThisMonth: { increment: 1 } },
+  })
 
   const { fileId, message } = SendMessageValidator.parse(body)
 
