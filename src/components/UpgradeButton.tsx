@@ -5,6 +5,8 @@ import { ArrowRight } from 'lucide-react'
 import { Button } from './ui/button'
 
 const UpgradeButton = () => {
+  // TODO: show your current plan if they are already a pro user
+
   const { mutate: createStripeSession } = trpc.createStripeSession.useMutation({
     onSuccess: ({ url }) => {
       window.location.href = url ?? '/dashboard/billing'
