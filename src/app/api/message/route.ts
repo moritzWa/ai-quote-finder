@@ -55,15 +55,15 @@ export const POST = async (req: NextRequest) => {
   // Check if user has reached the total message limit
   console.log(
     dbUser.totalMessagesUsed,
-    freePlan.maxMesages,
+    dbUser.totalMessagesUsedToday,
     dbUser.totalMessagesUsed >= freePlan.maxMesages,
     dbUser.totalMessagesUsedToday >= freePlan.maxMessagesPerDay,
   )
 
   if (
     !subscriptionPlan.isSubscribed &&
-    dbUser.totalMessagesUsed >= freePlan.maxMesages &&
-    dbUser.totalMessagesUsedToday >= freePlan.maxMessagesPerDay
+    (dbUser.totalMessagesUsed >= freePlan.maxMesages ||
+      dbUser.totalMessagesUsedToday >= freePlan.maxMessagesPerDay)
   ) {
     const now = new Date()
     const createdAt = new Date(dbUser.createdAt)

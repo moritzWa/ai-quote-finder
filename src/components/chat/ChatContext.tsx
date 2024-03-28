@@ -133,6 +133,7 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
             </>
           ),
           variant: 'default',
+          durationSeconds: 15,
         })
       }
     },
