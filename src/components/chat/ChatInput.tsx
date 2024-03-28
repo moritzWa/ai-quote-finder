@@ -9,7 +9,7 @@ interface ChatInputProps {
 }
 
 const ChatInput = ({ isDisabled }: ChatInputProps) => {
-  const { addMessage, handleInputChange, isLoading, message } =
+  const { addMessage, handleInputChange, isLoading, isLimitReached, message } =
     useContext(ChatContext)
 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -41,7 +41,7 @@ const ChatInput = ({ isDisabled }: ChatInputProps) => {
               />
 
               <Button
-                disabled={isLoading || isDisabled}
+                disabled={isLoading || isDisabled || isLimitReached}
                 className="absolute bottom-[5px] right-[5px]"
                 aria-label="send message"
                 onClick={() => {

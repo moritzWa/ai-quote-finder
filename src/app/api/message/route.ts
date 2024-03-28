@@ -11,6 +11,26 @@ import { freePlan } from '@/config/stripe'
 import { getUserSubscriptionPlan } from '@/lib/stripe'
 import { OpenAIStream, StreamingTextResponse } from 'ai'
 
+import cron from 'node-cron'
+
+cron.schedule('0 * * * *', async () => {
+  const users = await db.user.findMany()
+
+  for (const user of users) {
+    const hoursSinceCreation = Math.floor(
+      Math.abs(new Date().getTime() - new Date(user.createdAt).getTime()) /
+        36e5,
+    )
+
+    if (Number.isInteger(hoursSinceCreation / 24)) {
+      await db.user.update({
+        where: { id: user.id },
+        data: { totalMessagesUsedToday: 0 },
+      })
+    }
+  }
+})
+
 export const POST = async (req: NextRequest) => {
   const body = await req.json()
 
@@ -32,18 +52,41 @@ export const POST = async (req: NextRequest) => {
 
   const subscriptionPlan = await getUserSubscriptionPlan()
 
-  // Check if user has reached the message limit
+  // Check if user has reached the total message limit
+  console.log(
+    dbUser.totalMessagesUsed,
+    freePlan.maxMesages,
+    dbUser.totalMessagesUsed >= freePlan.maxMesages,
+    dbUser.totalMessagesUsedToday >= freePlan.maxMessagesPerDay,
+  )
+
   if (
     !subscriptionPlan.isSubscribed &&
-    dbUser.totalMessagesUsedThisMonth >= freePlan.maxMesagesPerMonth
+    dbUser.totalMessagesUsed >= freePlan.maxMesages &&
+    dbUser.totalMessagesUsedToday >= freePlan.maxMessagesPerDay
   ) {
-    return new Response('Free plan message limit reached', { status: 403 })
+    const now = new Date()
+    const createdAt = new Date(dbUser.createdAt)
+    const nextReset = new Date(createdAt.getTime()) // see chron job
+
+    nextReset.setDate(createdAt.getDate() + 1)
+    const hoursUntilReset = Math.ceil(
+      (nextReset.getTime() - now.getTime()) / (1000 * 60 * 60),
+    )
+
+    return new Response(
+      `Free plan message limit reached. Your limit will reset in ${hoursUntilReset} hours.`,
+      { status: 403 },
+    )
   }
 
-  // Increment the message count
+  // Increment the message count for both totalMessagesUsed and totalMessagesUsedToday
   await db.user.update({
     where: { id: userId },
-    data: { totalMessagesUsedThisMonth: { increment: 1 } },
+    data: {
+      totalMessagesUsed: dbUser.totalMessagesUsed + 1,
+      totalMessagesUsedToday: dbUser.totalMessagesUsedToday + 1,
+    },
   })
 
   const { fileId, message } = SendMessageValidator.parse(body)

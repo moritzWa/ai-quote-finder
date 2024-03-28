@@ -1,5 +1,6 @@
 import { trpc } from '@/app/_trpc/client'
 import { INFINITE_QUERY_LIMIT } from '@/config/infinite-query'
+import { freePlan } from '@/config/stripe'
 import { useMutation } from '@tanstack/react-query'
 import { ReactNode, createContext, useRef, useState } from 'react'
 import { useToast } from '../ui/use-toast'
@@ -9,6 +10,7 @@ type StreamResponse = {
   message: string
   handleInputChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void
   isLoading: boolean
+  isLimitReached: boolean
 }
 
 export const ChatContext = createContext<StreamResponse>({
@@ -16,6 +18,7 @@ export const ChatContext = createContext<StreamResponse>({
   message: '',
   handleInputChange: () => {},
   isLoading: false,
+  isLimitReached: false,
 })
 
 interface Props {
@@ -26,6 +29,7 @@ interface Props {
 export const ChatContextProvider = ({ fileId, children }: Props) => {
   const [message, setMessage] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isLimitReached, setIsLimitReached] = useState<boolean>(false)
 
   const utils = trpc.useContext()
 
@@ -44,6 +48,10 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
       })
 
       if (!response.ok) {
+        if (response.status === 403) {
+          setIsLimitReached(true)
+          throw new Error(await response.text())
+        }
         throw new Error('Failed to send message')
       }
 
@@ -103,13 +111,30 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
         ),
       }
     },
-    onError: (_, __, context) => {
+    onError: (error: Error, __, context) => {
       // move optmistic update into text input
       setMessage(backupMessage.current)
       utils.getFileMessages.setData(
         { fileId },
         { messages: context?.previousMessages ?? [] },
       )
+
+      if (error.message.startsWith('Free plan message limit reached')) {
+        toast({
+          title: 'Free plan message limit reached',
+          description: (
+            <>
+              {error.message} You can only process up to {freePlan.maxMesages}{' '}
+              and {freePlan.maxMessagesPerDay} messages per day. Upgrade{' '}
+              <a className="underline" href="/pricing">
+                here
+              </a>
+              .
+            </>
+          ),
+          variant: 'default',
+        })
+      }
     },
     onSettled: async () => {
       setIsLoading(false)
@@ -212,6 +237,7 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
         message,
         handleInputChange,
         isLoading,
+        isLimitReached,
       }}
     >
       {children}
