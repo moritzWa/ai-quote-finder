@@ -3,15 +3,14 @@ import UpgradeButton from '@/components/UpgradeButton'
 import { buttonVariants } from '@/components/ui/button'
 import { PLANS } from '@/config/stripe'
 import { cn } from '@/lib/utils'
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
+import {
+  KindeUser,
+  getKindeServerSession,
+} from '@kinde-oss/kinde-auth-nextjs/server'
 import { ArrowRight, CheckIcon } from 'lucide-react'
 import Link from 'next/link'
-// import { CheckIcon } from '@heroicons/react/20/solid'
 
-export const PricingPlansUI = () => {
-  const { getUser } = getKindeServerSession()
-  const user = getUser()
-
+export const PricingPlansUI = ({ user }: { user?: KindeUser }) => {
   return (
     <div className="isolate mx-auto mt-10 grid max-w-md grid-cols-1 gap-8 md:max-w-2xl md:grid-cols-2 lg:max-w-4xl xl:mx-0 xl:max-w-none xl:grid-cols-2">
       {PLANS.map((tier) => (
@@ -56,7 +55,6 @@ export const PricingPlansUI = () => {
                 })}
               >
                 {user ? 'Your current Plan' : 'Sign up'}
-                {/* <ArrowRight className="h-5 w-5 ml-1.5" /> */}
               </Link>
             ) : user ? (
               <UpgradeButton />
@@ -65,7 +63,6 @@ export const PricingPlansUI = () => {
                 href="/sign-in"
                 className={buttonVariants({
                   className: 'w-full',
-                  // variant: 'secondary',
                 })}
               >
                 {user ? 'Your current plan' : 'Sign up'}
@@ -95,6 +92,9 @@ export const PricingPlansUI = () => {
 }
 
 const Page = () => {
+  const { getUser } = getKindeServerSession()
+  const user = getUser()
+
   return (
     <>
       <MaxWidthWrapper>
@@ -112,32 +112,7 @@ const Page = () => {
             Try our product for free in a limited capacity. Upgrade to Pro for
             unlimited access.
           </p>
-          {/* <div className="mt-16 flex justify-center">
-            <RadioGroup
-              value={frequency}
-              onChange={setFrequency}
-              className="grid grid-cols-2 gap-x-1 rounded-full p-1 text-center text-xs font-semibold leading-5 ring-1 ring-inset ring-gray-200"
-            >
-              <RadioGroup.Label className="sr-only">
-                Payment frequency
-              </RadioGroup.Label>
-              {pricing.frequencies.map((option) => (
-                <RadioGroup.Option
-                  key={option.value}
-                  value={option}
-                  className={({ checked }) =>
-                    cn(
-                      checked ? 'bg-purple-600 text-white' : 'text-gray-500',
-                      'cursor-pointer rounded-full px-2.5 py-1',
-                    )
-                  }
-                >
-                  <span>{option.label}</span>
-                </RadioGroup.Option>
-              ))}
-            </RadioGroup>
-          </div> */}
-          <PricingPlansUI />
+          <PricingPlansUI user={user} />
         </div>
       </MaxWidthWrapper>
     </>
