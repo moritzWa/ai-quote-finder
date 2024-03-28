@@ -16,6 +16,11 @@ const features = [
     description: 'Stop wasting hours searching for keywords in your documents.',
     emoji: '🔍',
   },
+  {
+    name: 'Bulk upload books from Apple Books - Coming soon!',
+    description: 'Sign up to get notified when we release this feature.',
+    emoji: '📚',
+  },
 ]
 
 export default function Home() {
@@ -23,14 +28,12 @@ export default function Home() {
     <>
       <div className="bg-white">
         <div className="relative isolate overflow-hidden bg-gradient-to-b from-indigo-100/20">
-          <div className="mx-auto max-w-7xl pb-24 sm:pb-32 lg:grid lg:grid-cols-2 lg:gap-x-8 lg:px-8 lg:py-32">
+          <div className="mx-auto max-w-7xl pb-24 sm:pb-28 lg:grid lg:grid-cols-2 lg:gap-x-8 lg:px-8 lg:py-20">
             <div className="px-6 lg:px-0 lg:pt-4">
               <div className="mx-auto max-w-2xl">
                 <div className="max-w-lg">
                   <h1 className="mt-10 text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-                    Find any <span className=" text-purple-600">quote</span> or{' '}
-                    <span className=" text-purple-600">book section</span> in
-                    seconds.
+                    Semantic Search for your books
                   </h1>
                   <p className="mt-6 text-lg leading-8 text-gray-600">
                     Quote Finder allows you to find the best parts of your
@@ -80,7 +83,9 @@ export default function Home() {
             <div className="lg:ml-auto lg:pl-4 lg:pt-4">
               <div className="lg:max-w-lg">
                 <h2 className="text-base font-semibold leading-7 text-purple-600">
-                  Semantic search for all your books
+                  Find any <span className=" text-purple-600">quote</span> or{' '}
+                  <span className=" text-purple-600">book section</span> in
+                  seconds.
                 </h2>
                 <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
                   A better search for book content
@@ -89,7 +94,7 @@ export default function Home() {
                   Search through thousands of pages to find exactly what you
                   need.
                 </p>
-                <dl className="mt-10 max-w-xl space-y-8 text-lg leading-7 text-gray-600 lg:max-w-none">
+                <dl className="mt-8 max-w-xl space-y-8 text-lg leading-7 text-gray-600 lg:max-w-none">
                   {features.map((feature) => (
                     <div key={feature.name} className="relative">
                       <dt className="inline font-semibold text-gray-900">
@@ -118,14 +123,14 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl py-4 px-6 lg:px-8">
         <div className="relative isolate overflow-hidden bg-gray-900 rounded-2xl">
-          <div className="px-6 py-24 sm:px-6 sm:py-32 lg:px-8">
+          <div className="px-6 py-14 sm:px-6 sm:py-20 lg:px-8">
             <div className="mx-auto max-w-2xl text-center">
               <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-                Semantic Search for all your books.
+                Upload and search your first book
                 <br />
-                Start uploading your books now.
+                in a few clicks.
               </h2>
               <p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-gray-300">
                 We created a new way to search books to give you instant access
