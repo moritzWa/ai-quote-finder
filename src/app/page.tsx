@@ -121,7 +121,7 @@ export default function Home() {
                   <blockquote className="text-base leading-7">
                     <p>
                       “I often need to find a passage that is relevant to the
-                      texts I&apos;m writing, so this is perfecte! Every
+                      texts I&apos;m writing, so this is perfect! Every
                       &quot;chat with PDF&quot;-application I tried before was
                       limited to small files or didn&apos;t support EPUBs.”
                     </p>
