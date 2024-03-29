@@ -61,13 +61,16 @@ export default function Home() {
                 aria-hidden="true"
               />
               <div className="shadow-lg md:rounded-3xl inline-block mx-auto p-0">
-                <Image
-                  src="/quote-finder.gif"
-                  alt="demo gif"
+                <video
                   height={500}
                   width={643}
+                  autoPlay
+                  loop
                   className="h-full w-full rounded-lg object-cover md:h-[500px] md:w-[643px] lg:h-[500px] lg:w-[643px]"
-                />
+                >
+                  <source src="/quote-finder.webm" type="video/webm" />
+                  Your browser does not support the video tag
+                </video>
               </div>
             </div>
           </div>
