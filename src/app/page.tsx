@@ -100,16 +100,13 @@ export default function Home() {
 
       {/* chatmode */}
 
-      <div className="overflow-hidden bg-white py-16 sm:py-24">
+      <div className="overflow-hidden bg-white py-16">
         <div className="mx-auto max-w-7xl md:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:grid-cols-2 lg:items-start">
             <div className="px-6 lg:px-0 lg:pr-4 lg:pt-4">
               <div className="mx-auto max-w-2xl lg:mx-0 lg:max-w-lg">
-                <h2 className="text-base font-semibold leading-7 text-indigo-600">
-                  Chat Mode + Quote Mode
-                </h2>
                 <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                  Chat with your books
+                  Chat Mode + Quote Mode
                 </p>
                 <p className="mt-6 text-lg leading-8 text-gray-600">
                   Switch between Chat Mode and Quote Mode. Quote mode retrieves
@@ -127,11 +124,12 @@ export default function Home() {
                     </p>
                   </blockquote>
                   <figcaption className="mt-6 flex gap-x-4 text-sm leading-6">
-                    <img
-                      // src="https://images.unsplash.com/photo-1509783236416-c9ad59bae472?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80"
+                    <Image
                       src="https://images.unsplash.com/photo-1625241152315-4a698f74ceb7?q=80&w=2980&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                      alt=""
+                      alt="user avatar"
                       className="h-6 w-6 flex-none rounded-full"
+                      width={24}
+                      height={24}
                     />
                     <div>
                       <span className="font-semibold text-gray-900">
@@ -143,7 +141,7 @@ export default function Home() {
                 </figure>
               </div>
             </div>
-            <div className="sm:px-6 lg:px-0">
+            <div className="sm:px-6 lg:px-0 mt-auto">
               <div className="mx-auto max-w-2xl sm:mx-0 sm:max-w-none">
                 <DynamicVideoPlayer
                   src="/chatmode.webm"
@@ -177,12 +175,15 @@ export default function Home() {
                 </p>
                 <dl className="mt-8 max-w-xl space-y-8 text-lg leading-7 text-gray-600 lg:max-w-none">
                   {features.map((feature) => (
-                    <div key={feature.name} className="relative">
+                    <div key={feature.name} className="relative pl-9">
                       <dt className="inline font-semibold text-gray-900">
-                        <div className="flex items-center gap-3">
-                          <div>{feature.emoji}</div>
-                          {feature.name}
+                        <div
+                          className="absolute left-1 top-1 h-5 w-5 text-indigo-600"
+                          aria-hidden="true"
+                        >
+                          {feature.emoji}
                         </div>
+                        {feature.name}
                       </dt>{' '}
                       <dd className="inline">{feature.description}</dd>
                     </div>
