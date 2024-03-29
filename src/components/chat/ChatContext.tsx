@@ -95,6 +95,7 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
               id: crypto.randomUUID(),
               text: message,
               isUserMessage: true,
+              quoteMode: quoteMode,
             },
             ...latestPage.messages,
           ]
@@ -197,6 +198,7 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
                       id: 'ai-response',
                       text: accumulatedStreamResponse,
                       isUserMessage: false,
+                      quoteMode: quoteMode,
                     },
                     ...page.messages,
                   ]
