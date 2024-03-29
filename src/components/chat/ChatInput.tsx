@@ -34,7 +34,7 @@ const ChatInput = ({ isDisabled }: ChatInputProps) => {
                 <span className="block sm:inline">
                   {isLimitReachedError} You can only process up to{' '}
                   {freePlan.maxMesages} in total and{' '}
-                  {freePlan.maxMessagesPerDay} messages per day. Upgrade{' '}
+                  <b>{freePlan.maxMessagesPerDay} messages per day</b>. Upgrade{' '}
                   <a className="underline" href="/pricing">
                     here
                   </a>
