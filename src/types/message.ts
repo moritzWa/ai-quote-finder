@@ -10,6 +10,7 @@ type OmitText = Omit<Messages[number], 'text'>
 
 type ExtendedText = {
   text: string
+  quoteMode: boolean
 }
 
 export type ExtendedMessage = OmitText & ExtendedText

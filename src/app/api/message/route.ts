@@ -89,7 +89,7 @@ export const POST = async (req: NextRequest) => {
     },
   })
 
-  const { fileId, message } = SendMessageValidator.parse(body)
+  const { fileId, message, quoteMode } = SendMessageValidator.parse(body)
 
   const file = await db.file.findFirst({
     where: {
@@ -135,37 +135,30 @@ export const POST = async (req: NextRequest) => {
     orderBy: {
       createdAt: 'desc',
     },
-    take: 6,
+    take: 4,
   })
-
   const formattedPreviousMassege = previousMessage?.map((message) => ({
     role: message.isUserMessage ? 'user' : 'assistant',
     content: message.text,
   }))
 
-  // console.log('ai route formattedPreviousMassege', formattedPreviousMassege)
+  let response
 
-  //  PREVIOUS CONVERSATION:
-  // ${formattedPreviousMassege.map((message) => {
-  //   if (message.role === 'user') return `User: ${message.content}\n`
-  //   return `Assistant: ${message.content}\n`
-  // })}
-
-  // \n----------------\n
-
-  const response = await openai.chat.completions.create({
-    model: 'gpt-3.5-turbo',
-    temperature: 0,
-    stream: true,
-    messages: [
-      {
-        role: 'system',
-        content:
-          'Help the user find the relevant quotes from the source material. Write markdown-formatted replies.',
-      },
-      {
-        role: 'user',
-        content: `Return the most relevant quotes from the source material below given the users prompt. 
+  if (quoteMode) {
+    // If quoteMode is true, use this completion
+    response = await openai.chat.completions.create({
+      model: 'gpt-3.5-turbo',
+      temperature: 0,
+      stream: true,
+      messages: [
+        {
+          role: 'system',
+          content:
+            'Help the user find the relevant quotes from the source material. Write markdown-formatted replies.',
+        },
+        {
+          role: 'user',
+          content: `Return the most relevant quotes from the source material below given the users prompt. 
         Format the returned quotes using markdown: 
         1. return the quotes as bullet points (add "- "),
         2. adding paragraph/space between each quote (add "\n\n"),
@@ -183,9 +176,43 @@ export const POST = async (req: NextRequest) => {
           .join('\n\n\n')}
 
         `,
-      },
-    ],
-  })
+        },
+      ],
+    })
+  } else {
+    // If quoteMode is false, use this completion
+    response = await openai.chat.completions.create({
+      model: 'gpt-3.5-turbo',
+      temperature: 0,
+      stream: true,
+      messages: [
+        {
+          role: 'system',
+          content:
+            'Use the following pieces of context (or previous conversaton if needed) to answer the users question in markdown format.',
+        },
+        {
+          role: 'user',
+          content: `Use the following pieces of context (or previous conversaton if needed) to answer the users question in markdown format. \nIf you don't know the answer, just say that you don't know, don't try to make up an answer.
+        
+        \n----------------\n
+        
+        PREVIOUS CONVERSATION:
+        ${formattedPreviousMassege.map((message) => {
+          if (message.role === 'user') return `User: ${message.content}\n`
+          return `Assistant: ${message.content}\n`
+        })}
+        
+        \n----------------\n
+        
+        CONTEXT:
+        ${results.map((r) => r.pageContent).join('\n\n')}
+        
+        USER INPUT: ${message}`,
+        },
+      ],
+    })
+  }
 
   // console.log('response', response)
 
@@ -195,6 +222,7 @@ export const POST = async (req: NextRequest) => {
         data: {
           text: completion,
           isUserMessage: false,
+          quoteMode,
           userId,
           fileId,
         },

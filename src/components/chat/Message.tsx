@@ -160,7 +160,7 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
                 <div className="flex p-1 justify-center items-center">
                   <Loader2 className="h-6 w-6 animate-spin" />
                 </div>
-              ) : message.isUserMessage ? (
+              ) : message.isUserMessage || !message.quoteMode ? (
                 <p>{message.text}</p>
               ) : (
                 <div className="ml-8">

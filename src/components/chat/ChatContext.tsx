@@ -11,6 +11,8 @@ type StreamResponse = {
   handleInputChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void
   isLoading: boolean
   isLimitReachedError: null | string
+  quoteMode: boolean
+  setQuoteMode: (quoteMode: boolean) => void
 }
 
 export const ChatContext = createContext<StreamResponse>({
@@ -19,6 +21,8 @@ export const ChatContext = createContext<StreamResponse>({
   handleInputChange: () => {},
   isLoading: false,
   isLimitReachedError: null,
+  quoteMode: true,
+  setQuoteMode: () => {},
 })
 
 interface Props {
@@ -30,6 +34,7 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
   const [message, setMessage] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isLimitReachedError, setIsLimitReached] = useState<null | string>(null)
+  const [quoteMode, setQuoteMode] = useState(true)
 
   const utils = trpc.useContext()
 
@@ -44,6 +49,7 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
         body: JSON.stringify({
           fileId,
           message,
+          quoteMode,
         }),
       })
 
@@ -238,7 +244,9 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
         message,
         handleInputChange,
         isLoading,
-        isLimitReachedError
+        isLimitReachedError,
+        quoteMode,
+        setQuoteMode,
       }}
     >
       {children}

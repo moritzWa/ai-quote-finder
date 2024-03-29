@@ -1,8 +1,15 @@
 import { freePlan } from '@/config/stripe'
-import { Send } from 'lucide-react'
+import { MessageCircleIcon, QuoteIcon, Send } from 'lucide-react'
 import { useContext, useRef } from 'react'
 import { Button } from '../ui/button'
 import { Textarea } from '../ui/textarea'
+import { Toggle } from '../ui/toggle'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../ui/tooltip'
 import { ChatContext } from './ChatContext'
 
 interface ChatInputProps {
@@ -16,6 +23,8 @@ const ChatInput = ({ isDisabled }: ChatInputProps) => {
     isLoading,
     isLimitReachedError,
     message,
+    quoteMode,
+    setQuoteMode,
   } = useContext(ChatContext)
 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -61,23 +70,72 @@ const ChatInput = ({ isDisabled }: ChatInputProps) => {
                   }
                 }}
                 placeholder="Enter your question..."
-                className="resize-none pr-12 text-base py-3 scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch"
+                className="resize-none pr-28 text-base py-3 scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch"
               />
 
-              <Button
-                disabled={
-                  isLoading || isDisabled || isLimitReachedError !== null
-                }
-                className="absolute bottom-[5px] right-[5px]"
-                aria-label="send message"
-                onClick={() => {
-                  addMessage()
+              <div className="grid gap-4">
+                <Button
+                  disabled={
+                    isLoading || isDisabled || isLimitReachedError !== null
+                  }
+                  className="absolute bottom-[5px] right-[5px]"
+                  aria-label="send message"
+                  onClick={() => {
+                    addMessage()
 
-                  textareaRef.current?.focus()
-                }}
-              >
-                <Send className="h-4 w-4" />
-              </Button>
+                    textareaRef.current?.focus()
+                  }}
+                >
+                  <Send className="h-4 w-4" />
+                </Button>
+
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger className="w-full">
+                      <Toggle
+                        variant="outline"
+                        className="absolute bottom-[5px] right-[57px]"
+                        aria-label="quote"
+                        onClick={() => setQuoteMode(!quoteMode)}
+                      >
+                        {quoteMode ? (
+                          <QuoteIcon className="h-4 w-4" color="purple" />
+                        ) : (
+                          <MessageCircleIcon className="h-4 w-4" color="blue" />
+                        )}
+                      </Toggle>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" sideOffset={50}>
+                      <div className="flex flex-wrap items-center">
+                        <span>Switch between </span>
+                        <span className="text-blue-700 flex items-center">
+                          <MessageCircleIcon
+                            className="inline-block px-1"
+                            height={22}
+                            width={22}
+                          />{' '}
+                          Chat Mode
+                        </span>
+                        <span className="mx-1">and</span>
+                        <span className="text-purple-700 flex items-center">
+                          <QuoteIcon
+                            className="inline-block px-1"
+                            height={22}
+                            width={22}
+                          />{' '}
+                          Quote Mode
+                        </span>
+                        .
+                        <span>
+                          Quote mode retrieves relevant passages. Chat mode uses
+                          your chat history to answer questions and generate
+                          relevant passages.
+                        </span>
+                      </div>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
             </div>
           </div>
         </div>

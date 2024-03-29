@@ -200,6 +200,7 @@ export const appRouter = router({
           isUserMessage: true,
           createdAt: true,
           text: true,
+          quoteMode: true,
         },
       })
 

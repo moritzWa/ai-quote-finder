@@ -59,6 +59,7 @@ model Message {
   text String @db.Text()
 
   isUserMessage Boolean
+  quoteMode Boolean @default(true) // false meas chatMode
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

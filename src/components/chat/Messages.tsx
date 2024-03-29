@@ -18,6 +18,7 @@ export interface LoadingMessage {
   id: string
   isUserMessage: boolean
   text: JSX.Element
+  quoteMode: boolean
 }
 
 const Messages = ({ fileId }: MessagesProps) => {
@@ -43,6 +44,7 @@ const Messages = ({ fileId }: MessagesProps) => {
     createdAt: new Date().toISOString(),
     id: 'loading-message',
     isUserMessage: false,
+    quoteMode: false,
     text: (
       <span className="flex h-full items-center justify-center">
         <Loader2 className="h-4 w-4 animate-spin" />
