@@ -55,7 +55,7 @@ export default function Home() {
     <>
       <div className="bg-white">
         <div className="relative isolate overflow-hidden bg-gradient-to-b from-indigo-100/20">
-          <div className="mx-auto max-w-7xl pb-24 sm:pb-28 lg:grid lg:grid-cols-[40%,60%] lg:gap-x-12 lg:px-8 lg:py-20">
+          <div className="mx-auto max-w-7xl pb-24 sm:pb-28 min-h-[682px] lg:grid lg:grid-cols-[40%,60%] lg:gap-x-12 lg:px-8 lg:py-20">
             <div className="px-6 lg:px-0 lg:pt-4">
               <div className="mx-auto max-w-2xl">
                 <div className="max-w-lg">
@@ -111,23 +111,36 @@ export default function Home() {
                 <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
                   Chat with your books
                 </p>
-                <p className="mt-6 text-lg leading-8 text-gray-600"></p>
-                <dl className="mt-10 max-w-xl space-y-8 text-base leading-7 text-gray-600 lg:max-w-none">
-                  {sectionOneFeatures.map((feature) => (
-                    <div key={feature.name} className="relative pl-9">
-                      <dt className="inline font-semibold text-gray-900">
-                        <div
-                          className="absolute left-1 top-1 h-5 w-5 text-indigo-600"
-                          aria-hidden="true"
-                        >
-                          {feature.emoji}
-                        </div>
-                        {feature.name}
-                      </dt>{' '}
-                      <dd className="inline">{feature.description}</dd>
+                <p className="mt-6 text-lg leading-8 text-gray-600">
+                  Switch between Chat Mode and Quote Mode. Quote mode retrieves
+                  relevant passages. Chat mode uses your chat history to answer
+                  questions and generate relevant passages.
+                </p>
+
+                <figure className="mt-10 border-l-2 border-purple-300 pl-8 text-gray-700">
+                  <blockquote className="text-base leading-7">
+                    <p>
+                      “I often need to find a passage that is relevant to the
+                      texts I&apos;m writing, so this is perfecte! Every
+                      &quot;chat with PDF&quot;-application I tried before was
+                      limited to small files or didn&apos;t support EPUBs.”
+                    </p>
+                  </blockquote>
+                  <figcaption className="mt-6 flex gap-x-4 text-sm leading-6">
+                    <img
+                      // src="https://images.unsplash.com/photo-1509783236416-c9ad59bae472?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80"
+                      src="https://images.unsplash.com/photo-1625241152315-4a698f74ceb7?q=80&w=2980&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                      alt=""
+                      className="h-6 w-6 flex-none rounded-full"
+                    />
+                    <div>
+                      <span className="font-semibold text-gray-900">
+                        Maria Hill
+                      </span>{' '}
+                      – Substack Writer
                     </div>
-                  ))}
-                </dl>
+                  </figcaption>
+                </figure>
               </div>
             </div>
             <div className="sm:px-6 lg:px-0">
