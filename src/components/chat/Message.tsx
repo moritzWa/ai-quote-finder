@@ -74,34 +74,36 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
 
           // Return a JSX element with the quote and a link to the page
           return (
-            <li className="py-2" key={index}>
+            <li className="pb-2" key={index}>
               {quote}{' '}
-              <a
-                className="text-gray-500 hover:text-blue-600"
-                href={`?page=${pageNumber}`}
-                onClick={(e) => {
-                  e.preventDefault()
-                  router.replace(
-                    `${window.location.pathname}?page=${pageNumber}`,
-                  )
-                }}
-              >
-                (Page: {pageNumber})
-              </a>
-              <span
-                className="pl-2 text-gray-500 hover:text-green-500 cursor-pointer"
-                onClick={() => {
-                  navigator.clipboard.writeText(
-                    `${quote} (Page: ${pageNumber})`,
-                  )
-                  return toast({
-                    title: 'Copied Quote to Clipboard',
-                    variant: 'default',
-                  })
-                }}
-              >
-                Copy
-              </span>
+              <div className="pt-2 text-sm flex justify-end">
+                <a
+                  className="text-gray-500 hover:text-blue-600"
+                  href={`?page=${pageNumber}`}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    router.replace(
+                      `${window.location.pathname}?page=${pageNumber}`,
+                    )
+                  }}
+                >
+                  Page: {pageNumber}
+                </a>
+                <span
+                  className="pl-4 text-gray-500 hover:text-green-500 cursor-pointer"
+                  onClick={() => {
+                    navigator.clipboard.writeText(
+                      `${quote} (Page: ${pageNumber})`,
+                    )
+                    return toast({
+                      title: 'Copied Quote to Clipboard',
+                      variant: 'default',
+                    })
+                  }}
+                >
+                  Copy
+                </span>
+              </div>
             </li>
           )
         } else {
@@ -171,7 +173,7 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
                 className={cn(
                   'text-xs select-none w-full flex justify-end gap-3',
                   {
-                    'mt-2': message.id !== 'loading-message',
+                    'mt-1': message.id !== 'loading-message',
                   },
                   {
                     'text-zinc-500': !message.isUserMessage,
