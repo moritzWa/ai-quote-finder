@@ -37,8 +37,7 @@ import PdfFullscreen from './PdfFullscreen'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`
 
-import { EpubViewStyle, ReactReader, ReactReaderStyle } from 'react-reader'
-import { Rendition } from 'epubjs'
+import { ReactReader } from 'react-reader'
 
 interface FileRendererProps {
   url: string
@@ -48,7 +47,6 @@ const FileRenderer = ({ url }: FileRendererProps) => {
   const { toast } = useToast()
 
   const isEpub = url.endsWith('.epub')
-  // const [rendition, setRendition] = useState<Rendition | null>(null)
 
   const [numPages, setNumPages] = useState<number>()
   const [location, setLocation] = useState<string | number>(0)
@@ -185,27 +183,12 @@ const FileRenderer = ({ url }: FileRendererProps) => {
   }
 
   if (isEpub) {
-    const readerStyles = {
-      ...ReactReaderStyle,
-      reader: { width: '100%', height: '100%' },
-    }
-
-    const epubViewStyles = {
-      ...EpubViewStyle,
-      viewer: { width: '100%', height: '100%' },
-    }
-
     return (
-      <div className="w-full bg-white shadow flex flex-col items-center h-full">
-        <PDFToolbar />
-        <ReactReader
-          url={url}
-          location={location}
-          locationChanged={(epubcfi: string) => setLocation(epubcfi)}
-          readerStyles={readerStyles}
-          epubViewStyles={epubViewStyles}
-        />
-      </div>
+      <ReactReader
+        url={url}
+        location={location}
+        locationChanged={(epubcfi: string) => setLocation(epubcfi)}
+      />
     )
   }
 
