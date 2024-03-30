@@ -5,6 +5,7 @@ import { getUserSubscriptionPlan } from '@/lib/stripe'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import { UploadStatus } from '@prisma/client'
 import { TRPCError } from '@trpc/server'
+import { EPubLoader } from 'langchain/document_loaders/fs/epub'
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf'
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
 import { PineconeStore } from 'langchain/vectorstores/pinecone'
@@ -101,11 +102,16 @@ const onUploadComplete = async ({
 
   try {
     const response = await fetch(file.url)
-    const blob = await response.blob()
 
-    const loader = new PDFLoader(blob)
-
-    const pageLevelDocs = await loader.load()
+    let pageLevelDocs
+    if (file.name.endsWith('.epub')) {
+      const loader = new EPubLoader(file.url)
+      pageLevelDocs = await loader.load()
+    } else {
+      const blob = await response.blob()
+      const loader = new PDFLoader(blob)
+      pageLevelDocs = await loader.load()
+    }
 
     const pagesAmt = pageLevelDocs.length
 
