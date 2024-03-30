@@ -2,8 +2,8 @@ import { PricingPlansUI } from '@/components/PricingPlansUI'
 import { buttonVariants } from '@/components/ui/button'
 import { ArrowRight } from 'lucide-react'
 import Image from 'next/image'
-import Link from 'next/link'
 
+import { RegisterLink } from '@kinde-oss/kinde-auth-nextjs/server'
 import dynamic from 'next/dynamic'
 
 const DynamicVideoPlayer = dynamic(() => import('@/components/VideoPlayer'), {
@@ -68,16 +68,13 @@ export default function Home() {
                     pre-selected collection of excellent non-fiction books.
                   </p>
                   <div className="mt-5 flex items-center just gap-x-6">
-                    <Link
+                    <RegisterLink
                       className={buttonVariants({
                         size: 'lg',
-                        className: 'mt-5',
                       })}
-                      href="/dashboard"
                     >
-                      Get started
-                      <ArrowRight className="ml-2 h-5 w-5" />
-                    </Link>
+                      Get started <ArrowRight className="ml-1.5 h-5 w-5" />
+                    </RegisterLink>
                   </div>
                 </div>
               </div>
@@ -219,12 +216,13 @@ export default function Home() {
                 to all your content.
               </p>
               <div className="mt-10 flex items-center justify-center gap-x-6">
-                <a
-                  href="#"
-                  className="rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                <RegisterLink
+                  className={buttonVariants({
+                    size: 'lg',
+                  })}
                 >
-                  Get started
-                </a>
+                  Get started <ArrowRight className="ml-1.5 h-5 w-5" />
+                </RegisterLink>
                 {/* <a
                   href="#"
                   className="text-sm font-semibold leading-6 text-white"
