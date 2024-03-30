@@ -1,4 +1,4 @@
-import PdfRenderer from '@/components/PdfRenderer'
+import FileRenderer from '@/components/PdfRenderer'
 import ChatWrapper from '@/components/chat/ChatWrapper'
 import { db } from '@/db'
 import { getUserSubscriptionPlan } from '@/lib/stripe'
@@ -41,9 +41,9 @@ const Page = async ({ params }: PageProps) => {
         <div className="mx-auto w-full max-w-8xl grow lg:flex xl:px-2">
           {/* Left sidebar & main wrapper */}
           <div className="flex-1 xl:flex">
-            <div className="h-full xl:flex-1">
+            <div className="h-full w-full xl:flex-1">
               {/* Main area */}
-              <PdfRenderer url={file.url} />
+              <FileRenderer url={file.url} />
             </div>
           </div>
 

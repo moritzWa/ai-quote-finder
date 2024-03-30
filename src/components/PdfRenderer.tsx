@@ -37,14 +37,21 @@ import PdfFullscreen from './PdfFullscreen'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`
 
-interface PdfRendererProps {
+import { EpubViewStyle, ReactReader, ReactReaderStyle } from 'react-reader'
+import { Rendition } from 'epubjs'
+
+interface FileRendererProps {
   url: string
 }
 
-const PdfRenderer = ({ url }: PdfRendererProps) => {
+const FileRenderer = ({ url }: FileRendererProps) => {
   const { toast } = useToast()
 
+  const isEpub = url.endsWith('.epub')
+  // const [rendition, setRendition] = useState<Rendition | null>(null)
+
   const [numPages, setNumPages] = useState<number>()
+  const [location, setLocation] = useState<string | number>(0)
   const [currPage, setCurrPage] = useState<number>(1)
   const [scale, setScale] = useState<number>(1)
   const [rotation, setRotation] = useState<number>(0)
@@ -78,12 +85,13 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
     setValue('page', String(page))
   }
 
+  // update location for url changes
   const params = useSearchParams()
-
   useEffect(() => {
     if (params.get('page')) {
       setCurrPage(Number(params.get('page')))
       setValue('page', String(params.get('page')))
+      setLocation(params.get('page')!)
     }
   }, [params])
 
@@ -176,6 +184,31 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
     )
   }
 
+  if (isEpub) {
+    const readerStyles = {
+      ...ReactReaderStyle,
+      reader: { width: '100%', height: '100%' },
+    }
+
+    const epubViewStyles = {
+      ...EpubViewStyle,
+      viewer: { width: '100%', height: '100%' },
+    }
+
+    return (
+      <div className="w-full bg-white shadow flex flex-col items-center h-full">
+        <PDFToolbar />
+        <ReactReader
+          url={url}
+          location={location}
+          locationChanged={(epubcfi: string) => setLocation(epubcfi)}
+          readerStyles={readerStyles}
+          epubViewStyles={epubViewStyles}
+        />
+      </div>
+    )
+  }
+
   return (
     <div className="w-full bg-white shadow flex flex-col items-center h-full">
       <PDFToolbar />
@@ -234,4 +267,4 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
   )
 }
 
-export default PdfRenderer
+export default FileRenderer
