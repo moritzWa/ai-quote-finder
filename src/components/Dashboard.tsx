@@ -18,6 +18,7 @@ import {
 import Link from 'next/link'
 import { useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
+import EpubPreview from './EpubPreview'
 import PdfPreview from './PdfPreview'
 import UploadButton from './UploadButton'
 import { Button } from './ui/button'
@@ -132,7 +133,11 @@ const Dashboard = ({ subscriptionPlan, userId }: PageProps) => {
                   className="flex flex-col gap-2"
                 >
                   <div className="pt-6 px-6 flex w-full items-center justify-between space-x-6">
-                    <PdfPreview file={file} />
+                    {file.url?.endsWith('.pdf') ? (
+                      <PdfPreview file={file} />
+                    ) : (
+                      <EpubPreview file={file} />
+                    )}
                     <div className="flex-1">
                       <div className="flex text-left space-x-3">
                         <h3 className="text-lg line-clamp-3 font-medium text-zinc-900">
