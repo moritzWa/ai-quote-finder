@@ -1,4 +1,4 @@
-import FileRenderer from '@/components/PdfRenderer'
+import FileRenderer from '@/components/FileRenderer'
 import ChatWrapper from '@/components/chat/ChatWrapper'
 import { db } from '@/db'
 import { getUserSubscriptionPlan } from '@/lib/stripe'

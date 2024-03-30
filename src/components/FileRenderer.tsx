@@ -37,7 +37,7 @@ import PdfFullscreen from './PdfFullscreen'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`
 
-import { ReactReader } from 'react-reader'
+import { IReactReaderStyle, ReactReader, ReactReaderStyle } from 'react-reader'
 
 interface FileRendererProps {
   url: string
@@ -93,7 +93,7 @@ const FileRenderer = ({ url }: FileRendererProps) => {
     }
   }, [params])
 
-  const PDFToolbar = () => {
+  const FileToolbar = () => {
     return (
       <div className="h-14 w-full border-b border-zinc-200 flex items-center justify-between px-2">
         <div className="flex items-center gap-1.5">
@@ -102,6 +102,9 @@ const FileRenderer = ({ url }: FileRendererProps) => {
             onClick={() => {
               setCurrPage((prev) => (prev - 1 > 1 ? prev - 1 : 1))
               setValue('page', String(currPage - 1))
+              // handle epub location navigation
+              const locationLeft = Number(location) - 1
+              setLocation(locationLeft)
             }}
             variant="ghost"
             aria-label="previous page"
@@ -135,6 +138,9 @@ const FileRenderer = ({ url }: FileRendererProps) => {
                 prev + 1 > numPages! ? numPages! : prev + 1,
               )
               setValue('page', String(currPage + 1))
+              // handle epub location navigation
+              const locationRight = Number(location) + 1
+              setLocation(locationRight)
             }}
             variant="ghost"
             aria-label="next page"
@@ -182,19 +188,56 @@ const FileRenderer = ({ url }: FileRendererProps) => {
     )
   }
 
+  const theme: IReactReaderStyle = {
+    ...ReactReaderStyle,
+    // arrow
+    arrow: {
+      ...ReactReaderStyle.arrow,
+      color: '#64748b',
+    },
+    arrowHover: {
+      ...ReactReaderStyle.arrowHover,
+      color: '#64748b',
+    },
+
+    // tocArea: {
+    //   ...ReactReaderStyle.tocArea,
+    //   background: 'green',
+    // },
+
+    // toc
+    tocButtonExpanded: {
+      ...ReactReaderStyle.tocButtonExpanded,
+      background: '#f3f4f6',
+    },
+    tocButtonBar: {
+      ...ReactReaderStyle.tocButtonBar,
+      background: 'hsl(var(--foreground))',
+    },
+    tocButton: {
+      ...ReactReaderStyle.tocButton,
+      color: 'green',
+    },
+  }
+
   if (isEpub) {
     return (
       <ReactReader
         url={url}
         location={location}
-        locationChanged={(epubcfi: string) => setLocation(epubcfi)}
+        locationChanged={(epubcfi: string) => {
+          console.log('epubcfi', epubcfi)
+          console.log('location', location)
+          setLocation(epubcfi)
+        }}
+        readerStyles={theme}
       />
     )
   }
 
   return (
     <div className="w-full bg-white shadow flex flex-col items-center h-full">
-      <PDFToolbar />
+      <FileToolbar />
 
       <div className="flex-1 w-full max-h-screen">
         <SimpleBar autoHide={false}>
