@@ -7,12 +7,12 @@ import { UploadStatus } from '@prisma/client'
 import { TRPCError } from '@trpc/server'
 import fs from 'fs'
 import https from 'https'
-import { EPubLoader } from 'langchain/document_loaders/fs/epub'
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf'
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
 import { PineconeStore } from 'langchain/vectorstores/pinecone'
 import { createUploadthing, type FileRouter } from 'uploadthing/next'
 import { UploadThingError } from 'uploadthing/server'
+import { loadEpubFromUrl, parseFileSize } from './utils'
 
 const f = createUploadthing({
   /**
@@ -59,18 +59,6 @@ const middleware = async () => {
     userId: user.id,
     userPrefersPrivateUpload: dbUserSelection.prefersPrivateUpload,
   }
-}
-
-async function downloadFileToString(url: string, destination: string): Promise<string> {
-  const file = fs.createWriteStream(destination);
-  const request = https.get(url, function(response) {
-    response.pipe(file);
-  });
-
-  return new Promise((resolve, reject) => {
-    file.on('finish', () => resolve(destination));
-    file.on('error', reject);
-  });
 }
 
 const onUploadComplete = async ({
@@ -124,11 +112,14 @@ const onUploadComplete = async ({
     if (file.name.endsWith('.epub')) {
       console.log("in if file.name.endsWith('.epub')")
 
-      const filePath = await downloadFileToString(file.url, 'temp.epub');
+      // langchain version
+      // const filePath = await downloadFileToString(file.url, 'temp.epub');
+      // const loader = new EPubLoader(filePath);
+      // pageLevelDocs = await loader.load();
 
-      const loader = new EPubLoader(filePath);
-      pageLevelDocs = await loader.load();
+      pageLevelDocs = await loadEpubFromUrl(file.url)
 
+      console.log('pageLevelDocs', pageLevelDocs)
     } else {
       const blob = await response.blob()
       const loader = new PDFLoader(blob)
@@ -253,19 +244,3 @@ export const ourFileRouter = {
 
 export type OurFileRouter = typeof ourFileRouter
 
-function parseFileSize(fileSizeString: string): number {
-  const [value, unit] = fileSizeString.match(/^(\d+)(\w+)$/)!.slice(1, 3)
-  const valueNum = parseInt(value, 10)
-  switch (unit.toUpperCase()) {
-    case 'B':
-      return valueNum
-    case 'KB':
-      return valueNum * 1024
-    case 'MB':
-      return valueNum * 1024 * 1024
-    case 'GB':
-      return valueNum * 1024 * 1024 * 1024
-    default:
-      throw new Error(`Invalid file size unit: ${unit}`)
-  }
-}

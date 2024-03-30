@@ -126,10 +126,10 @@ export const POST = async (req: NextRequest) => {
   // search for similar messages
   const results = await vectorStore.similaritySearch(message, 7)
 
-  // console.log(
-  //   '8 vector search result mapped',
-  //   await results.map((r) => r.pageContent).join('\n\n'),
-  // )
+  console.log(
+    '8 vector search result mapped',
+    await results.map((r) => r.metadata),
+  )
 
   const previousMessage = await db.message.findMany({
     where: {
