@@ -14,14 +14,14 @@ export const freePlan = {
   },
 
   quota: 0,
-  pagesPerPdf: 300,
+  pagesPerPdf: 400,
   maxFileSize: '4MB' as PlanMaxFileSizes,
   maxMesages: 25,
   maxMessagesPerDay: 5,
   features: [
     'unlimited file uploads',
     '4MB upload limit',
-    'limited to 300 pages per file',
+    'limited to 400 pages per file',
   ],
 }
 
@@ -39,7 +39,7 @@ export const proPlan = {
   },
 
   quota: 10,
-  pagesPerPdf: 600,
+  pagesPerPdf: 1200,
   maxFileSize: '16MB' as PlanMaxFileSizes,
   features: [
     'unlimited messages and files',
