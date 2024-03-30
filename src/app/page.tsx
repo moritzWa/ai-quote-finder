@@ -4,6 +4,7 @@ import { ArrowRight } from 'lucide-react'
 import Image from 'next/image'
 
 import { RegisterLink } from '@kinde-oss/kinde-auth-nextjs/server'
+import clsx from 'clsx'
 import dynamic from 'next/dynamic'
 
 const DynamicVideoPlayer = dynamic(() => import('@/components/VideoPlayer'), {
@@ -213,13 +214,16 @@ export default function Home() {
               </h2>
               <p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-gray-300">
                 We created a new way to search books to give you instant access
-                to all your content.
+                to all your content. Chat with your books now!
               </p>
               <div className="mt-10 flex items-center justify-center gap-x-6">
                 <RegisterLink
-                  className={buttonVariants({
-                    size: 'lg',
-                  })}
+                  className={clsx(
+                    // buttonVariants({
+                    //   size: 'lg',
+                    // }),
+                    'rounded-lg flex flex-row bg-white px-5 py-3 items-center text-base font-semibold text-gray-900 shadow-sm hover:bg-gray-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white',
+                  )}
                 >
                   Get started <ArrowRight className="ml-1.5 h-5 w-5" />
                 </RegisterLink>

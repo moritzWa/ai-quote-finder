@@ -252,7 +252,7 @@ const CustomUploadDropzone = ({
                   type="file"
                   id="dropzone-file"
                   className="hidden"
-                  accept="application/pdf,.pdf,.epub"
+                  accept="application/pdf,.pdf,.epub" // not sure if this accept string is correct
                 />
               </label>
             </div>

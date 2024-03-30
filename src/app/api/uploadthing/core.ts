@@ -187,11 +187,17 @@ export const ourFileRouter = {
     pdf: {
       maxFileSize: freePlan.maxFileSize,
     },
+    'application/epub+zip': {
+      maxFileSize: freePlan.maxFileSize,
+    },
   })
     .middleware(middleware)
     .onUploadComplete(onUploadComplete),
   proPlanUploader: f({
     pdf: {
+      maxFileSize: proPlan!.maxFileSize,
+    },
+    'application/epub+zip': {
       maxFileSize: proPlan!.maxFileSize,
     },
   })
