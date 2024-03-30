@@ -5,6 +5,8 @@ import { getUserSubscriptionPlan } from '@/lib/stripe'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import { UploadStatus } from '@prisma/client'
 import { TRPCError } from '@trpc/server'
+import fs from 'fs'
+import https from 'https'
 import { EPubLoader } from 'langchain/document_loaders/fs/epub'
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf'
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
@@ -59,6 +61,18 @@ const middleware = async () => {
   }
 }
 
+async function downloadFileToString(url: string, destination: string): Promise<string> {
+  const file = fs.createWriteStream(destination);
+  const request = https.get(url, function(response) {
+    response.pipe(file);
+  });
+
+  return new Promise((resolve, reject) => {
+    file.on('finish', () => resolve(destination));
+    file.on('error', reject);
+  });
+}
+
 const onUploadComplete = async ({
   metadata,
   file,
@@ -103,10 +117,18 @@ const onUploadComplete = async ({
   try {
     const response = await fetch(file.url)
 
+    console.log('response', response)
+    console.log('file.name', file.name)
+
     let pageLevelDocs
     if (file.name.endsWith('.epub')) {
-      const loader = new EPubLoader(file.url)
-      pageLevelDocs = await loader.load()
+      console.log("in if file.name.endsWith('.epub')")
+
+      const filePath = await downloadFileToString(file.url, 'temp.epub');
+
+      const loader = new EPubLoader(filePath);
+      pageLevelDocs = await loader.load();
+
     } else {
       const blob = await response.blob()
       const loader = new PDFLoader(blob)
@@ -118,8 +140,8 @@ const onUploadComplete = async ({
     const { subscriptionPlan } = metadata
     const { isSubscribed } = subscriptionPlan
 
-    const isProExceeded = pagesAmt > proPlan!.pagesPerPdf
-    const isFreeExceeded = pagesAmt > freePlan!.pagesPerPdf
+    const isFreePageLimitExceeded = pagesAmt > freePlan!.pagesPerPdf
+    const isProPageLimitExceeded = pagesAmt > proPlan!.pagesPerPdf
 
     const { maxFileSize: freePlanMaxFileSize } = freePlan
     const { maxFileSize: proPlanMaxFileSize } = proPlan!
@@ -129,20 +151,32 @@ const onUploadComplete = async ({
 
     console.log('allowedFileSize', allowedFileSize, 'file.size', file.size)
 
+    // throw erros if the file is too big
     if (file.size > parseFileSize(allowedFileSize)) {
+      console.log('file.size', file.size, 'allowedFileSize', allowedFileSize)
       throw new TRPCError({
         code: 'PAYLOAD_TOO_LARGE',
         message: `File size exceeds the allowed limit of ${allowedFileSize}`,
       })
     }
-
     if (file.size > parseFileSize(allowedFileSize)) {
+      console.log('file.size', file.size, 'allowedFileSize', allowedFileSize)
       throw new UploadThingError(
         `File size exceeds the allowed limit of ${allowedFileSize}`,
       )
     }
 
-    if ((isSubscribed && isProExceeded) || (!isSubscribed && isFreeExceeded)) {
+    if (
+      (isSubscribed && isProPageLimitExceeded) ||
+      (!isSubscribed && isFreePageLimitExceeded)
+    ) {
+      console.log(
+        'in if pages too many',
+        isProPageLimitExceeded,
+        isFreePageLimitExceeded,
+        pagesAmt,
+      )
+
       await db.file.update({
         data: {
           uploadStatus: UploadStatus.FAILED,
@@ -166,6 +200,12 @@ const onUploadComplete = async ({
       namespace: createdFile.id,
     })
 
+    // log out output of PineconeStore.fromDocuments
+    console.log(
+      'pineconeIndex.describeIndexStats()',
+      await pineconeIndex.describeIndexStats(),
+    )
+
     await db.file.update({
       data: {
         uploadStatus: UploadStatus.SUCCESS,
@@ -175,7 +215,7 @@ const onUploadComplete = async ({
       },
     })
   } catch (err) {
-    console.log('err in ', err)
+    console.log('err in onUploadComplete catch. err:', err)
 
     await db.file.update({
       data: {
