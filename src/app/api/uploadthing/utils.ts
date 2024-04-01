@@ -1,5 +1,6 @@
 import EPub from 'epub';
 import fs from 'fs';
+import { htmlToText } from 'html-to-text';
 import https from 'https';
 import path from 'path';
 
@@ -52,7 +53,11 @@ export async function loadEpubFromUrl(url: string) {
 interface Chapter {
   pageContent: string;
   metadata: {
-    chapter?: string;
+    level: number;
+    order: number;
+    title: string;
+    id: string;
+    href: string;
   };
 }
 
@@ -68,10 +73,16 @@ export async function loadEpub(filePath: string): Promise<Chapter[]> {
               if (err) {
                 reject(err);
               } else {
+                // console.log(JSON.stringify(chapter, null, 2))
+
                 resolve({
-                  pageContent: text,
+                  pageContent: htmlToText(text),
                   metadata: {
-                    ...(chapter.title && { chapter: chapter.title, }),
+                    level: chapter.level,
+                    order: chapter.order,
+                    title: chapter.title,
+                    id: chapter.id,
+                    href: chapter.href,
                   },
                 });
               }
