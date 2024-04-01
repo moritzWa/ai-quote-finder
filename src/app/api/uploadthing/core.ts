@@ -5,13 +5,15 @@ import { getUserSubscriptionPlan } from '@/lib/stripe'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import { UploadStatus } from '@prisma/client'
 import { TRPCError } from '@trpc/server'
-import https from 'https'
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf'
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
 import { PineconeStore } from 'langchain/vectorstores/pinecone'
 import { createUploadthing, type FileRouter } from 'uploadthing/next'
 import { UploadThingError } from 'uploadthing/server'
 import { loadEpubFromUrl, parseFileSize } from './utils'
+
+import { UTApi } from "uploadthing/server"
+export const utapi = new UTApi();
 
 const f = createUploadthing({
   /**
@@ -185,14 +187,14 @@ const onUploadComplete = async ({
       openAIApiKey: process.env.OPENAI_API_KEY,
     })
 
-    console.log(`Number of documents: ${pageLevelDocs.length}`);
+    // console.log(`Number of documents: ${pageLevelDocs.length}`);
 
     const tokenCounts = pageLevelDocs.map(doc => doc.pageContent.split(' ').length);
     const totalTokens = tokenCounts.reduce((a, b) => a + b, 0);
     const maxTokens = Math.max(...tokenCounts);
 
-    console.log(`Total tokens: ${totalTokens}`);
-    console.log(`Max tokens in a single document: ${maxTokens}`);
+    // console.log(`Total tokens: ${totalTokens}`);
+    // console.log(`Max tokens in a single document: ${maxTokens}`);
 
     await PineconeStore.fromDocuments(pageLevelDocs, embeddings, {
       pineconeIndex,

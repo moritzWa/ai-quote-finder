@@ -1,9 +1,9 @@
+import { utapi } from '@/app/api/uploadthing/core'
 import { INFINITE_QUERY_LIMIT } from '@/config/infinite-query'
 import { proPlan } from '@/config/stripe'
 import { db } from '@/db'
 import { pinecone } from '@/lib/pinecone'
 import { getUserSubscriptionPlan, stripe } from '@/lib/stripe'
-import { utapi } from '@/lib/uploadthing'
 import { absoluteUrl } from '@/lib/utils'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import { UploadStatus } from '@prisma/client'
@@ -285,8 +285,14 @@ export const appRouter = router({
       if (!file) throw new TRPCError({ code: 'NOT_FOUND' })
 
       // Delete from Pinecone
-      const pineconeIndex = pinecone.Index('ai-quote-finder')
-      await pineconeIndex.namespace(file.id).deleteAll();
+      const index = pinecone.Index('ai-quote-finder')
+      // get all namespaces
+      const indexStats = await index.describeIndexStats() 
+
+
+      if(indexStats.namespaces && indexStats.namespaces.hasOwnProperty(file.id)) {
+        await index.namespace(file.id).deleteAll();
+      }
 
       // Delete from UploadThing
       await utapi.deleteFiles(file.key);
