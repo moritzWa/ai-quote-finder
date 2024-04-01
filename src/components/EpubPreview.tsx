@@ -13,9 +13,11 @@ const EpubPreview = ({ file }: { file: { url: string } }) => {
         height: '100%',
       })
       rendition.display()
-
+  
       return () => {
-        rendition.destroy()
+        if (rendition) {
+          rendition.destroy()
+        }
       }
     }
   }, [file])
