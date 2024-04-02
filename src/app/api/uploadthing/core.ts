@@ -13,8 +13,8 @@ import { createUploadthing, type FileRouter } from 'uploadthing/next'
 import { UploadThingError } from 'uploadthing/server'
 import { countTokens, loadEpubFromUrl, parseFileSize, sanitize } from './utils'
 
-import { UTApi } from "uploadthing/server"
-export const utapi = new UTApi();
+import { UTApi } from 'uploadthing/server'
+export const utapi = new UTApi()
 
 const f = createUploadthing({
   /**
@@ -159,8 +159,10 @@ const onUploadComplete = async ({
       )
     }
 
-    if (process.env.NODE_ENV === 'production' && 
-      (isSubscribed && isProPageLimitExceeded) ||
+    if (
+      (process.env.NODE_ENV === 'production' &&
+        isSubscribed &&
+        isProPageLimitExceeded) ||
       (!isSubscribed && isFreePageLimitExceeded)
     ) {
       console.log(
@@ -189,39 +191,48 @@ const onUploadComplete = async ({
     })
 
     // add token count to metadata
-    pageLevelDocs = pageLevelDocs.map(doc => ({
+    pageLevelDocs = pageLevelDocs.map((doc) => ({
       ...doc,
       metadata: {
         ...doc.metadata,
         tokenCount: countTokens(doc.pageContent),
       },
-    }));
+    }))
 
-    const totalTokens = pageLevelDocs.reduce((sum, doc) => sum + doc.metadata.tokenCount, 0);
-    const maxTokens = Math.max(...pageLevelDocs.map(doc => doc.metadata.tokenCount));
+    const totalTokens = pageLevelDocs.reduce(
+      (sum, doc) => sum + doc.metadata.tokenCount,
+      0,
+    )
+    const maxTokens = Math.max(
+      ...pageLevelDocs.map((doc) => doc.metadata.tokenCount),
+    )
 
-    console.log(`Number of documents: ${pageLevelDocs.length}`);
-    console.log(`Total tokens: ${totalTokens}`);
-    console.log(`Max tokens in a single document: ${maxTokens}`);
+    console.log(`Number of documents: ${pageLevelDocs.length}`)
+    console.log(`Total tokens: ${totalTokens}`)
+    console.log(`Max tokens in a single document: ${maxTokens}`)
 
     // sanitize
-    pageLevelDocs = pageLevelDocs.map(doc => {
-      let content = sanitize(doc.pageContent);
-      content = content === "" ? 'Empty chapter/page' : content;
+    pageLevelDocs = pageLevelDocs.map((doc) => {
+      let content = sanitize(doc.pageContent)
+      content = content === '' ? 'Empty chapter/page' : content
       return {
         ...doc,
         pageContent: content,
-      };
-    });
+      }
+    })
 
     // safe pageLevelDocs.json for debugging
-    fs.writeFile('pageLevelDocs.json', JSON.stringify(pageLevelDocs, null, 2), (err) => {
-      if (err) {
-        console.error('Error writing file:', err);
-      } else {
-        console.log('File written successfully');
-      }
-    });
+    fs.writeFile(
+      `pageLevelDocs${createdFile.name.replace(/([^a-z0-9]+)/gi, '-')}.json`,
+      JSON.stringify(pageLevelDocs, null, 2),
+      (err) => {
+        if (err) {
+          console.error('Error writing file:', err)
+        } else {
+          console.log('File written successfully')
+        }
+      },
+    )
 
     await PineconeStore.fromDocuments(pageLevelDocs, embeddings, {
       pineconeIndex,
@@ -274,4 +285,3 @@ export const ourFileRouter = {
 } satisfies FileRouter
 
 export type OurFileRouter = typeof ourFileRouter
-
