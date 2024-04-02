@@ -1,10 +1,10 @@
 import { db } from '@/db'
 import { openai } from '@/lib/openai'
+import { pinecone } from '@/lib/pinecone'
 import { SendMessageValidator } from '@/lib/validators/sendMessageValidator'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
 import { PineconeStore } from 'langchain/vectorstores/pinecone'
-import { pinecone } from '@/lib/pinecone'
 import { NextRequest } from 'next/server'
 
 import { freePlan } from '@/config/stripe'
@@ -124,10 +124,10 @@ export const POST = async (req: NextRequest) => {
   })
 
   // search for similar messages
-  const results = await vectorStore.similaritySearch(message, 7)
+  const results = await vectorStore.similaritySearch(message, 4)
 
   console.log(
-    '8 vector search result mapped',
+    '4 vector search result mapped',
     await results.map((r) => r.metadata),
   )
 

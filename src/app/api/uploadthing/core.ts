@@ -5,12 +5,13 @@ import { getUserSubscriptionPlan } from '@/lib/stripe'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import { UploadStatus } from '@prisma/client'
 import { TRPCError } from '@trpc/server'
+import fs from 'fs'
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf'
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
 import { PineconeStore } from 'langchain/vectorstores/pinecone'
 import { createUploadthing, type FileRouter } from 'uploadthing/next'
 import { UploadThingError } from 'uploadthing/server'
-import { loadEpubFromUrl, parseFileSize } from './utils'
+import { countTokens, loadEpubFromUrl, parseFileSize, sanitize } from './utils'
 
 import { UTApi } from "uploadthing/server"
 export const utapi = new UTApi();
@@ -158,27 +159,27 @@ const onUploadComplete = async ({
       )
     }
 
-    if (
-      (isSubscribed && isProPageLimitExceeded) ||
-      (!isSubscribed && isFreePageLimitExceeded)
-    ) {
-      console.log(
-        'in if pages too many',
-        isProPageLimitExceeded,
-        isFreePageLimitExceeded,
-        pagesAmt,
-      )
+    // if (
+    //   (isSubscribed && isProPageLimitExceeded) ||
+    //   (!isSubscribed && isFreePageLimitExceeded)
+    // ) {
+    //   console.log(
+    //     'in if pages too many',
+    //     isProPageLimitExceeded,
+    //     isFreePageLimitExceeded,
+    //     pagesAmt,
+    //   )
 
-      await db.file.update({
-        data: {
-          uploadStatus: UploadStatus.FAILED,
-        },
-        where: {
-          id: createdFile.id,
-        },
-      })
-      return
-    }
+    //   await db.file.update({
+    //     data: {
+    //       uploadStatus: UploadStatus.FAILED,
+    //     },
+    //     where: {
+    //       id: createdFile.id,
+    //     },
+    //   })
+    //   return
+    // }
 
     // vectorize & index text
     const pineconeIndex = pinecone.Index('ai-quote-finder')
@@ -187,14 +188,40 @@ const onUploadComplete = async ({
       openAIApiKey: process.env.OPENAI_API_KEY,
     })
 
-    // console.log(`Number of documents: ${pageLevelDocs.length}`);
+    // add token count to metadata
+    pageLevelDocs = pageLevelDocs.map(doc => ({
+      ...doc,
+      metadata: {
+        ...doc.metadata,
+        tokenCount: countTokens(doc.pageContent),
+      },
+    }));
 
-    const tokenCounts = pageLevelDocs.map(doc => doc.pageContent.split(' ').length);
-    const totalTokens = tokenCounts.reduce((a, b) => a + b, 0);
-    const maxTokens = Math.max(...tokenCounts);
+    const totalTokens = pageLevelDocs.reduce((sum, doc) => sum + doc.metadata.tokenCount, 0);
+    const maxTokens = Math.max(...pageLevelDocs.map(doc => doc.metadata.tokenCount));
 
-    // console.log(`Total tokens: ${totalTokens}`);
-    // console.log(`Max tokens in a single document: ${maxTokens}`);
+    console.log(`Number of documents: ${pageLevelDocs.length}`);
+    console.log(`Total tokens: ${totalTokens}`);
+    console.log(`Max tokens in a single document: ${maxTokens}`);
+
+    // sanitize
+    pageLevelDocs = pageLevelDocs.map(doc => {
+      let content = sanitize(doc.pageContent);
+      content = content === "" ? 'Empty chapter/page' : content;
+      return {
+        ...doc,
+        pageContent: content,
+      };
+    });
+
+    // safe pageLevelDocs.json for debugging
+    fs.writeFile('pageLevelDocs.json', JSON.stringify(pageLevelDocs, null, 2), (err) => {
+      if (err) {
+        console.error('Error writing file:', err);
+      } else {
+        console.log('File written successfully');
+      }
+    });
 
     await PineconeStore.fromDocuments(pageLevelDocs, embeddings, {
       pineconeIndex,
