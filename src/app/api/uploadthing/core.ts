@@ -159,27 +159,27 @@ const onUploadComplete = async ({
       )
     }
 
-    // if (
-    //   (isSubscribed && isProPageLimitExceeded) ||
-    //   (!isSubscribed && isFreePageLimitExceeded)
-    // ) {
-    //   console.log(
-    //     'in if pages too many',
-    //     isProPageLimitExceeded,
-    //     isFreePageLimitExceeded,
-    //     pagesAmt,
-    //   )
+    if (process.env.NODE_ENV === 'production' && 
+      (isSubscribed && isProPageLimitExceeded) ||
+      (!isSubscribed && isFreePageLimitExceeded)
+    ) {
+      console.log(
+        'in if pages too many',
+        isProPageLimitExceeded,
+        isFreePageLimitExceeded,
+        pagesAmt,
+      )
 
-    //   await db.file.update({
-    //     data: {
-    //       uploadStatus: UploadStatus.FAILED,
-    //     },
-    //     where: {
-    //       id: createdFile.id,
-    //     },
-    //   })
-    //   return
-    // }
+      await db.file.update({
+        data: {
+          uploadStatus: UploadStatus.FAILED,
+        },
+        where: {
+          id: createdFile.id,
+        },
+      })
+      return
+    }
 
     // vectorize & index text
     const pineconeIndex = pinecone.Index('ai-quote-finder')
