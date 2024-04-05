@@ -231,6 +231,9 @@ const FileRenderer = ({ url }: FileRendererProps) => {
           setLocation(epubcfi)
         }}
         readerStyles={theme}
+        tocChanged={(tocChangedItem: any) => {
+          console.log('tocChangedItem', tocChangedItem)
+        }}
       />
     )
   }

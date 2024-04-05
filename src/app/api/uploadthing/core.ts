@@ -145,14 +145,20 @@ const onUploadComplete = async ({
     console.log('allowedFileSize', allowedFileSize, 'file.size', file.size)
 
     // throw erros if the file is too big
-    if (file.size > parseFileSize(allowedFileSize)) {
+    if (
+      file.size > parseFileSize(allowedFileSize) &&
+      process.env.NODE_ENV === 'production'
+    ) {
       console.log('file.size', file.size, 'allowedFileSize', allowedFileSize)
       throw new TRPCError({
         code: 'PAYLOAD_TOO_LARGE',
         message: `File size exceeds the allowed limit of ${allowedFileSize}`,
       })
     }
-    if (file.size > parseFileSize(allowedFileSize)) {
+    if (
+      file.size > parseFileSize(allowedFileSize) &&
+      process.env.NODE_ENV === 'production'
+    ) {
       console.log('file.size', file.size, 'allowedFileSize', allowedFileSize)
       throw new UploadThingError(
         `File size exceeds the allowed limit of ${allowedFileSize}`,
@@ -160,10 +166,9 @@ const onUploadComplete = async ({
     }
 
     if (
-      (process.env.NODE_ENV === 'production' &&
-        isSubscribed &&
-        isProPageLimitExceeded) ||
-      (!isSubscribed && isFreePageLimitExceeded)
+      process.env.NODE_ENV === 'production' &&
+      ((isSubscribed && isProPageLimitExceeded) ||
+        (!isSubscribed && isFreePageLimitExceeded))
     ) {
       console.log(
         'in if pages too many',
