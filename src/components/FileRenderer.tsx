@@ -14,7 +14,7 @@ import 'react-pdf/dist/Page/AnnotationLayer.css'
 import 'react-pdf/dist/Page/TextLayer.css'
 import { useToast } from './ui/use-toast'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useResizeDetector } from 'react-resize-detector'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
@@ -37,6 +37,7 @@ import PdfFullscreen from './PdfFullscreen'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`
 
+import { NavItem, Rendition } from 'epubjs'
 import { IReactReaderStyle, ReactReader, ReactReaderStyle } from 'react-reader'
 
 interface FileRendererProps {
@@ -226,34 +227,62 @@ const FileRenderer = ({ url }: FileRendererProps) => {
     },
   }
 
+  const [page, setPage] = useState('')
+  const rendition = useRef<Rendition | undefined>(undefined)
+  const toc = useRef<NavItem[]>([])
+
   if (isEpub) {
     return (
       <>
         {process.env.NODE_ENV !== 'production' && (
-          <div className="w-full flex flex-row">
-            <label className="w-full flex flex-row" htmlFor="epubLocation">
-              epub epubcfi location
-              <Input
-                type="text"
-                value={inputLocationValue}
-                onChange={(e) => setInputLocationValue(e.target.value)}
-              />
-            </label>
-            <Button onClick={handleLocationSubmit}>submit</Button>{' '}
+          <div>
+            <div className="w-full flex flex-row">
+              <label className="w-full flex flex-row" htmlFor="epubLocation">
+                epub epubcfi location
+                <Input
+                  type="text"
+                  value={inputLocationValue}
+                  onChange={(e) => setInputLocationValue(e.target.value)}
+                />
+              </label>
+              <Button onClick={handleLocationSubmit}>submit</Button>{' '}
+            </div>
+            <div>{page}</div>
           </div>
         )}
 
         <ReactReader
           url={url}
           location={location}
-          locationChanged={(epubcfi: string) => {
-            console.log('epubcfi', epubcfi)
-            console.log('location', location)
-            setLocation(epubcfi)
-          }}
+          // locationChanged={(epubcfi: string) => {
+          //   console.log('epubcfi', epubcfi)
+          //   console.log('location', location)
+          //   setLocation(epubcfi)
+          // }}
           readerStyles={theme}
           tocChanged={(tocChangedItem: any) => {
             // console.log('tocChangedItem', tocChangedItem)
+          }}
+          locationChanged={(loc: string) => {
+            console.log('locationChanged loc', loc)
+            console.log('location (state)', location)
+
+            setLocation(loc)
+            if (rendition.current && toc.current) {
+              const { displayed, href } = rendition.current.location.start
+
+              const chapter = toc.current.find((item) => item.href === href)
+              // console.log('toc.current', toc)
+
+              setPage(
+                `Page ${displayed.page} of ${displayed.total} in chapter ${
+                  chapter ? chapter.label : 'n/a'
+                }`,
+              )
+            }
+          }}
+          getRendition={(_rendition: Rendition) => {
+            rendition.current = _rendition
           }}
         />
       </>
