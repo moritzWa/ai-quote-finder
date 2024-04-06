@@ -226,18 +226,23 @@ const onUploadComplete = async ({
       }
     })
 
-    // safe pageLevelDocs.json for debugging
-    fs.writeFile(
-      `pageLevelDocs${createdFile.name.replace(/([^a-z0-9]+)/gi, '-')}.json`,
-      JSON.stringify(pageLevelDocs, null, 2),
-      (err) => {
-        if (err) {
-          console.error('Error writing file:', err)
-        } else {
-          console.log('File written successfully')
-        }
-      },
-    )
+    // Get current timestamp
+    const timestamp = new Date().toISOString().replace(/[^0-9]/g, '')
+
+    // Construct file name with timestamp
+    const fileName = `pageLevelDocs_${createdFile.name.replace(
+      /([^a-z0-9]+)/gi,
+      '-',
+    )}_${timestamp}.json`
+
+    // Write file with timestamped name
+    fs.writeFile(fileName, JSON.stringify(pageLevelDocs, null, 2), (err) => {
+      if (err) {
+        console.error('Error writing file:', err)
+      } else {
+        console.log('File written successfully:', fileName)
+      }
+    })
 
     await PineconeStore.fromDocuments(pageLevelDocs, embeddings, {
       pineconeIndex,
