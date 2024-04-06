@@ -69,11 +69,14 @@ export async function loadEpubFromUrl(url: string) {
 interface Chapter {
   pageContent: string
   metadata: {
-    level: number
-    order: number
-    title: string
     id: string
     href: string
+    level?: number
+    order?: number
+    title?: string
+    epubCFI?: string
+    tokenCount?: number
+    chapterPart?: number
   }
 }
 
@@ -89,6 +92,7 @@ export async function loadEpub(filePath: string): Promise<Chapter[]> {
               if (err) {
                 reject(err)
               } else {
+                const epubCFI = getEpubCFI(epub, chapter)
                 resolve({
                   pageContent: htmlToText(text),
                   metadata: {
@@ -97,6 +101,7 @@ export async function loadEpub(filePath: string): Promise<Chapter[]> {
                     title: chapter.title,
                     id: chapter.id,
                     href: chapter.href,
+                    epubCFI,
                   },
                 })
               }
@@ -135,4 +140,35 @@ export async function loadEpub(filePath: string): Promise<Chapter[]> {
     })
     epub.parse()
   })
+}
+
+function getEpubCFI(epub: EPub, chapter: EPub.TocElement): string {
+  const spineItemIndex = epub.flow.findIndex((item) => item.id === chapter.id)
+
+  // Find the root element of the Content Document
+  let rootElementIndex = 4 // Default to the 4th element (typically the <body>)
+
+  // Find the first element within the Content Document
+  let firstElementIndex = 1 // Default to the 1st element (typically the first <p>)
+
+  epub.getChapter(chapter.id, (err, text) => {
+    if (!err) {
+      const doc = new DOMParser().parseFromString(text, 'application/xml')
+      const bodyElement = doc.querySelector('body')
+      if (bodyElement) {
+        const parentElement = bodyElement.parentElement
+        if (parentElement) {
+          rootElementIndex =
+            Array.from(parentElement.children).indexOf(bodyElement) + 1
+        }
+        const firstChildElement = bodyElement.children?.[0]
+        if (firstChildElement) {
+          firstElementIndex =
+            Array.from(bodyElement.children).indexOf(firstChildElement) + 1
+        }
+      }
+    }
+  })
+
+  return `/6/${spineItemIndex + 1}!/${rootElementIndex}/${firstElementIndex}:0`
 }
