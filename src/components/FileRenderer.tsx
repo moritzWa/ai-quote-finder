@@ -50,6 +50,8 @@ const FileRenderer = ({ url }: FileRendererProps) => {
 
   const [numPages, setNumPages] = useState<number>()
   const [location, setLocation] = useState<string | number>(0)
+  const [inputLocationValue, setInputLocationValue] = useState<string>('')
+
   const [currPage, setCurrPage] = useState<number>(1)
   const [scale, setScale] = useState<number>(1)
   const [rotation, setRotation] = useState<number>(0)
@@ -81,6 +83,10 @@ const FileRenderer = ({ url }: FileRendererProps) => {
   const handlePageSubmit = ({ page }: TCustomPageValidator) => {
     setCurrPage(Number(page))
     setValue('page', String(page))
+  }
+
+  const handleLocationSubmit = () => {
+    setLocation(inputLocationValue)
   }
 
   // update location for url changes
@@ -222,19 +228,35 @@ const FileRenderer = ({ url }: FileRendererProps) => {
 
   if (isEpub) {
     return (
-      <ReactReader
-        url={url}
-        location={location}
-        locationChanged={(epubcfi: string) => {
-          console.log('epubcfi', epubcfi)
-          console.log('location', location)
-          setLocation(epubcfi)
-        }}
-        readerStyles={theme}
-        tocChanged={(tocChangedItem: any) => {
-          console.log('tocChangedItem', tocChangedItem)
-        }}
-      />
+      <>
+        {process.env.NODE_ENV !== 'production' && (
+          <div className="w-full flex flex-row">
+            <label className="w-full flex flex-row" htmlFor="epubLocation">
+              epub epubcfi location
+              <Input
+                type="text"
+                value={inputLocationValue}
+                onChange={(e) => setInputLocationValue(e.target.value)}
+              />
+            </label>
+            <Button onClick={handleLocationSubmit}>submit</Button>{' '}
+          </div>
+        )}
+
+        <ReactReader
+          url={url}
+          location={location}
+          locationChanged={(epubcfi: string) => {
+            console.log('epubcfi', epubcfi)
+            console.log('location', location)
+            setLocation(epubcfi)
+          }}
+          readerStyles={theme}
+          tocChanged={(tocChangedItem: any) => {
+            // console.log('tocChangedItem', tocChangedItem)
+          }}
+        />
+      </>
     )
   }
 
