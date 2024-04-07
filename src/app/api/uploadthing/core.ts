@@ -226,8 +226,8 @@ const onUploadComplete = async ({
       }
     })
 
-    // Get current timestamp
-    const timestamp = new Date().toISOString().replace(/[^0-9]/g, '')
+    // Get current timestamp and replace / with -
+    const timestamp = new Date().toLocaleString().replace(/\//g, '-')
 
     // Construct file name with timestamp
     const fileName = `pageLevelDocs_${createdFile.name.replace(

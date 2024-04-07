@@ -64,9 +64,10 @@ export async function downloadFile(url: string, destination: string) {
 export async function loadEpubFromUrl(url: string) {
   const filePath = path.join(__dirname, 'temp.epub')
   await downloadFile(url, filePath)
-  return loadEpub(filePath)
+  return loadEpubViaGetChapter(filePath)
 }
-interface Chapter {
+
+export interface Chapter {
   pageContent: string
   metadata: {
     id: string
@@ -74,13 +75,14 @@ interface Chapter {
     level?: number
     order?: number
     title?: string
-    epubCFI?: string
-    tokenCount?: number
     chapterPart?: number
+    epubCFI?: string
   }
 }
 
-export async function loadEpub(filePath: string): Promise<Chapter[]> {
+export async function loadEpubViaGetChapter(
+  filePath: string,
+): Promise<Chapter[]> {
   const epub = new EPub(filePath)
 
   return new Promise((resolve, reject) => {
@@ -144,34 +146,3 @@ export async function loadEpub(filePath: string): Promise<Chapter[]> {
     epub.parse()
   })
 }
-
-// function getEpubCFI(epub: EPub, chapter: EPub.TocElement): string {
-//   const spineItemIndex = epub.flow.findIndex((item) => item.id === chapter.id)
-
-//   // Find the root element of the Content Document
-//   let rootElementIndex = 4 // Default to the 4th element (typically the <body>)
-
-//   // Find the first element within the Content Document
-//   let firstElementIndex = 1 // Default to the 1st element (typically the first <p>)
-
-//   epub.getChapter(chapter.id, (err, text) => {
-//     if (!err) {
-//       const doc = new DOMParser().parseFromString(text, 'application/xml')
-//       const bodyElement = doc.querySelector('body')
-//       if (bodyElement) {
-//         const parentElement = bodyElement.parentElement
-//         if (parentElement) {
-//           rootElementIndex =
-//             Array.from(parentElement.children).indexOf(bodyElement) + 1
-//         }
-//         const firstChildElement = bodyElement.children?.[0]
-//         if (firstChildElement) {
-//           firstElementIndex =
-//             Array.from(bodyElement.children).indexOf(firstChildElement) + 1
-//         }
-//       }
-//     }
-//   })
-
-//   return `/6/${spineItemIndex + 1}!/${rootElementIndex}/${firstElementIndex}:0`
-// }
