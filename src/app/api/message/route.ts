@@ -53,12 +53,12 @@ export const POST = async (req: NextRequest) => {
   const subscriptionPlan = await getUserSubscriptionPlan()
 
   // Check if user has reached the total message limit
-  console.log(
-    dbUser.totalMessagesUsed,
-    dbUser.totalMessagesUsedToday,
-    dbUser.totalMessagesUsed >= freePlan.maxMesages,
-    dbUser.totalMessagesUsedToday >= freePlan.maxMessagesPerDay,
-  )
+  // console.log(
+  //   dbUser.totalMessagesUsed,
+  //   dbUser.totalMessagesUsedToday,
+  //   dbUser.totalMessagesUsed >= freePlan.maxMesages,
+  //   dbUser.totalMessagesUsedToday >= freePlan.maxMessagesPerDay,
+  // )
 
   if (
     !subscriptionPlan.isSubscribed &&
@@ -109,6 +109,7 @@ export const POST = async (req: NextRequest) => {
       isUserMessage: true,
       userId,
       fileId,
+      isFromEpubWithHref: file.url.endsWith('.epub'),
     },
   })
 
@@ -147,6 +148,11 @@ export const POST = async (req: NextRequest) => {
 
   let response
 
+  console.log(
+    'in message post, file.url.endsWith(epub)',
+    file.url.endsWith('.epub'),
+  )
+
   const fileIsEpub = file.url.endsWith('.epub')
 
   if (quoteMode) {
@@ -181,7 +187,7 @@ export const POST = async (req: NextRequest) => {
         ${results
           .map(
             (r) =>
-              `${r.pageContent} (Page: ${
+              `${r.pageContent} ${fileIsEpub ? '(Href: ' : '(Page:'} ${
                 fileIsEpub
                   ? r.metadata['loc.href']
                   : r.metadata['loc.pageNumber']

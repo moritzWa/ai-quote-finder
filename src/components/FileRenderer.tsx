@@ -94,9 +94,12 @@ const FileRenderer = ({ url }: FileRendererProps) => {
   const params = useSearchParams()
   useEffect(() => {
     if (params.get('page')) {
-      setCurrPage(Number(params.get('page')))
-      setValue('page', String(params.get('page')))
-      setLocation(params.get('page')!)
+      if (isEpub) {
+        setLocation(params.get('page')!)
+      } else {
+        setCurrPage(Number(params.get('page')))
+        setValue('page', String(params.get('page')))
+      }
     }
   }, [params])
 
