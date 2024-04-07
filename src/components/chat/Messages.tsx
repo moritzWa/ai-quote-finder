@@ -19,6 +19,7 @@ export interface LoadingMessage {
   isUserMessage: boolean
   text: JSX.Element
   quoteMode: boolean
+  isFromEpubWithHref?: boolean
 }
 
 const Messages = ({ fileId }: MessagesProps) => {

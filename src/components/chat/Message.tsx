@@ -59,7 +59,9 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
       listItems &&
       listItems.map((item, index) => {
         // Extract the quote and page number using regex
-        const match = item.match(/^(.+) \(Page: (\d+)\)/)
+        const match = message.isFromEpubWithHref
+          ? item.match(/^(.+) \(Href: ([\w\.\/]+)\)/)
+          : item.match(/^(.+) \(Page: (\d+)\)/)
 
         // general chatbot text to prefece the list of quote
         if (index === 0 && !/\(Page: \d+\)$/.test(item.trim())) {
@@ -68,7 +70,7 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
 
         if (match) {
           const quote = match[1]
-          const pageNumber = match[2]
+          const locationIdentifier = match[2]
 
           // console.log('quote', quote, 'pageNumber', pageNumber)
 
@@ -79,21 +81,21 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
               <div className="pt-2 text-sm flex justify-end">
                 <a
                   className="text-gray-500 hover:text-blue-600"
-                  href={`?page=${pageNumber}`}
+                  href={`?page=${locationIdentifier}`}
                   onClick={(e) => {
                     e.preventDefault()
                     router.replace(
-                      `${window.location.pathname}?page=${pageNumber}`,
+                      `${window.location.pathname}?page=${locationIdentifier}`,
                     )
                   }}
                 >
-                  Page: {pageNumber}
+                  Page: {locationIdentifier}
                 </a>
                 <span
                   className="pl-4 text-gray-500 hover:text-green-500 cursor-pointer"
                   onClick={() => {
                     navigator.clipboard.writeText(
-                      `${quote} (Page: ${pageNumber})`,
+                      `${quote} (Page: ${locationIdentifier})`,
                     )
                     return toast({
                       title: 'Copied Quote to Clipboard',

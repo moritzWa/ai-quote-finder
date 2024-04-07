@@ -67,4 +67,6 @@ model Message {
   userId    String?
   File      File?    @relation(fields: [fileId], references: [id])
   fileId    String?
+
+  isFromEpubWithHref Boolean
 }

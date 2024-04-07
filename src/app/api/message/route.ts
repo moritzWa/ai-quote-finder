@@ -147,6 +147,8 @@ export const POST = async (req: NextRequest) => {
 
   let response
 
+  const fileIsEpub = file.url.endsWith('.epub')
+
   if (quoteMode) {
     // If quoteMode is true, use this completion
     response = await openai.chat.completions.create({
@@ -165,7 +167,11 @@ export const POST = async (req: NextRequest) => {
         Format the returned quotes using markdown: 
         1. return the quotes as bullet points (add "- "),
         2. adding paragraph/space between each quote (add "\n\n"),
-        3. list the pageNumber as (Page: {pageNumber}) after each quote,
+        3. list the ${
+          fileIsEpub
+            ? 'href as (Href: {href})'
+            : 'pageNumber as (Page: {pageNumber})'
+        } after each quote,
         
         USER QUERY: ${message}
 
@@ -174,7 +180,12 @@ export const POST = async (req: NextRequest) => {
         RAW UNFORMATTED SOURCE MATERIAL TEXT SNIPPETS:
         ${results
           .map(
-            (r) => `${r.pageContent} (Page: ${r.metadata['loc.pageNumber']})`,
+            (r) =>
+              `${r.pageContent} (Page: ${
+                fileIsEpub
+                  ? r.metadata['loc.href']
+                  : r.metadata['loc.pageNumber']
+              })`,
           )
           .join('\n\n\n')}
 
@@ -228,6 +239,7 @@ export const POST = async (req: NextRequest) => {
           quoteMode,
           userId,
           fileId,
+          isFromEpubWithHref: fileIsEpub,
         },
       })
     },

@@ -11,6 +11,7 @@ type OmitText = Omit<Messages[number], 'text'>
 type ExtendedText = {
   text: string
   quoteMode: boolean
+  isFromEpubWithHref?: boolean
 }
 
 export type ExtendedMessage = OmitText & ExtendedText
