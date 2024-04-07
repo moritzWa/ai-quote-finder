@@ -185,16 +185,13 @@ export const POST = async (req: NextRequest) => {
         
         RAW UNFORMATTED SOURCE MATERIAL TEXT SNIPPETS:
         ${results
-          .map(
-            (r) =>
-              `${r.pageContent} ${fileIsEpub ? '(Href: ' : '(Page:'} ${
-                fileIsEpub
-                  ? r.metadata['loc.href']
-                  : r.metadata['loc.pageNumber']
-              })`,
-          )
+          .map((r) => {
+            console.log('r.metadata in map', r.metadata)
+            return `${r.pageContent} ${fileIsEpub ? '(Href: ' : '(Page:'} ${
+              fileIsEpub ? r.metadata.href : r.metadata.pageNumber
+            })`
+          })
           .join('\n\n\n')}
-
         `,
         },
       ],
