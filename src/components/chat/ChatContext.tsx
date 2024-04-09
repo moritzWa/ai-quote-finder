@@ -27,10 +27,15 @@ export const ChatContext = createContext<StreamResponse>({
 
 interface Props {
   fileId: string
+  fileTypeIsEpub: boolean
   children: ReactNode
 }
 
-export const ChatContextProvider = ({ fileId, children }: Props) => {
+export const ChatContextProvider = ({
+  fileId,
+  fileTypeIsEpub,
+  children,
+}: Props) => {
   const [message, setMessage] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isLimitReachedError, setIsLimitReached] = useState<null | string>(null)
@@ -88,7 +93,7 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
           let newPages = [...oldMessagePages.pages]
           let latestPage = newPages[0]!
 
-          // insert new message to latest page
+          // insert new message from user to latest page
           latestPage.messages = [
             {
               createdAt: new Date().toISOString(),
@@ -175,12 +180,6 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
         const streamChunkValue = textDecoder.decode(value)
         accumulatedStreamResponse += streamChunkValue
 
-        // Parse the streamed message
-        const parsedMessage = JSON.parse(accumulatedStreamResponse)
-
-        // Extract isFromEpubWithHref from the streamed message
-        const isFromEpubWithHref = parsedMessage.isFromEpubWithHref
-
         // append chunks to message
         utils.getFileMessages.setInfiniteData(
           { fileId, limit: INFINITE_QUERY_LIMIT },
@@ -206,7 +205,7 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
                       text: accumulatedStreamResponse,
                       isUserMessage: false,
                       quoteMode: quoteMode,
-                      isFromEpubWithHref: isFromEpubWithHref,
+                      isFromEpubWithHref: fileTypeIsEpub, // TODO: get correct value somehow
                     },
                     ...page.messages,
                   ]
@@ -257,6 +256,7 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
         isLimitReachedError,
         quoteMode,
         setQuoteMode,
+        fileTypeIsEpub,
       }}
     >
       {children}

@@ -8,6 +8,7 @@ import { TRPCError } from '@trpc/server'
 import { getHTTPStatusCodeFromError } from '@trpc/server/http'
 import { ChevronLeft, Gem, Loader2, XCircle } from 'lucide-react'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import { buttonVariants } from '../ui/button'
 import { ChatContextProvider } from './ChatContext'
 import ChatInput from './ChatInput'
@@ -32,6 +33,21 @@ const ChatWrapper = ({ fileId, isSubscribed }: ChatWrapperProps) => {
           : 500,
     },
   )
+
+  const [fileTypeIsEpub, setfileTypeIsEpub] = useState(false)
+
+  useEffect(() => {
+    if (data) {
+      const fileUrl = data.fileUrl
+      if (fileUrl) {
+        if (fileUrl.endsWith('.epub')) {
+          setfileTypeIsEpub(true)
+        } else {
+          setfileTypeIsEpub(false)
+        }
+      }
+    }
+  }, [data])
 
   if (error instanceof TRPCError) {
     console.error('Error fetching file upload status:', error)
@@ -116,7 +132,7 @@ const ChatWrapper = ({ fileId, isSubscribed }: ChatWrapperProps) => {
     )
 
   return (
-    <ChatContextProvider fileId={fileId}>
+    <ChatContextProvider fileId={fileId} fileTypeIsEpub={fileTypeIsEpub}>
       <div className="relative min-h-full bg-zinc-50 flex divide-y divide-zinc-200 flex-col justify-between gap-2">
         <div className="flex-1 justify-between flex flex-col mb-28">
           <Messages fileId={fileId} />

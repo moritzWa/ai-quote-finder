@@ -50,9 +50,7 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
     // Split the message into list items
     const listItems: listItemType =
       typeof message.text === 'string'
-        ? message.text
-            .split(/(?:^\d+\.|^-)/m)
-            .filter((item) => item.trim() !== '')
+        ? message.text.split(/\n- /).filter((item) => item.trim() !== '')
         : ''
 
     const listItemElements =
