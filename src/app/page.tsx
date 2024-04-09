@@ -39,16 +39,15 @@ export default function Home() {
             <div className="px-6 lg:px-0 lg:pt-4">
               <div className="mx-auto max-w-2xl">
                 <div className="max-w-lg">
-                  <span className="rounded-full bg-indigo-500/10 px-3 py-1 text-sm font-semibold leading-6 text-indigo-400 ring-1 ring-inset ring-indigo-500/20">
+                  {/* <span className="rounded-full bg-indigo-500/10 px-3 py-1 text-sm font-semibold leading-6 text-indigo-400 ring-1 ring-inset ring-indigo-500/20">
                     New: EPUB Support
-                  </span>
+                  </span> */}
                   <h1 className="mt-10 text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
                     Semantic Search for your books
                   </h1>
                   <p className="mt-6 text-lg leading-8 text-gray-600">
-                    Quote Finder allows you to find the best parts of your
-                    favorite books. Upload your books or find sections in a
-                    pre-selected collection of excellent non-fiction books.
+                    Find the best parts of your favorite books in seconds. Or
+                    understand books with AI chat. Supports EPUBs and PDFs.
                   </p>
                   <div className="mt-5 flex items-center just gap-x-6">
                     <RegisterLink
