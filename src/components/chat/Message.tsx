@@ -45,7 +45,7 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
 
     type listItemType = string[] | ''
 
-    // console.log('message', message)
+    console.log('message', message)
 
     // Split the message into list items
     const listItems: listItemType =
@@ -57,25 +57,29 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
       listItems &&
       listItems.map((item, index) => {
         // Extract the quote and page number using regex
-        const match = message.isFromEpubWithHref
+
+        const partsedPartsOfQuote = message.isFromEpubWithHref
           ? item.match(/^(.+) \(Href: ([\w\.\/]+)\)/)
           : item.match(/^(.+) \(Page: (\d+)\)/)
 
         // general chatbot text to prefece the list of quote
-        if (index === 0 && !/\(Page: \d+\)$/.test(item.trim())) {
-          return <p key={index}>{item}</p>
+        if (index === 0 && !partsedPartsOfQuote) {
+          return <p key={index}>test: {item}</p>
         }
 
-        if (match) {
-          const quote = match[1]
-          const locationIdentifier = match[2]
+        if (partsedPartsOfQuote) {
+          const quote = partsedPartsOfQuote[1]
+          const locationIdentifier = partsedPartsOfQuote[2]
 
           // console.log('quote', quote, 'pageNumber', pageNumber)
 
           // Return a JSX element with the quote and a link to the page
+
+          console.log('quote:', quote)
+
           return (
             <li className="pb-2" key={index}>
-              {quote}{' '}
+              {quote.startsWith('- ') ? quote.slice(2) : quote}
               <div className="pt-2 text-sm flex justify-end">
                 {message.isFromEpubWithHref ? (
                   <a

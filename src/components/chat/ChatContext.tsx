@@ -256,7 +256,6 @@ export const ChatContextProvider = ({
         isLimitReachedError,
         quoteMode,
         setQuoteMode,
-        fileTypeIsEpub,
       }}
     >
       {children}
