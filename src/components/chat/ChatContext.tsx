@@ -96,6 +96,7 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
               text: message,
               isUserMessage: true,
               quoteMode: quoteMode,
+              isFromEpubWithHref: false,
             },
             ...latestPage.messages,
           ]
