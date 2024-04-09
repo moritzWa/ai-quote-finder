@@ -80,6 +80,8 @@ export interface Chapter {
   }
 }
 
+// TODO: try this https://stackoverflow.com/questions/69607740/extract-paragraphs-and-cfi-from-epub?rq=2
+
 export async function loadEpubViaGetChapter(
   filePath: string,
 ): Promise<Chapter[]> {

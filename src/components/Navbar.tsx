@@ -9,10 +9,12 @@ import MaxWidthWrapper from './MaxWidthWrapper'
 import MobileNav from './MobileNav'
 import UserAccountNav from './UserAccountNav'
 import { buttonVariants } from './ui/button'
+import { useRouter } from 'next/router'
 
 const Navbar = async () => {
   const { getUser } = getKindeServerSession()
   const user = getUser()
+  const router = useRouter()
   // const subscriptionPlan = await getUserSubscriptionPlan()
 
   return (
