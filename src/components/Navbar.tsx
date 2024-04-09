@@ -4,18 +4,20 @@ import {
   getKindeServerSession,
 } from '@kinde-oss/kinde-auth-nextjs/server'
 import { ArrowRight, SearchIcon } from 'lucide-react'
+import { headers } from 'next/headers'
 import Link from 'next/link'
 import MaxWidthWrapper from './MaxWidthWrapper'
 import MobileNav from './MobileNav'
 import UserAccountNav from './UserAccountNav'
 import { buttonVariants } from './ui/button'
-import { useRouter } from 'next/router'
 
 const Navbar = async () => {
   const { getUser } = getKindeServerSession()
   const user = getUser()
-  const router = useRouter()
   // const subscriptionPlan = await getUserSubscriptionPlan()
+
+  const headersList = headers()
+  const fullUrl = headersList.get('referer') || ''
 
   return (
     <nav className="sticky h-14 inset-x-0 top-0 z-30 w-full border-b border-gray-200 bg-white/75 backdrop-blur-lg transition-all">
@@ -34,7 +36,7 @@ const Navbar = async () => {
                 <Link
                   href="/blog"
                   className={buttonVariants({
-                    variant: 'ghost',
+                    variant: fullUrl.includes('/blog') ? 'active' : 'ghost',
                     size: 'sm',
                   })}
                 >
@@ -43,7 +45,7 @@ const Navbar = async () => {
                 <Link
                   href="/pricing"
                   className={buttonVariants({
-                    variant: 'ghost',
+                    variant: fullUrl.includes('/pricing') ? 'active' : 'ghost',
                     size: 'sm',
                   })}
                 >

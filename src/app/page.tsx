@@ -11,27 +11,6 @@ const DynamicVideoPlayer = dynamic(() => import('@/components/VideoPlayer'), {
   ssr: false,
 })
 
-const sectionOneFeatures = [
-  {
-    name: 'Push to deploy.',
-    description:
-      'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.',
-    emoji: '🏛',
-  },
-  {
-    name: 'SSL certificates.',
-    description:
-      'Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo.',
-    emoji: '🔑',
-  },
-  {
-    name: 'Database backups.',
-    description:
-      'Ac tincidunt sapien vehicula erat auctor pellentesque rhoncus. Et magna sit morbi lobortis.',
-    emoji: '💾',
-  },
-]
-
 const features = [
   {
     name: 'Your library, searchable with AI',
@@ -60,6 +39,9 @@ export default function Home() {
             <div className="px-6 lg:px-0 lg:pt-4">
               <div className="mx-auto max-w-2xl">
                 <div className="max-w-lg">
+                  <span className="rounded-full bg-indigo-500/10 px-3 py-1 text-sm font-semibold leading-6 text-indigo-400 ring-1 ring-inset ring-indigo-500/20">
+                    New: EPUB Support
+                  </span>
                   <h1 className="mt-10 text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
                     Semantic Search for your books
                   </h1>
@@ -176,7 +158,7 @@ export default function Home() {
                     <div key={feature.name} className="relative pl-9">
                       <dt className="inline font-semibold text-gray-900">
                         <div
-                          className="absolute left-1 top-1 h-5 w-5 text-indigo-600"
+                          className="absolute left-1 top-1 h-5 w-5 text-purple-600"
                           aria-hidden="true"
                         >
                           {feature.emoji}
