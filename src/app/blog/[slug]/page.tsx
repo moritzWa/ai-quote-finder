@@ -2,24 +2,10 @@ import { Metadata } from 'next'
 import React from 'react'
 
 export const metadata: Metadata = {
-  title: 'Blog',
-  description: 'Welcome to my blog',
+  title: 'I Quote Finder Blog',
+  description:
+    'The AI Quote Finder Blog discusses the latest news and trends in AI and books.',
 }
-
-// const posts = [
-//   {
-//     id: 1,
-//     title: 'Post 1',
-//     slug: 'post-1',
-//     description: 'This is post 1',
-//   },
-//   {
-//     id: 2,
-//     title: 'Post 2',
-//     slug: 'post-2',
-//     description: 'This is post 2',
-//   },
-// ]
 
 export async function generateStaticParams() {
   return posts.map((post) => ({
@@ -45,10 +31,10 @@ export default function Page({ params }: { params: { slug: string } }) {
     <div className="bg-white px-6 py-32 lg:px-8">
       <div className="mx-auto max-w-3xl text-base leading-7 text-gray-700">
         <p className="text-base font-semibold leading-7 text-indigo-600">
-          {post.title}
+          {post.description}
         </p>
         <h1 className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-          {post.description}
+          {post.title}
         </h1>
         <div className="mt-6 text-xl leading-8">{post.content}</div>
       </div>
