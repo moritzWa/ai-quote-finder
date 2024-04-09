@@ -107,9 +107,6 @@ const onUploadComplete = async ({
   try {
     const response = await fetch(file.url)
 
-    console.log('response', response)
-    console.log('file.name', file.name)
-
     let pageLevelDocs
     if (file.name.endsWith('.epub')) {
       console.log("in if file.name.endsWith('.epub')")

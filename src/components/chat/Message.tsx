@@ -71,12 +71,7 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
           const quote = partsedPartsOfQuote[1]
           const locationIdentifier = partsedPartsOfQuote[2]
 
-          // console.log('quote', quote, 'pageNumber', pageNumber)
-
           // Return a JSX element with the quote and a link to the page
-
-          console.log('quote:', quote)
-
           return (
             <li className="pb-2" key={index}>
               {quote.startsWith('- ') ? quote.slice(2) : quote}

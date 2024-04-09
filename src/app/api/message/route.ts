@@ -148,11 +148,6 @@ export const POST = async (req: NextRequest) => {
 
   let response
 
-  console.log(
-    'in message post, file.url.endsWith(epub)',
-    file.url.endsWith('.epub'),
-  )
-
   const fileIsEpub = file.url.endsWith('.epub')
 
   if (quoteMode) {

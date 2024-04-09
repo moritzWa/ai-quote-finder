@@ -92,12 +92,6 @@ const CustomUploadDropzone = ({
   )
 
   const handleToggleChange = (value: any) => {
-    console.log(
-      'handleToggleChange:',
-      value,
-      'meaning they prefer',
-      !value ? 'private' : 'public',
-    )
     setShareWithCommunity(value)
     mutation.mutate({ prefersPrivateUpload: !value })
     refetch()

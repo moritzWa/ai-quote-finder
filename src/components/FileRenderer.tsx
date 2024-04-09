@@ -237,7 +237,7 @@ const FileRenderer = ({ url }: FileRendererProps) => {
   if (isEpub) {
     return (
       <>
-        {process.env.NODE_ENV !== 'production' && (
+        {/* {process.env.NODE_ENV !== 'production' && (
           <div>
             <div className="w-full flex flex-row">
               <label className="w-full flex flex-row" htmlFor="epubLocation">
@@ -252,24 +252,15 @@ const FileRenderer = ({ url }: FileRendererProps) => {
             </div>
             <div>{page}</div>
           </div>
-        )}
+        )} */}
 
         <ReactReader
           url={url}
           location={location}
-          // locationChanged={(epubcfi: string) => {
-          //   console.log('epubcfi', epubcfi)
-          //   console.log('location', location)
-          //   setLocation(epubcfi)
-          // }}
           readerStyles={theme}
-          tocChanged={(tocChangedItem: any) => {
-            // console.log('tocChangedItem', tocChangedItem)
-          }}
+          // tocChanged={(tocChangedItem: any) => {
+          // }}
           locationChanged={(loc: string) => {
-            console.log('locationChanged loc', loc)
-            console.log('location (state)', location)
-
             setLocation(loc)
             if (rendition.current && toc.current) {
               const { displayed, href } = rendition.current.location.start
