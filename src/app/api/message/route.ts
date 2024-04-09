@@ -188,7 +188,8 @@ export const POST = async (req: NextRequest) => {
           .map((r) => {
             console.log('r.metadata in map', r.metadata)
             return `${r.pageContent} ${fileIsEpub ? '(Href: ' : '(Page:'} ${
-              fileIsEpub ? r.metadata.href : r.metadata.pageNumber
+              // meta data is saved as 'loc.pageNumber': 106,
+              fileIsEpub ? r.metadata.href : r.metadata['loc.pageNumber']
             })`
           })
           .join('\n\n\n')}

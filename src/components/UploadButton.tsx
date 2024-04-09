@@ -210,8 +210,8 @@ const CustomUploadDropzone = ({
                     <span className="font-semibold">Click to upload</span> or
                     drag and drop
                   </p>
-                  <p className="text-xs text-zinc-500">
-                    PDF (up to {possiblePlanFileSize})
+                  <p className="text-xsΓ text-zinc-500">
+                    File (PDF or EPUB up to {possiblePlanFileSize})
                   </p>
                 </div>
                 {acceptedFiles && acceptedFiles[0] ? (
