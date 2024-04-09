@@ -174,6 +174,12 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
         const streamChunkValue = textDecoder.decode(value)
         accumulatedStreamResponse += streamChunkValue
 
+        // Parse the streamed message
+        const parsedMessage = JSON.parse(accumulatedStreamResponse)
+
+        // Extract isFromEpubWithHref from the streamed message
+        const isFromEpubWithHref = parsedMessage.isFromEpubWithHref
+
         // append chunks to message
         utils.getFileMessages.setInfiniteData(
           { fileId, limit: INFINITE_QUERY_LIMIT },
@@ -199,6 +205,7 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
                       text: accumulatedStreamResponse,
                       isUserMessage: false,
                       quoteMode: quoteMode,
+                      isFromEpubWithHref: isFromEpubWithHref,
                     },
                     ...page.messages,
                   ]

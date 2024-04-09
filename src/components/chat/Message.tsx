@@ -79,18 +79,33 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
             <li className="pb-2" key={index}>
               {quote}{' '}
               <div className="pt-2 text-sm flex justify-end">
-                <a
-                  className="text-gray-500 hover:text-blue-600"
-                  href={`?page=${locationIdentifier}`}
-                  onClick={(e) => {
-                    e.preventDefault()
-                    router.replace(
-                      `${window.location.pathname}?page=${locationIdentifier}`,
-                    )
-                  }}
-                >
-                  Page: {locationIdentifier}
-                </a>
+                {message.isFromEpubWithHref ? (
+                  <a
+                    className="text-gray-500 hover:text-blue-600 cursor-pointer"
+                    href={locationIdentifier}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      router.replace(
+                        `${window.location.pathname}?page=${locationIdentifier}`,
+                      )
+                    }}
+                  >
+                    Go to section
+                  </a>
+                ) : (
+                  <a
+                    className="text-gray-500 hover:text-blue-600 cursor-pointer"
+                    href={`?page=${locationIdentifier}`}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      router.replace(
+                        `${window.location.pathname}?page=${locationIdentifier}`,
+                      )
+                    }}
+                  >
+                    Page: {locationIdentifier}
+                  </a>
+                )}
                 <span
                   className="pl-4 text-gray-500 hover:text-green-500 cursor-pointer"
                   onClick={() => {

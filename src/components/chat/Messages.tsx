@@ -85,6 +85,8 @@ const Messages = ({ fileId }: MessagesProps) => {
             combinedMessages[i - 1]?.isUserMessage ===
             combinedMessages[i]?.isUserMessage
 
+          // console.log('msg in Messages.tsx', message)
+
           if (i === combinedMessages.length - 1) {
             return (
               <Message

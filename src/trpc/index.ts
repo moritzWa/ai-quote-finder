@@ -183,6 +183,9 @@ export const appRouter = router({
             },
           ],
         },
+        select: {
+          url: true,
+        },
       })
 
       if (!file) throw new TRPCError({ code: 'NOT_FOUND' })
@@ -203,6 +206,7 @@ export const appRouter = router({
           createdAt: true,
           text: true,
           quoteMode: true,
+          isFromEpubWithHref: file.url.endsWith('.epub'),
         },
       })
 
@@ -287,15 +291,17 @@ export const appRouter = router({
       // Delete from Pinecone
       const index = pinecone.Index('ai-quote-finder')
       // get all namespaces
-      const indexStats = await index.describeIndexStats() 
+      const indexStats = await index.describeIndexStats()
 
-
-      if(indexStats.namespaces && indexStats.namespaces.hasOwnProperty(file.id)) {
-        await index.namespace(file.id).deleteAll();
+      if (
+        indexStats.namespaces &&
+        indexStats.namespaces.hasOwnProperty(file.id)
+      ) {
+        await index.namespace(file.id).deleteAll()
       }
 
       // Delete from UploadThing
-      await utapi.deleteFiles(file.key);
+      await utapi.deleteFiles(file.key)
 
       // Delete from sql db
       await db.file.delete({
