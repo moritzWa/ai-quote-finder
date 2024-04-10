@@ -11,7 +11,7 @@ import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
 import { PineconeStore } from 'langchain/vectorstores/pinecone'
 import { createUploadthing, type FileRouter } from 'uploadthing/next'
 import { UploadThingError } from 'uploadthing/server'
-import { countTokens, loadEpubFromUrl, parseFileSize, sanitize } from './utils'
+import { loadEpubFromUrl, parseFileSize, sanitize } from './utils'
 
 import { UTApi } from 'uploadthing/server'
 export const utapi = new UTApi()
@@ -197,21 +197,21 @@ const onUploadComplete = async ({
       ...doc,
       metadata: {
         ...doc.metadata,
-        tokenCount: countTokens(doc.pageContent),
+        // tokenCount: countTokens(doc.pageContent),
       },
     }))
 
-    const totalTokens = pageLevelDocs.reduce(
-      (sum, doc) => sum + doc.metadata.tokenCount,
-      0,
-    )
-    const maxTokens = Math.max(
-      ...pageLevelDocs.map((doc) => doc.metadata.tokenCount),
-    )
+    // const totalTokens = pageLevelDocs.reduce(
+    //   (sum, doc) => sum + doc.metadata.tokenCount,
+    //   0,
+    // )
+    // const maxTokens = Math.max(
+    //   ...pageLevelDocs.map((doc) => doc.metadata.tokenCount),
+    // )
 
     console.log(`Number of documents: ${pageLevelDocs.length}`)
-    console.log(`Total tokens: ${totalTokens}`)
-    console.log(`Max tokens in a single document: ${maxTokens}`)
+    // console.log(`Total tokens: ${totalTokens}`)
+    // console.log(`Max tokens in a single document: ${maxTokens}`)
 
     // sanitize
     pageLevelDocs = pageLevelDocs.map((doc) => {
