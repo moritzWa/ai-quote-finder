@@ -57,7 +57,7 @@ export function constructMetadata({
       creator: '@moritzw42',
     },
     icons,
-    metadataBase: new URL('https://ai-quote-finder.vercel.app/'),
+    metadataBase: new URL('https://quotefinder.co/'),
     // themeColor: '#FFF',
     ...(noIndex && {
       robots: {
