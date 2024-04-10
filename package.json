@@ -10,7 +10,6 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
-    "@dqbd/tiktoken": "^1.0.13",
     "@headlessui/react": "^1.7.17",
     "@hookform/resolvers": "^3.3.2",
     "@kinde-oss/kinde-auth-nextjs": "^1.8.18",
@@ -67,7 +66,6 @@
     "stripe": "^14.9.0",
     "tailwind-merge": "^2.1.0",
     "tailwindcss-animate": "^1.0.7",
-    "tiktoken": "^1.0.13",
     "uploadthing": "^6.7.0",
     "zod": "^3.22.4"
   },
