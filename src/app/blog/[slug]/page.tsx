@@ -256,7 +256,7 @@ export const posts: PostType[] = [
     title: 'Semantic Search for Books: The Future of Finding Content',
     slug: 'semantic-search-for-books',
     description:
-      'Exploring the revolution in searching for book content using semantic search technology.',
+      'Exploring the revolution in searching for book content using fuzzy and semantic search technology.',
     date: 'April 18, 2024',
     datetime: '2024-04-18',
     previewImage: '/fuzzysearch.webp',
