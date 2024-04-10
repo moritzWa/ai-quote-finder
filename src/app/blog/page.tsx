@@ -2,7 +2,7 @@ import { posts } from './[slug]/page'
 
 function Posts() {
   return (
-    <div className="bg-white py-24 sm:py-32">
+    <div className="bg-white py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl">
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
@@ -11,7 +11,7 @@ function Posts() {
           <p className="mt-2 text-lg leading-8 text-gray-600">
             About AI Tools for writers, voracious readers, and book lovers.
           </p>
-          <div className="mt-10 space-y-16 border-t border-gray-200 pt-10 sm:mt-16 sm:pt-16">
+          <div className="mt-8 space-y-16 border-t border-gray-200 pt-8 sm:mt-10 sm:pt-10">
             {posts.map((post) => (
               <article
                 key={post.id}
@@ -29,7 +29,7 @@ function Posts() {
                   </a> */}
                 </div>
                 <div className="group relative">
-                  <h3 className="mt-3 text-lg font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
+                  <h3 className="mt-3 text-xl font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
                     <a href={'blog/' + post.slug}>
                       <span className="absolute inset-0" />
                       {post.title}

@@ -1,3 +1,4 @@
+import CTASection from '@/components/CTASection'
 import { ArrowLeft } from 'lucide-react'
 import { Metadata } from 'next'
 import dynamic from 'next/dynamic'
@@ -39,13 +40,19 @@ export default function Page({ params }: { params: { slug: string } }) {
         >
           <ArrowLeft /> Blog home
         </a>
-        <p className="text-base font-semibold leading-7 text-purple-600">
-          {post.description}
-        </p>
+        {/* <p className="text-base font-semibold leading-7 text-purple-600">
+          {post.category}
+        </p> */}
         <h1 className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
           {post.title}
         </h1>
-        <div className="blog mt-6 text-sm leading-normal">{post.content}</div>
+        <p className="mt-2 text-lg leading-8 text-gray-600">
+          {post.description}
+        </p>
+
+        <div className="blog mt-6 text-md text-gray-950 leading-normal">
+          {post.content}
+        </div>
       </div>
     </div>
   )
@@ -71,7 +78,7 @@ export const posts: PostType[] = [
     title: 'The best apps to chat with your Books',
     slug: 'the-best-apps-to-chat-with-your-books',
     description:
-      'Comparing 7 apps lat let you chat with your books and search for content in them semantically.',
+      'Comparing 7 apps to chat with your books and search for content in them semantically.',
     date: 'April 4, 2024',
     datetime: '2024-04-08',
     content: (
@@ -79,10 +86,10 @@ export const posts: PostType[] = [
         <p>
           There are several apps that use AI to help you interact with your
           books. Two major use-cases are asking questions to your book to
-          understand it&apos;s content better and finding quotes or sections
-          within a book. In this blog post we compare 7 of them. Other criteria
-          we will examine are the number of file types the applications supports
-          and it&apos;s subsciption price.
+          understand its content better and finding quotes or sections within a
+          book. In this blog post we compare 7 of them. Other criteria we will
+          examine are the number of file types the applications supports and its
+          subscription price.
         </p>
 
         <h2>AI Quote Finder</h2>
@@ -95,7 +102,7 @@ export const posts: PostType[] = [
           with the AI chat feature. It supports EPUB and PDF files.
         </p>
         <p>
-          With a generoun free plan and only $10 for unlimited access it the
+          With a generous free plan and only $10 for unlimited access, it is the
           cheapest option while solving for all major use cases.
         </p>
 
@@ -123,9 +130,9 @@ export const posts: PostType[] = [
         <Image src="/bookGPT.png" alt="Book GPT" width={700} height={1000} />
         <h2>Colab Notebook</h2>
         <p>
-          Google Colab is a product by Google that let&apos;s you run python
-          scripts and gives you access to a certain amount of free computing
-          power and storage. People have created{' '}
+          Google Colab is a product by Google that lets you run Python scripts
+          and gives you access to a certain amount of free computing power and
+          storage. People have created{' '}
           <a
             href="https://colab.research.google.com/drive/1PDT-jho3Y8TBrktkFVWFAPlc7PaYvlUG?usp=sharing"
             className="text-blue-500"
@@ -134,7 +141,7 @@ export const posts: PostType[] = [
           >
             scripts
           </a>{' '}
-          to embedd books and make them searchable. The problems with this
+          to embed books and make them searchable. The problems with this
           solution are that 1. the file is not stored. After you close the tab
           the file is deleted. 2. Each time you want to run the script you have
           to manually trigger the execution of each sub-process (run each cell
@@ -151,19 +158,19 @@ export const posts: PostType[] = [
         <h2>LightPDF</h2>
         <p>
           <a>LightPDF</a> analyzes PDFs and allows you to search for keywords.
-          It&apos;s downside is that on the free plan you can only
-          &quot;analyze&quot; PDFs and only documents up to 100 pages. The paid
-          plan is $29.99 per month.
+          Its downside is that on the free plan you can only &quot;analyze&quot;
+          PDFs and only documents up to 100 pages. The paid plan is $29.99 per
+          month.
         </p>
         <Image src="/lightpdf.png" alt="open ai" width={500} height={1000} />
         <h2>Colab Notebook</h2>
         <p>
-          If you pay $20 per month you can get access to ChatGPTs file upload
-          feature. Open AI states that ChatGPT&apos; supports &quot;All common
-          file extensions for text files, spreadsheets, presentations, and
-          documents&quot;. When uploading EPUBs it seems to try to use the code
-          interpreter to write a script to extrac the text from the EPUB but
-          fails miserably.
+          If you pay $20 per month you can get access to ChatGPT&apos;s file
+          upload feature. Open AI states that ChatGPT&apos;s supports &quot;All
+          common file extensions for text files, spreadsheets, presentations,
+          and documents&quot;. When uploading EPUBs it seems to try to use the
+          code interpreter to write a script to extract the text from the EPUB
+          but fails miserably.
         </p>
         <Image src="/open-ai.png" alt="open ai" width={700} height={1000} />
         <h2>ChatGPT</h2>
@@ -183,7 +190,7 @@ export const posts: PostType[] = [
         />
         <p>
           Trying this again it seems to have found a source but clicking on the
-          source link just downloas the original PDF instead of linking to a
+          source link just downloads the original PDF instead of linking to a
           specific section.
         </p>
         <Image
@@ -192,6 +199,7 @@ export const posts: PostType[] = [
           width={700}
           height={1000}
         />
+        <CTASection className="mt-10" />
       </>
     ),
   },
