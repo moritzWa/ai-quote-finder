@@ -5,16 +5,34 @@ import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import React from 'react'
 
-export const metadata: Metadata = {
-  title: 'I Quote Finder Blog',
-  description:
-    'The AI Quote Finder Blog discusses the latest news and trends in AI and books.',
-}
-
 export async function generateStaticParams() {
   return posts.map((post) => ({
     slug: post.slug,
   }))
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string }
+}): Promise<Metadata> {
+  const post = posts.find((post) => post.slug === params.slug)
+  if (!post) {
+    return {
+      title: 'Post Not Found | AI Quote Finder',
+      description: 'The requested post could not be found in our blog.',
+    }
+  }
+
+  return {
+    title: `${post.title} | AI Quote Finder`,
+    description: post.description,
+    openGraph: {
+      title: post.title,
+      description: post.description,
+      images: [{ url: post.previewImage }],
+    },
+  }
 }
 
 export default function Page({ params }: { params: { slug: string } }) {
@@ -65,6 +83,7 @@ type PostType = {
   description: string
   date: string
   datetime: string
+  previewImage: string
   content: React.ReactNode
 }
 
@@ -81,6 +100,7 @@ export const posts: PostType[] = [
       'Comparing the best apps to chat with your books and search for content in them semantically.',
     date: 'April 4, 2024',
     datetime: '2024-04-08',
+    previewImage: '/open-ai.png',
     content: (
       <>
         <p>
@@ -239,6 +259,7 @@ export const posts: PostType[] = [
       'Exploring the revolution in searching for book content using semantic search technology.',
     date: 'April 18, 2024',
     datetime: '2024-04-18',
+    previewImage: '/fuzzysearch.webp',
     content: (
       <>
         <p>

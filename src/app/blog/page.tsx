@@ -1,4 +1,11 @@
+import { Metadata } from 'next'
 import { posts } from './[slug]/page'
+
+export const metadata: Metadata = {
+  title: 'AI Quote Finder Blog',
+  description:
+    'The AI Quote Finder Blog discusses the latest news and trends in AI and books.',
+}
 
 function Posts() {
   return (
