@@ -1,16 +1,16 @@
-import { encoding_for_model } from '@dqbd/tiktoken'
+// import { encoding_for_model } from '@dqbd/tiktoken'
 import EPub from 'epub'
 import fs from 'fs'
 import { htmlToText } from 'html-to-text'
 import https from 'https'
 import path from 'path'
 
-export const countTokens = (text: string) => {
-  const encoder = encoding_for_model('gpt-3.5-turbo')
-  const tokens = encoder.encode(text)
-  encoder.free()
-  return tokens.length
-}
+// export const countTokens = (text: string) => {
+//   const encoder = encoding_for_model('gpt-3.5-turbo')
+//   const tokens = encoder.encode(text)
+//   encoder.free()
+//   return tokens.length
+// }
 
 export const sanitize = (text: string) => {
   // Replace ambiguous Unicode characters with a space
