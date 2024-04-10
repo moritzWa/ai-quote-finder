@@ -4,7 +4,6 @@ import {
   getKindeServerSession,
 } from '@kinde-oss/kinde-auth-nextjs/server'
 import { ArrowRight, SearchIcon } from 'lucide-react'
-import { headers } from 'next/headers'
 import Link from 'next/link'
 import MaxWidthWrapper from './MaxWidthWrapper'
 import MobileNav from './MobileNav'
@@ -14,10 +13,6 @@ import { buttonVariants } from './ui/button'
 const Navbar = async () => {
   const { getUser } = getKindeServerSession()
   const user = getUser()
-  // const subscriptionPlan = await getUserSubscriptionPlan()
-
-  const headersList = headers()
-  const fullUrl = headersList.get('referer') || ''
 
   return (
     <nav className="sticky h-14 inset-x-0 top-0 z-30 w-full border-b border-gray-200 bg-white/75 backdrop-blur-lg transition-all">
@@ -36,7 +31,7 @@ const Navbar = async () => {
                 <Link
                   href="/blog"
                   className={buttonVariants({
-                    variant: fullUrl.includes('/blog') ? 'active' : 'ghost',
+                    variant: 'ghost',
                     size: 'sm',
                   })}
                 >
@@ -45,7 +40,7 @@ const Navbar = async () => {
                 <Link
                   href="/pricing"
                   className={buttonVariants({
-                    variant: fullUrl.includes('/pricing') ? 'active' : 'ghost',
+                    variant: 'ghost',
                     size: 'sm',
                   })}
                 >
@@ -72,9 +67,8 @@ const Navbar = async () => {
                 {/* {user && !subscriptionPlan?.isSubscribed && (
                   <Link
                     href="/pricing"
-                    className={buttonVariants({
-                      variant: 'ghost',
-                      size: 'sm',
+                    className={buttonVariants({ variant: 'ghost',
+                     size: 'sm',
                     })}
                   >
                     <Gem className="text-primary h-4 w-4 mr-1.5" /> Upgrade

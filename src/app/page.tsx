@@ -46,7 +46,7 @@ export default function Home() {
                     Semantic Search for your books
                   </h1>
                   <p className="mt-6 text-lg leading-8 text-gray-600">
-                    Find the best parts of your favorite books in seconds. Or
+                    Find specific parts of your favorite books in seconds. Or
                     understand books with AI chat. Supports EPUBs and PDFs.
                   </p>
                   <div className="mt-5 flex items-center just gap-x-6">

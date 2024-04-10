@@ -1,14 +1,26 @@
+import clsx from 'clsx'
 import React from 'react'
 
 interface VideoPlayerProps {
   src: string
   width: number
   height: number
+  className?: string
 }
 
-const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, width, height }) => {
+const VideoPlayer: React.FC<VideoPlayerProps> = ({
+  src,
+  width,
+  height,
+  className,
+}) => {
   return (
-    <div className="shadow-lg md:rounded-3xl inline-block mx-auto p-0">
+    <div
+      className={clsx(
+        'shadow-lg md:rounded-3xl inline-block mx-auto p-0',
+        className,
+      )}
+    >
       <video
         height={height}
         width={width}

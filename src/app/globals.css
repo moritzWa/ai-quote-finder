@@ -80,3 +80,15 @@
 .scrollbar-thumb-rounded::-webkit-scrollbar-thumb {
   border-radius: 7px;
 }
+
+.blog h2 {
+  @apply text-2xl font-bold pt-4;
+}
+
+.blog p {
+  @apply py-2;
+}
+
+.blog img {
+  @apply py-3;
+}
