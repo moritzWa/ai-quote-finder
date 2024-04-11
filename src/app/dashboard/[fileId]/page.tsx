@@ -3,7 +3,7 @@ import ChatWrapper from '@/components/chat/ChatWrapper'
 import { db } from '@/db'
 import { getUserSubscriptionPlan } from '@/lib/stripe'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
-import { notFound, redirect } from 'next/navigation'
+import { redirect } from 'next/navigation'
 
 interface PageProps {
   params: {
@@ -32,15 +32,11 @@ const Page = async ({ params }: PageProps) => {
 
   if (!file) {
     console.error('File not found.')
-    notFound()
-    return
   }
-
-  if (!file) notFound()
 
   const plan = await getUserSubscriptionPlan()
 
-  console.log('will render this file key', file.key)
+  console.log('will render this file key', file?.key)
   console.log('wich results in this url', `https://utfs.io/f/${file.key}`)
 
   // TODO figure out why this is necessary
