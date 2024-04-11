@@ -13,7 +13,6 @@ import { UploadThingError } from 'uploadthing/server'
 import { loadEpubFromUrl, parseFileSize, sanitize } from './utils'
 
 export const maxDuration = 120
-export const dynamic = 'force-dynamic'
 
 import { UTApi } from 'uploadthing/server'
 export const utapi = new UTApi()
