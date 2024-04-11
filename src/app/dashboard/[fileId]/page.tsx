@@ -48,7 +48,7 @@ const Page = async ({ params }: PageProps) => {
           <div className="flex-1 xl:flex">
             <div className="h-full w-full xl:flex-1">
               {/* Main area */}
-              <FileRenderer url={`https://utfs.io/f/${file.key}`} />
+              <FileRenderer url={file.url} />
             </div>
           </div>
 
