@@ -21,7 +21,7 @@ export const freePlan = {
   features: [
     'unlimited file uploads',
     '4MB upload limit',
-    'limited to 400 pages per file',
+    'limited to 420 pages per file',
   ],
 }
 
@@ -44,7 +44,7 @@ export const proPlan = {
   features: [
     'unlimited messages and files',
     'up to 16MB file size',
-    'up to 600 pages per file',
+    'up to 1200 pages per file',
   ],
 }
 
