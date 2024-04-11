@@ -21,11 +21,20 @@ const Page = async ({ params }: PageProps) => {
 
   if (!user || !user.id) redirect(`/auth-callback?origin=dashboard/${fileid}`)
 
-  const file = await db.file.findFirst({
-    where: {
-      id: '21ef97e0-d1d9-4e31-84e9-04490d877bf2',
-    },
-  })
+  let file
+  if (fileid) {
+    file = await db.file.findFirst({
+      where: {
+        id: fileid,
+      },
+    })
+  }
+
+  if (!file) {
+    console.error('File not found.')
+    notFound()
+    return
+  }
 
   if (!file) notFound()
 
