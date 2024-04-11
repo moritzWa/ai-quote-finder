@@ -5,7 +5,6 @@ import { getUserSubscriptionPlan } from '@/lib/stripe'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import { UploadStatus } from '@prisma/client'
 import { TRPCError } from '@trpc/server'
-import fs from 'fs'
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf'
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
 import { PineconeStore } from 'langchain/vectorstores/pinecone'
@@ -226,22 +225,22 @@ const onUploadComplete = async ({
     })
 
     // Get current timestamp and replace / with -
-    const timestamp = new Date().toLocaleString().replace(/\//g, '-')
+    // const timestamp = new Date().toLocaleString().replace(/\//g, '-')
 
     // Construct file name with timestamp
-    const fileName = `pageLevelDocs_${createdFile.name.replace(
-      /([^a-z0-9]+)/gi,
-      '-',
-    )}_${timestamp}.json`
+    // const fileName = `pageLevelDocs_${createdFile.name.replace(
+    //   /([^a-z0-9]+)/gi,
+    //   '-',
+    // )}_${timestamp}.json`
 
     // Write file with timestamped name
-    fs.writeFile(fileName, JSON.stringify(pageLevelDocs, null, 2), (err) => {
-      if (err) {
-        console.error('Error writing file:', err)
-      } else {
-        console.log('File written successfully:', fileName)
-      }
-    })
+    // fs.writeFile(fileName, JSON.stringify(pageLevelDocs, null, 2), (err) => {
+    //   if (err) {
+    //     console.error('Error writing file:', err)
+    //   } else {
+    //     console.log('File written successfully:', fileName)
+    //   }
+    // })
 
     await PineconeStore.fromDocuments(pageLevelDocs, embeddings, {
       pineconeIndex,
