@@ -81,6 +81,7 @@
   border-radius: 7px;
 }
 
+/* blog */
 .blog h2 {
   @apply text-2xl font-bold pt-6 pb-2;
 }
