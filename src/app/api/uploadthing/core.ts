@@ -119,7 +119,7 @@ const onUploadComplete = async ({
 
       pageLevelDocs = await loadEpubFromUrl(fileURL)
 
-      // console.log('pageLevelDocs', pageLevelDocs)
+      console.log('epub pageLevelDocs', pageLevelDocs)
     } else {
       const blob = await response.blob()
       const loader = new PDFLoader(blob)

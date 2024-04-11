@@ -44,7 +44,7 @@ const Dashboard = ({ subscriptionPlan, userId }: PageProps) => {
   >(null)
 
   const { toast } = useToast()
-  const utils = trpc.useContext()
+  const utils = trpc.useUtils()
 
   const { data: files, isLoading } = trpc.getUserFiles.useQuery()
 
