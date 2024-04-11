@@ -3,6 +3,7 @@ import EPub from 'epub'
 import fs from 'fs'
 import { htmlToText } from 'html-to-text'
 import https from 'https'
+import os from 'os'
 import path from 'path'
 
 // export const countTokens = (text: string) => {
@@ -62,7 +63,7 @@ export async function downloadFile(url: string, destination: string) {
 }
 
 export async function loadEpubFromUrl(url: string) {
-  const filePath = path.join(__dirname, 'temp.epub')
+  const filePath = path.join(os.tmpdir(), 'temp.epub')
   await downloadFile(url, filePath)
   return loadEpubViaGetChapter(filePath)
 }

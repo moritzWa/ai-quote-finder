@@ -45,7 +45,7 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
 
     type listItemType = string[] | ''
 
-    console.log('message', message)
+    // console.log('message', message)
 
     // Split the message into list items
     const listItems: listItemType =
@@ -64,7 +64,7 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
 
         // general chatbot text to prefece the list of quote
         if (index === 0 && !partsedPartsOfQuote) {
-          return <p key={index}>test: {item}</p>
+          return <p key={index}>{item}</p>
         }
 
         if (partsedPartsOfQuote) {

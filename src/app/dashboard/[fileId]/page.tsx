@@ -23,7 +23,7 @@ const Page = async ({ params }: PageProps) => {
 
   const file = await db.file.findFirst({
     where: {
-      id: fileid,
+      id: '21ef97e0-d1d9-4e31-84e9-04490d877bf2',
     },
   })
 
