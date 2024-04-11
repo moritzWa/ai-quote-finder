@@ -151,6 +151,9 @@ export const appRouter = router({
       },
       include: {
         messages: {
+          where: {
+            userId: userId,
+          },
           select: {
             id: true,
           },
