@@ -68,6 +68,15 @@ const UserAccountNav = async ({
         <DropdownMenuItem className="cursor-pointer" asChild>
           <Link href="/dashboard">Dashboard</Link>
         </DropdownMenuItem>
+        <DropdownMenuItem className="cursor-pointer" asChild>
+          <a
+            href="mailto:wallawitsch@gmail.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Help
+          </a>
+        </DropdownMenuItem>
 
         <DropdownMenuItem className="cursor-pointer" asChild>
           {subscriptionPlan?.isSubscribed ? (
