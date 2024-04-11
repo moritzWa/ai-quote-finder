@@ -33,8 +33,8 @@ export const proPlan = {
   price: {
     amount: 19,
     priceIds: {
-      test: 'price_1OPYlOBhihWWQNODCIQyefvR',
-      production: 'price_1OPInQBhihWWQNODiTNAiZW3',
+      test: 'price_1P4VTmBhihWWQNODB3Eiz9vz',
+      production: 'price_1P4VR3BhihWWQNODfzzCbQ42',
     },
   },
 
