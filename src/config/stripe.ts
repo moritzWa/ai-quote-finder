@@ -38,7 +38,7 @@ export const proPlan = {
     },
   },
 
-  quota: 10,
+  quota: 9.95,
   pagesPerPdf: 1200,
   maxFileSize: '16MB' as PlanMaxFileSizes,
   features: [
