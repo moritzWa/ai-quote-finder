@@ -14,6 +14,8 @@ interface PageProps {
 const Page = async ({ params }: PageProps) => {
   const { fileid } = params
 
+  console.log('got this fileid:', fileid)
+
   const { getUser } = getKindeServerSession()
   const user = getUser()
 
@@ -28,6 +30,9 @@ const Page = async ({ params }: PageProps) => {
   if (!file) notFound()
 
   const plan = await getUserSubscriptionPlan()
+
+  console.log('will render this file key', file.key)
+  console.log('wich results in this url', `https://utfs.io/f/${file.key}`)
 
   // TODO figure out why this is necessary
   // const fileUrl = file.url.replace(
