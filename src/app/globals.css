@@ -82,7 +82,7 @@
 }
 
 .blog h2 {
-  @apply text-2xl font-bold pt-6;
+  @apply text-2xl font-bold pt-6 pb-2;
 }
 
 .blog p {

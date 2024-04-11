@@ -14,8 +14,6 @@ interface PageProps {
 const Page = async ({ params }: PageProps) => {
   const { fileId } = params
 
-  console.log('got these params:', params)
-
   const { getUser } = getKindeServerSession()
   const user = getUser()
 
@@ -31,8 +29,9 @@ const Page = async ({ params }: PageProps) => {
 
   const plan = await getUserSubscriptionPlan()
 
-  console.log('will render this file key', file.key)
-  console.log('wich results in this url', `https://utfs.io/f/${file.key}`)
+  // console.log('got these params:', params)
+  // console.log('will render this file key', file.key)
+  // console.log('wich results in this url', `https://utfs.io/f/${file.key}`)
 
   return (
     <>
