@@ -13,9 +13,11 @@ const EpubPreview = ({ file }: { file: { url: string } }) => {
         height: '100%',
       })
       rendition.display()
-  
+
       return () => {
         if (rendition) {
+          // TODO: figure out why this is throwing: TypeError: Cannot read properties of undefined (reading 'removeEventListener')
+          // @ts-ignore
           rendition.destroy()
         }
       }

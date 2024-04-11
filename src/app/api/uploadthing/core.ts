@@ -98,7 +98,7 @@ const onUploadComplete = async ({
       key: file.key,
       name: file.name,
       userId: metadata.userId,
-      url: file.url,
+      url: `https://utfs.io/f/${file.key}`,
       uploadStatus: UploadStatus.PROCESSING,
       private: metadata.userPrefersPrivateUpload,
     },
@@ -143,8 +143,8 @@ const onUploadComplete = async ({
 
     // throw erros if the file is too big
     if (
-      file.size > parseFileSize(allowedFileSize) &&
-      process.env.NODE_ENV === 'production'
+      file.size > parseFileSize(allowedFileSize)
+      // && process.env.NODE_ENV === 'production'
     ) {
       console.log('file.size', file.size, 'allowedFileSize', allowedFileSize)
       throw new TRPCError({
@@ -153,8 +153,8 @@ const onUploadComplete = async ({
       })
     }
     if (
-      file.size > parseFileSize(allowedFileSize) &&
-      process.env.NODE_ENV === 'production'
+      file.size > parseFileSize(allowedFileSize) // &&
+      // process.env.NODE_ENV === 'production'
     ) {
       console.log('file.size', file.size, 'allowedFileSize', allowedFileSize)
       throw new UploadThingError(
@@ -163,9 +163,9 @@ const onUploadComplete = async ({
     }
 
     if (
-      process.env.NODE_ENV === 'production' &&
-      ((isSubscribed && isProPageLimitExceeded) ||
-        (!isSubscribed && isFreePageLimitExceeded))
+      // process.env.NODE_ENV === 'production' &&
+      (isSubscribed && isProPageLimitExceeded) ||
+      (!isSubscribed && isFreePageLimitExceeded)
     ) {
       console.log(
         'in if pages too many',

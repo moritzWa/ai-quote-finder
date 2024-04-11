@@ -74,6 +74,8 @@ export const POST = async (req: NextRequest) => {
       (nextReset.getTime() - now.getTime()) / (1000 * 60 * 60),
     )
 
+    // TODO fix getting Your limit will reset in -62 hours. You can only process up to 25 in total and 5 messages per day.
+
     return new Response(
       `Free plan message limit reached. Your limit will reset in ${hoursUntilReset} hours.`,
       { status: 403 },
@@ -127,10 +129,10 @@ export const POST = async (req: NextRequest) => {
   // search for similar messages
   const results = await vectorStore.similaritySearch(message, 4)
 
-  // console.log(
-  //   '4 vector search result mapped',
-  //   await results.map((r) => r.metadata),
-  // )
+  console.log(
+    '4 vector search result mapped',
+    await results.map((r) => r.metadata),
+  )
 
   const previousMessage = await db.message.findMany({
     where: {

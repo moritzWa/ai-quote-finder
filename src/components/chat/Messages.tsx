@@ -73,7 +73,7 @@ const Messages = ({ fileId }: MessagesProps) => {
   return (
     <div
       className={clsx(
-        'flex max-h-[calc(100vh-3.5rem-7rem)] border-zinc-200 flex-1 flex-col-reverse gap-4 p-4 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch',
+        'flex border-zinc-200 flex-1 flex-col-reverse gap-4 p-4 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch',
         isLimitReachedError
           ? 'max-h-[calc(100vh-3.5rem-7rem-9rem)]'
           : 'max-h-[calc(100vh-3.5rem-7rem)]',
