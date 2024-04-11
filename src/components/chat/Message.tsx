@@ -25,7 +25,7 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
       string | null
     >(null)
 
-    const utils = trpc.useContext()
+    const utils = trpc.useUtils()
 
     const { mutate: deleteFile, isLoading } = trpc.deleteMessage.useMutation({
       onSuccess: () => {

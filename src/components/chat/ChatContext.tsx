@@ -41,7 +41,7 @@ export const ChatContextProvider = ({
   const [isLimitReachedError, setIsLimitReached] = useState<null | string>(null)
   const [quoteMode, setQuoteMode] = useState(true)
 
-  const utils = trpc.useContext()
+  const utils = trpc.useUtils()
 
   const { toast } = useToast()
 
