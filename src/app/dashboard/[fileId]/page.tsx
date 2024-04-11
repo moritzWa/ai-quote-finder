@@ -7,23 +7,23 @@ import { notFound, redirect } from 'next/navigation'
 
 interface PageProps {
   params: {
-    fileid: string // matches [fileId] param
+    fileId: string // matches [fileId] param
   }
 }
 
 const Page = async ({ params }: PageProps) => {
-  const { fileid } = params
+  const { fileId } = params
 
   console.log('got these params:', params)
 
   const { getUser } = getKindeServerSession()
   const user = getUser()
 
-  if (!user || !user.id) redirect(`/auth-callback?origin=dashboard/${fileid}`)
+  if (!user || !user.id) redirect(`/auth-callback?origin=dashboard/${fileId}`)
 
   const file = await db.file.findFirstOrThrow({
     where: {
-      id: fileid,
+      id: fileId,
     },
   })
 
@@ -33,12 +33,6 @@ const Page = async ({ params }: PageProps) => {
 
   console.log('will render this file key', file.key)
   console.log('wich results in this url', `https://utfs.io/f/${file.key}`)
-
-  // TODO figure out why this is necessary
-  // const fileUrl = file.url.replace(
-  //   'https://uploadthing-prod.s3.us-west-2.amazonaws.com/',
-  //   'https://utfs.io/f/',
-  // )
 
   return (
     <>
