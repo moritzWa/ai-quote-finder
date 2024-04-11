@@ -205,7 +205,8 @@ const CustomUploadDropzone = ({
                     drag and drop
                   </p>
                   <p className="text-xsΓ text-zinc-500">
-                    File (PDF or EPUB up to {possiblePlanFileSize})
+                    File (PDF or EPUB up to {possiblePlanFileSize} on{' '}
+                    {isSubscribed ? 'Pro' : 'Free'} plan)
                   </p>
                 </div>
                 {acceptedFiles && acceptedFiles[0] ? (

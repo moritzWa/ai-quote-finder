@@ -16,8 +16,17 @@ const nextConfig = {
   },
 
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+    // Existing alias configurations
     config.resolve.alias.canvas = false
     config.resolve.alias.encoding = false
+
+    // Ignore the specified modules
+    config.plugins.push(
+      new webpack.IgnorePlugin({
+        resourceRegExp: /^original-fs$|^zipfile$/,
+      }),
+    )
+
     return config
   },
 

@@ -14,7 +14,7 @@ export const freePlan = {
   },
 
   quota: 0,
-  pagesPerPdf: 400,
+  pagesPerPdf: 420,
   maxFileSize: '4MB' as PlanMaxFileSizes,
   maxMesages: 25,
   maxMessagesPerDay: 5,
