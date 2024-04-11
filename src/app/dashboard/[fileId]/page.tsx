@@ -14,36 +14,20 @@ interface PageProps {
 const Page = async ({ params }: PageProps) => {
   const { fileid } = params
 
-  console.log('got this fileid:', fileid)
+  console.log('got these params:', params)
 
   const { getUser } = getKindeServerSession()
   const user = getUser()
 
   if (!user || !user.id) redirect(`/auth-callback?origin=dashboard/${fileid}`)
 
-  if (!fileid) {
-    console.error('File ID is undefined.')
-    notFound()
-    return // This ensures we exit if fileid is undefined
-  }
-
-  const file = await db.file.findFirst({
+  const file = await db.file.findFirstOrThrow({
     where: {
       id: fileid,
     },
   })
 
-  // After this point, `file` can be either your file object or null/undefined
-  // depending on whether the file was found. You have to check if file is truthy
-  // before accessing its properties.
-  if (!file) {
-    console.error('File not found.')
-    notFound()
-    return // This ensures we exit if the file doesn't exist
-  }
-
-  // Now TypeScript knows `file` is neither null nor undefined.
-  console.log(file.url) // This is safe to access
+  if (!file) notFound()
 
   const plan = await getUserSubscriptionPlan()
 
