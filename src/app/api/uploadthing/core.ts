@@ -93,19 +93,21 @@ const onUploadComplete = async ({
   // https://uploadthing-prod.s3.us-west-2.amazonaws.com/
   // https://utfs.io/f/
 
+  const fileURL = `https://utfs.io/f/${file.key}`
+
   const createdFile = await db.file.create({
     data: {
       key: file.key,
       name: file.name,
       userId: metadata.userId,
-      url: `https://utfs.io/f/${file.key}`,
+      url: fileURL,
       uploadStatus: UploadStatus.PROCESSING,
       private: metadata.userPrefersPrivateUpload,
     },
   })
 
   try {
-    const response = await fetch(file.url)
+    const response = await fetch(fileURL)
 
     let pageLevelDocs
     if (file.name.endsWith('.epub')) {
@@ -116,7 +118,7 @@ const onUploadComplete = async ({
       // const loader = new EPubLoader(filePath);
       // pageLevelDocs = await loader.load();
 
-      pageLevelDocs = await loadEpubFromUrl(file.url)
+      pageLevelDocs = await loadEpubFromUrl(fileURL)
 
       // console.log('pageLevelDocs', pageLevelDocs)
     } else {
