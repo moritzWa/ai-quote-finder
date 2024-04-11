@@ -3,7 +3,7 @@ import ChatWrapper from '@/components/chat/ChatWrapper'
 import { db } from '@/db'
 import { getUserSubscriptionPlan } from '@/lib/stripe'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
-import { redirect } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 
 interface PageProps {
   params: {
@@ -21,22 +21,33 @@ const Page = async ({ params }: PageProps) => {
 
   if (!user || !user.id) redirect(`/auth-callback?origin=dashboard/${fileid}`)
 
-  let file
-  if (fileid) {
-    file = await db.file.findFirst({
-      where: {
-        id: fileid,
-      },
-    })
+  if (!fileid) {
+    console.error('File ID is undefined.')
+    notFound()
+    return // This ensures we exit if fileid is undefined
   }
 
+  const file = await db.file.findFirst({
+    where: {
+      id: fileid,
+    },
+  })
+
+  // After this point, `file` can be either your file object or null/undefined
+  // depending on whether the file was found. You have to check if file is truthy
+  // before accessing its properties.
   if (!file) {
     console.error('File not found.')
+    notFound()
+    return // This ensures we exit if the file doesn't exist
   }
+
+  // Now TypeScript knows `file` is neither null nor undefined.
+  console.log(file.url) // This is safe to access
 
   const plan = await getUserSubscriptionPlan()
 
-  console.log('will render this file key', file?.key)
+  console.log('will render this file key', file.key)
   console.log('wich results in this url', `https://utfs.io/f/${file.key}`)
 
   // TODO figure out why this is necessary
