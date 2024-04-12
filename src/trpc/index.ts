@@ -62,6 +62,11 @@ export const appRouter = router({
         return_url: billingUrl,
       })
 
+      console.log('in already subscribed')
+
+      console.log('billingUrl', billingUrl)
+      console.log('stripeSession url', stripeSession.url)
+
       return { url: stripeSession.url }
     }
 

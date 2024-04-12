@@ -9,12 +9,13 @@ export async function POST(request: Request) {
 
   let event: Stripe.Event
 
+  const webhookSecret =
+    process.env.NODE_ENV === 'production'
+      ? process.env.STRIPE_WEBHOOK_SECRET_PROD
+      : process.env.STRIPE_WEBHOOK_SECRET_DEV
+
   try {
-    event = stripe.webhooks.constructEvent(
-      body,
-      signature,
-      process.env.STRIPE_WEBHOOK_SECRET || '',
-    )
+    event = stripe.webhooks.constructEvent(body, signature, webhookSecret || '')
   } catch (err) {
     return new Response(
       `Webhook Error: ${err instanceof Error ? err.message : 'Unknown Error'}`,
@@ -35,6 +36,8 @@ export async function POST(request: Request) {
       session.subscription as string,
     )
 
+    console.log('in checkout.session.completed')
+    console.log('session.metadata.userId:', session.metadata.userId)
     await db.user.update({
       where: {
         id: session.metadata.userId,
@@ -55,6 +58,10 @@ export async function POST(request: Request) {
     const subscription = await stripe.subscriptions.retrieve(
       session.subscription as string,
     )
+
+    console.log('in invoice.payment_succeeded')
+    console.log('session.metadata.userId:', session.metadata.userId)
+    console.log('subscription.id:', subscription.id)
 
     await db.user.update({
       where: {
