@@ -91,12 +91,12 @@ export const appRouter = router({
       },
     })
 
-    console.log(
-      'creating session for this priceId',
-      process.env.NODE_ENV === 'production'
-        ? proPlan.price.priceIds.production
-        : proPlan.price.priceIds.test,
-    )
+    // console.log(
+    //   'creating session for this priceId',
+    //   process.env.NODE_ENV === 'production'
+    //     ? proPlan.price.priceIds.production
+    //     : proPlan.price.priceIds.test,
+    // )
 
     return { url: stripeSession.url }
   }),
