@@ -52,14 +52,6 @@ export const POST = async (req: NextRequest) => {
 
   const subscriptionPlan = await getUserSubscriptionPlan()
 
-  // Check if user has reached the total message limit
-  // console.log(
-  //   dbUser.totalMessagesUsed,
-  //   dbUser.totalMessagesUsedToday,
-  //   dbUser.totalMessagesUsed >= freePlan.maxMesages,
-  //   dbUser.totalMessagesUsedToday >= freePlan.maxMessagesPerDay,
-  // )
-
   if (
     !subscriptionPlan.isSubscribed &&
     (dbUser.totalMessagesUsed >= freePlan.maxMesages ||
@@ -67,14 +59,15 @@ export const POST = async (req: NextRequest) => {
   ) {
     const now = new Date()
     const createdAt = new Date(dbUser.createdAt)
-    const nextReset = new Date(createdAt.getTime()) // see chron job
+    let nextReset = new Date(createdAt.getTime())
 
-    nextReset.setDate(createdAt.getDate() + 1)
+    while (nextReset <= now) {
+      nextReset.setDate(nextReset.getDate() + 1)
+    }
+
     const hoursUntilReset = Math.ceil(
       (nextReset.getTime() - now.getTime()) / (1000 * 60 * 60),
     )
-
-    // TODO fix getting Your limit will reset in -62 hours. You can only process up to 25 in total and 5 messages per day.
 
     return new Response(
       `Free plan message limit reached. Your limit will reset in ${hoursUntilReset} hours.`,
