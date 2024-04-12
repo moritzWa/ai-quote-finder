@@ -54,7 +54,7 @@ export async function POST(request: Request) {
   }
 
   if (event.type === 'invoice.payment_succeeded') {
-    // Retrieve the subscription details from Stripe.
+    // Retrieve the subscription details from Stripe
     const subscription = await stripe.subscriptions.retrieve(
       session.subscription as string,
     )
