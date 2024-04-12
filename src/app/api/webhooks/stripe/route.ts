@@ -14,7 +14,6 @@ export async function POST(request: Request) {
       ? process.env.STRIPE_WEBHOOK_SECRET_PROD
       : process.env.STRIPE_WEBHOOK_SECRET_DEV
 
-  console.log('webhook POST webhookSecret:', webhookSecret)
   try {
     event = stripe.webhooks.constructEvent(body, signature, webhookSecret || '')
   } catch (err) {
@@ -37,8 +36,8 @@ export async function POST(request: Request) {
       session.subscription as string,
     )
 
-    console.log('in checkout.session.completed')
-    console.log('session.metadata.userId:', session.metadata.userId)
+    // console.log('in checkout.session.completed')
+    // console.log('session.metadata.userId:', session.metadata.userId)
     await db.user.update({
       where: {
         id: session.metadata.userId,
@@ -60,9 +59,9 @@ export async function POST(request: Request) {
       session.subscription as string,
     )
 
-    console.log('in invoice.payment_succeeded')
-    console.log('session.metadata.userId:', session.metadata.userId)
-    console.log('subscription.id:', subscription.id)
+    // console.log('in invoice.payment_succeeded')
+    // console.log('session.metadata.userId:', session.metadata.userId)
+    // console.log('subscription.id:', subscription.id)
 
     await db.user.update({
       where: {
