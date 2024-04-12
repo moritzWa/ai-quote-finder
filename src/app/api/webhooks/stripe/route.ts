@@ -14,6 +14,7 @@ export async function POST(request: Request) {
       ? process.env.STRIPE_WEBHOOK_SECRET_PROD
       : process.env.STRIPE_WEBHOOK_SECRET_DEV
 
+  console.log('webhook POST webhookSecret:', webhookSecret)
   try {
     event = stripe.webhooks.constructEvent(body, signature, webhookSecret || '')
   } catch (err) {
