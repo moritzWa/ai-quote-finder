@@ -77,6 +77,9 @@ const UserAccountNav = async ({
             Help
           </a>
         </DropdownMenuItem>
+        <DropdownMenuItem className="cursor-pointer" asChild>
+          <Link href="/blog">Blog</Link>
+        </DropdownMenuItem>
 
         <DropdownMenuItem className="cursor-pointer" asChild>
           {subscriptionPlan?.isSubscribed ? (
