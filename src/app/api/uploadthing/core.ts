@@ -12,7 +12,7 @@ import { createUploadthing, type FileRouter } from 'uploadthing/next'
 import { UploadThingError } from 'uploadthing/server'
 import { loadEpubFromUrl, parseFileSize, sanitize } from './utils'
 
-export const maxDuration = 120
+export const maxDuration = 300
 
 import { UTApi } from 'uploadthing/server'
 export const utapi = new UTApi()
@@ -125,7 +125,7 @@ const onUploadComplete = async ({
 
       console.log('epub loaded pageLevelDocs.length', pageLevelDocs.length)
     } else {
-      console.log("in else file.name.endsWith('.epub')")
+      console.log("in else file.name.endsWith('.pdf')")
       const blob = await response.blob()
       const loader = new PDFLoader(blob)
       pageLevelDocs = await loader.load()
