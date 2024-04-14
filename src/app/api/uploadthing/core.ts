@@ -96,6 +96,8 @@ const onUploadComplete = async ({
 
   const fileURL = `https://utfs.io/f/${file.key}`
 
+  console.log('creating file now using fileURL:', fileURL)
+
   const createdFile = await db.file.create({
     data: {
       key: file.key,
