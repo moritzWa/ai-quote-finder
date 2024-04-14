@@ -123,11 +123,13 @@ const onUploadComplete = async ({
 
       pageLevelDocs = await loadEpubFromUrl(fileURL)
 
-      console.log('epub pageLevelDocs', pageLevelDocs)
+      console.log('epub loaded pageLevelDocs.length', pageLevelDocs.length)
     } else {
+      console.log("in else file.name.endsWith('.epub')")
       const blob = await response.blob()
       const loader = new PDFLoader(blob)
       pageLevelDocs = await loader.load()
+      console.log('pdf loaded pageLevelDocs.length', pageLevelDocs.length)
     }
 
     const pagesAmt = pageLevelDocs.length
