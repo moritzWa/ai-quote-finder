@@ -1,21 +1,24 @@
 import { freePlan, proPlan } from '@/config/stripe'
 import { db } from '@/db'
 import { pinecone } from '@/lib/pinecone'
-import { getUserSubscriptionPlan } from '@/lib/stripe'
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import { UploadStatus } from '@prisma/client'
 import { TRPCError } from '@trpc/server'
+import fs from 'fs'
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf'
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
-import { PineconeStore } from 'langchain/vectorstores/pinecone'
 import { createUploadthing, type FileRouter } from 'uploadthing/next'
-import { UploadThingError } from 'uploadthing/server'
-import { loadEpubFromUrl, parseFileSize, sanitize } from './utils'
+import { UTApi, UploadThingError } from 'uploadthing/server'
+import { middleware } from './middleware'
+import {
+  Chapter,
+  batchProcessDocuments,
+  loadEpubFromUrl,
+  parseFileSize,
+  sanitize,
+} from './utils'
 
-export const maxDuration = 300
-
-import { UTApi } from 'uploadthing/server'
 export const utapi = new UTApi()
+export const maxDuration = 300
 
 const f = createUploadthing({
   /**
@@ -35,35 +38,6 @@ const f = createUploadthing({
   },
 })
 
-const middleware = async () => {
-  const { getUser } = getKindeServerSession()
-  const user = getUser()
-
-  if (!user || !user.id) throw new Error('Unauthorized')
-
-  const subscriptionPlan = await getUserSubscriptionPlan()
-
-  // search user in db
-
-  const dbUserSelection = await db.user.findFirst({
-    where: {
-      id: user.id,
-    },
-    select: {
-      prefersPrivateUpload: true,
-    },
-  })
-
-  if (!dbUserSelection) throw new Error('Unauthorized')
-
-  // Whatever is returned here is accessible in onUploadComplete as `metadata`
-  return {
-    subscriptionPlan,
-    userId: user.id,
-    userPrefersPrivateUpload: dbUserSelection.prefersPrivateUpload,
-  }
-}
-
 const onUploadComplete = async ({
   metadata,
   file,
@@ -82,18 +56,7 @@ const onUploadComplete = async ({
     },
   })
 
-  // console.log(
-  //   'now in onUploadComplet. isFileExist:',
-  //   isFileExist,
-  //   'file.url',
-  //   file.url,
-  // )
-
   if (isFileExist) return
-
-  // https://uploadthing-prod.s3.us-west-2.amazonaws.com/
-  // https://utfs.io/f/
-
   const fileURL = `https://utfs.io/f/${file.key}`
 
   console.log('creating file now using fileURL:', fileURL)
@@ -116,12 +79,17 @@ const onUploadComplete = async ({
     if (file.name.endsWith('.epub')) {
       console.log("in if file.name.endsWith('.epub')")
 
-      // langchain version
-      // const filePath = await downloadFileToString(file.url, 'temp.epub');
-      // const loader = new EPubLoader(filePath);
-      // pageLevelDocs = await loader.load();
+      pageLevelDocs = (await loadEpubFromUrl(fileURL)) as Chapter[]
 
-      pageLevelDocs = await loadEpubFromUrl(fileURL)
+      // sanitize epub page content
+      pageLevelDocs = await Promise.all(
+        pageLevelDocs.map(async (doc) => {
+          return {
+            ...doc,
+            pageContent: sanitize(doc.pageContent) || 'Empty chapter/page',
+          }
+        }),
+      )
 
       console.log('epub loaded pageLevelDocs.length', pageLevelDocs.length)
     } else {
@@ -192,21 +160,14 @@ const onUploadComplete = async ({
       return
     }
 
-    // vectorize & index text
-    const pineconeIndex = pinecone.Index('ai-quote-finder')
-
-    const embeddings = new OpenAIEmbeddings({
-      openAIApiKey: process.env.OPENAI_API_KEY,
-    })
-
     // add token count to metadata
-    pageLevelDocs = pageLevelDocs.map((doc) => ({
-      ...doc,
-      metadata: {
-        ...doc.metadata,
-        // tokenCount: countTokens(doc.pageContent),
-      },
-    }))
+    // pageLevelDocs = pageLevelDocs.map((doc) => ({
+    //   ...doc,
+    //   metadata: {
+    //     ...doc.metadata,
+    //     // tokenCount: countTokens(doc.pageContent),
+    //   },
+    // }))
 
     // const totalTokens = pageLevelDocs.reduce(
     //   (sum, doc) => sum + doc.metadata.tokenCount,
@@ -220,38 +181,42 @@ const onUploadComplete = async ({
     // console.log(`Total tokens: ${totalTokens}`)
     // console.log(`Max tokens in a single document: ${maxTokens}`)
 
-    // sanitize
-    pageLevelDocs = pageLevelDocs.map((doc) => {
-      let content = sanitize(doc.pageContent)
-      content = content === '' ? 'Empty chapter/page' : content
-      return {
-        ...doc,
-        pageContent: content,
+    // Get current timestamp and replace / with -
+    const timestamp = new Date().toLocaleString().replace(/\//g, '-')
+
+    // Construct file name with timestamp
+    const fileName = `pageLevelDocs_${createdFile.name.replace(
+      /([^a-z0-9]+)/gi,
+      '-',
+    )}_${timestamp}.json`
+
+    // Write file with timestamped name
+    fs.writeFile(fileName, JSON.stringify(pageLevelDocs, null, 2), (err) => {
+      if (err) {
+        console.error('Error writing file:', err)
+      } else {
+        console.log('File written successfully:', fileName)
       }
     })
 
-    // Get current timestamp and replace / with -
-    // const timestamp = new Date().toLocaleString().replace(/\//g, '-')
+    // vectorize & index text
+    const pineconeIndex = pinecone.Index('ai-quote-finder')
 
-    // Construct file name with timestamp
-    // const fileName = `pageLevelDocs_${createdFile.name.replace(
-    //   /([^a-z0-9]+)/gi,
-    //   '-',
-    // )}_${timestamp}.json`
-
-    // Write file with timestamped name
-    // fs.writeFile(fileName, JSON.stringify(pageLevelDocs, null, 2), (err) => {
-    //   if (err) {
-    //     console.error('Error writing file:', err)
-    //   } else {
-    //     console.log('File written successfully:', fileName)
-    //   }
-    // })
-
-    await PineconeStore.fromDocuments(pageLevelDocs, embeddings, {
-      pineconeIndex,
-      namespace: createdFile.id,
+    const embeddings = new OpenAIEmbeddings({
+      openAIApiKey: process.env.OPENAI_API_KEY,
     })
+
+    await batchProcessDocuments(
+      pageLevelDocs,
+      embeddings,
+      pineconeIndex,
+      createdFile.id, // Use the file key as the namespace for unique identification
+    )
+
+    // await PineconeStore.fromDocuments(pageLevelDocs, embeddings, {
+    //   pineconeIndex,
+    //   namespace: createdFile.id,
+    // })
 
     await db.file.update({
       data: {

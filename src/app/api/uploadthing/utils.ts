@@ -1,8 +1,14 @@
 // import { encoding_for_model } from '@dqbd/tiktoken'
+import { Document } from '@langchain/core/documents'
+import { Index as PineconeIndex } from '@pinecone-database/pinecone'
 import EPub from 'epub'
 import fs from 'fs'
 import { htmlToText } from 'html-to-text'
 import https from 'https'
+import { PineconeStore } from 'langchain/vectorstores/pinecone'
+
+// import { Embeddings } from 'openai/resources'
+import { Embeddings } from '@langchain/core/embeddings'
 import os from 'os'
 import path from 'path'
 
@@ -12,6 +18,35 @@ import path from 'path'
 //   encoder.free()
 //   return tokens.length
 // }
+
+const BATCH_SIZE = 100 // Adjust based on optimal batch size for Pinecone
+
+// Batch processing of documents to handle large volumes efficiently
+export async function batchProcessDocuments(
+  documents: Document[],
+  embeddings: Embeddings,
+  pineconeIndex: PineconeIndex,
+  namespace: string,
+): Promise<void> {
+  const pineconeStore = new PineconeStore(embeddings, {
+    pineconeIndex,
+    namespace,
+  })
+
+  // console.log(
+  //   'in batchProcessDocuments processing documents.length',
+  //   documents.length,
+  //   'using namespace: ',
+  //   namespace,
+  // )
+
+  for (let i = 0; i < documents.length; i += BATCH_SIZE) {
+    console.log(`Batch ${i} `)
+
+    const batch = documents.slice(i, i + BATCH_SIZE)
+    await pineconeStore.addDocuments(batch) // Now we don't need to cast to any
+  }
+}
 
 export const sanitize = (text: string) => {
   // Replace ambiguous Unicode characters with a space
@@ -68,8 +103,7 @@ export async function loadEpubFromUrl(url: string) {
   return loadEpubViaGetChapter(filePath)
 }
 
-export interface Chapter {
-  pageContent: string
+export interface Chapter extends Document {
   metadata: {
     id: string
     href: string
@@ -78,6 +112,7 @@ export interface Chapter {
     title?: string
     chapterPart?: number
     epubCFI?: string
+    [key: string]: any // Allow for additional metadata not initially defined
   }
 }
 

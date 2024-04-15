@@ -57,6 +57,11 @@ export const POST = async (req: NextRequest) => {
     (dbUser.totalMessagesUsed >= freePlan.maxMesages ||
       dbUser.totalMessagesUsedToday >= freePlan.maxMessagesPerDay)
   ) {
+    console.log('subscriptionPlan.isSubscribed', subscriptionPlan.isSubscribed)
+    console.log('dbUser.totalMessagesUsed', dbUser.totalMessagesUsed)
+    console.log('freePlan.maxMesages', freePlan.maxMesages)
+    console.log('dbUser.totalMessagesUsedToday', dbUser.totalMessagesUsedToday)
+
     const now = new Date()
     const createdAt = new Date(dbUser.createdAt)
     let nextReset = new Date(createdAt.getTime())
@@ -122,10 +127,12 @@ export const POST = async (req: NextRequest) => {
   // search for similar messages
   const results = await vectorStore.similaritySearch(message, 4)
 
-  console.log(
-    '4 vector search result mapped',
-    await results.map((r) => r.metadata),
-  )
+  // console.log(
+  //   '4 vector search result mapped',
+  //   await results.map((r) => r.metadata),
+  //   'using namespace',
+  //   file.id,
+  // )
 
   const previousMessage = await db.message.findMany({
     where: {
