@@ -332,6 +332,12 @@ export const appRouter = router({
           id: input.id,
         },
       })
+      // Delete associated messages
+      await db.message.deleteMany({
+        where: {
+          fileId: input.id,
+        },
+      })
 
       return file
     }),
