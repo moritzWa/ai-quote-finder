@@ -181,23 +181,25 @@ const onUploadComplete = async ({
     // console.log(`Total tokens: ${totalTokens}`)
     // console.log(`Max tokens in a single document: ${maxTokens}`)
 
+    if (process.env.NODE_ENV === 'development') {
+      const timestamp = new Date().toLocaleString().replace(/\//g, '-')
+
+      // Construct file name with timestamp
+      const fileName = `pageLevelDocs_${createdFile.name.replace(
+        /([^a-z0-9]+)/gi,
+        '-',
+      )}_${timestamp}.json`
+
+      // Write file with timestamped name
+      fs.writeFile(fileName, JSON.stringify(pageLevelDocs, null, 2), (err) => {
+        if (err) {
+          console.error('Error writing file:', err)
+        } else {
+          console.log('File written successfully:', fileName)
+        }
+      })
+    }
     // Get current timestamp and replace / with -
-    const timestamp = new Date().toLocaleString().replace(/\//g, '-')
-
-    // Construct file name with timestamp
-    const fileName = `pageLevelDocs_${createdFile.name.replace(
-      /([^a-z0-9]+)/gi,
-      '-',
-    )}_${timestamp}.json`
-
-    // Write file with timestamped name
-    fs.writeFile(fileName, JSON.stringify(pageLevelDocs, null, 2), (err) => {
-      if (err) {
-        console.error('Error writing file:', err)
-      } else {
-        console.log('File written successfully:', fileName)
-      }
-    })
 
     // vectorize & index text
     const pineconeIndex = pinecone.Index('ai-quote-finder')
