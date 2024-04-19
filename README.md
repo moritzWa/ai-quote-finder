@@ -1,5 +1,3 @@
-Note: I mostly stopped working on this project after learning about Google's [NotebookLM](https://blog.google/technology/ai/notebooklm-google-ai/).
-
 Quick demo
 ![showcase](https://github.com/moritzWa/ai-quote-finder/blob/main/public/demo-short.gif)
 
